@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<DiscoveryClientResultsFile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://192.88.8.230:8080/inewswebservice/services/inewssystem?wsdl" filename="INEWSSystem.wsdl" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://192.88.8.230:8080/inewswebservice/services/inewssystem?xsd=inewssystem.xsd" filename="inewssystem.xsd" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://192.88.8.230:8080/inewswebservice/services/inewssystem?xsd=inewsstory.xsd" filename="inewssystem0.xsd" />
-  </Results>
-</DiscoveryClientResultsFile>

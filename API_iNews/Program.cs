@@ -15,8 +15,7 @@ namespace API_iNews
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new APIV4());
-            Application.Run(new ServerForm());
+            Application.Run(new API());
         }
     }
 }
