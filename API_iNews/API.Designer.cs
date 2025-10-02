@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnExportAllRawContent = new System.Windows.Forms.Button();
             this.btnExportContentRaw = new System.Windows.Forms.Button();
             this.btnGetStory = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,8 +42,6 @@
             this.txtContent = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDiadanh = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtPhuDe = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtTroiCuoi = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -56,7 +55,6 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.btnExportAllRawContent = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -89,6 +87,22 @@
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // btnExportAllRawContent
+            // 
+            this.btnExportAllRawContent.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.btnExportAllRawContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportAllRawContent.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnExportAllRawContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnExportAllRawContent.Location = new System.Drawing.Point(11, 790);
+            this.btnExportAllRawContent.Margin = new System.Windows.Forms.Padding(2);
+            this.btnExportAllRawContent.Name = "btnExportAllRawContent";
+            this.btnExportAllRawContent.Size = new System.Drawing.Size(259, 35);
+            this.btnExportAllRawContent.TabIndex = 33;
+            this.btnExportAllRawContent.Text = "Xuất toàn bộ nội dung";
+            this.btnExportAllRawContent.UseVisualStyleBackColor = true;
+            this.btnExportAllRawContent.Click += new System.EventHandler(this.btnExportAllRawContent_Click);
             // 
             // btnExportContentRaw
             // 
@@ -162,8 +176,6 @@
             this.panel1.Controls.Add(this.txtContent);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtDiadanh);
-            this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.txtPhuDe);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.txtTroiCuoi);
             this.panel1.Controls.Add(this.label6);
@@ -197,7 +209,7 @@
             // 
             this.btnThoat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnThoat.Location = new System.Drawing.Point(469, 784);
+            this.btnThoat.Location = new System.Drawing.Point(748, 784);
             this.btnThoat.Margin = new System.Windows.Forms.Padding(2);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(89, 30);
@@ -217,14 +229,14 @@
             this.txtContent.Multiline = true;
             this.txtContent.Name = "txtContent";
             this.txtContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtContent.Size = new System.Drawing.Size(619, 98);
+            this.txtContent.Size = new System.Drawing.Size(833, 98);
             this.txtContent.TabIndex = 30;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label1.Location = new System.Drawing.Point(630, 683);
+            this.label1.Location = new System.Drawing.Point(842, 678);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 18);
             this.label1.TabIndex = 29;
@@ -236,37 +248,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDiadanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtDiadanh.Location = new System.Drawing.Point(631, 708);
+            this.txtDiadanh.Location = new System.Drawing.Point(843, 703);
             this.txtDiadanh.Margin = new System.Windows.Forms.Padding(4);
             this.txtDiadanh.Multiline = true;
             this.txtDiadanh.Name = "txtDiadanh";
             this.txtDiadanh.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDiadanh.Size = new System.Drawing.Size(206, 99);
+            this.txtDiadanh.Size = new System.Drawing.Size(352, 99);
             this.txtDiadanh.TabIndex = 28;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label8.Location = new System.Drawing.Point(843, 683);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(171, 18);
-            this.label8.TabIndex = 27;
-            this.label8.Text = "Xem trước dữ liệu phụ đề";
-            // 
-            // txtPhuDe
-            // 
-            this.txtPhuDe.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPhuDe.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtPhuDe.Location = new System.Drawing.Point(843, 708);
-            this.txtPhuDe.Margin = new System.Windows.Forms.Padding(4);
-            this.txtPhuDe.Multiline = true;
-            this.txtPhuDe.Name = "txtPhuDe";
-            this.txtPhuDe.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtPhuDe.Size = new System.Drawing.Size(352, 99);
-            this.txtPhuDe.TabIndex = 26;
             // 
             // label7
             // 
@@ -415,22 +403,6 @@
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
-            // btnExportAllRawContent
-            // 
-            this.btnExportAllRawContent.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.btnExportAllRawContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExportAllRawContent.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btnExportAllRawContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportAllRawContent.Location = new System.Drawing.Point(11, 790);
-            this.btnExportAllRawContent.Margin = new System.Windows.Forms.Padding(2);
-            this.btnExportAllRawContent.Name = "btnExportAllRawContent";
-            this.btnExportAllRawContent.Size = new System.Drawing.Size(259, 35);
-            this.btnExportAllRawContent.TabIndex = 33;
-            this.btnExportAllRawContent.Text = "Xuất toàn bộ nội dung";
-            this.btnExportAllRawContent.UseVisualStyleBackColor = true;
-            this.btnExportAllRawContent.Click += new System.EventHandler(this.btnExportAllRawContent_Click);
-            // 
             // API
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -475,8 +447,6 @@
         private System.Windows.Forms.TextBox txtRuttitCG;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txtPhuDe;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtTroiCuoi;
         private System.Windows.Forms.Label label1;

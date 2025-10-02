@@ -242,12 +242,10 @@ namespace API_iNews
                 return;
             }
             ProcessContentWithDD(Content);
-            ProcessContentWithPhude(txtPhuDe.Text);
             ProcessContentWithCG();
 
             MessageBox.Show("Đã xuất file ruttit.txt\n" +
-                "Đã xuất file diadanh.txt\n" +
-                "Đã xuất file phude.txt", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "Đã xuất file diadanh.txt\n", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
         private void GetDataContent() // Xuất Content RAW
@@ -644,7 +642,6 @@ namespace API_iNews
             // Clear TextBoxes
             txtContent.Clear();
             txtDiadanh.Clear();
-            txtPhuDe.Clear();
             txtRuttitCG.Clear();
             txtTroiTin.Clear();
             txtTroiCuoi.Clear();
@@ -805,6 +802,19 @@ namespace API_iNews
                                   MessageBoxIcon.Warning);
                     return;
                 }
+                // Lấy danh sách folder con cấp 1
+                List<string> folders = iData.GetFolderChildren(QUEUEROOT);
+
+                // Nếu không có thư mục con, trả về thông báo hoặc chuỗi rỗng
+                if (folders == null || folders.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu nào để xuất.",
+                                  "Thông báo",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Warning);
+                    return;
+                }
+
 
                 // Chọn nơi lưu file
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -962,7 +972,6 @@ namespace API_iNews
                 return allContent.ToString();
             });
         }
-
-
     }
+
 }
