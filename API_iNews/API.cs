@@ -23,19 +23,17 @@ namespace API_iNews
     {
         private ServerAPI server;
         private string Content = string.Empty;
-        NameValueCollection AppConfig = (NameValueCollection)ConfigurationManager.GetSection("NewslineSettings");
+        NameValueCollection AppConfig = ConfigurationManager.AppSettings;
         string workingFolder = string.Empty;
         public string selectedName = string.Empty;
         DataTable tbl;
 
-        public API(NameValueCollection customConfig = null)
+        public API()
         {
             InitializeComponent();
 
-            // Nếu có truyền config → dùng, không thì lấy mặc định
-            AppConfig = customConfig ?? (NameValueCollection)ConfigurationManager.GetSection("NewslineSettings");
-
-            workingFolder = AppConfig["WorkingFolder"];
+            AppConfig = ConfigurationManager.AppSettings;
+            workingFolder = AppConfig["WorkingFolder"] ?? string.Empty;
         }
 
         string QUEUEROOT = "CHO_DUYET_PHONG";
@@ -607,7 +605,7 @@ namespace API_iNews
             // Chạy các thao tác blocking trên background thread
             await Task.Run(() =>
             {
-                workingFolder = AppConfig["WorkingFolder"];
+                workingFolder = AppConfig["WorkingFolder"] ?? string.Empty;
 
                 // Khởi tạo server
                 server = new ServerAPI(serverIP);
