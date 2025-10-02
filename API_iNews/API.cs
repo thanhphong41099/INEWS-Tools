@@ -42,7 +42,7 @@ namespace API_iNews
             return appSettings[key] ?? string.Empty;
         }
 
-        string QUEUEROOT = "CHO_DUYET_PHONG";
+        string QUEUEROOT = "VTV4.04_VO_BAN_TIN";
         string queueChild = "";
         iNewsData iData = null;
         WebServiceSettings settings = new WebServiceSettings();
