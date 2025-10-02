@@ -37,7 +37,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button5 = new System.Windows.Forms.Button();
             this.btnThoat = new System.Windows.Forms.Button();
             this.txtContent = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -66,6 +65,7 @@
             // 
             // splitContainer1
             // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Margin = new System.Windows.Forms.Padding(2);
@@ -83,7 +83,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
-            this.splitContainer1.Size = new System.Drawing.Size(1516, 838);
+            this.splitContainer1.Size = new System.Drawing.Size(1516, 783);
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
@@ -95,10 +95,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportAllRawContent.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportAllRawContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportAllRawContent.Location = new System.Drawing.Point(11, 790);
+            this.btnExportAllRawContent.Location = new System.Drawing.Point(12, 635);
             this.btnExportAllRawContent.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportAllRawContent.Name = "btnExportAllRawContent";
-            this.btnExportAllRawContent.Size = new System.Drawing.Size(259, 35);
+            this.btnExportAllRawContent.Size = new System.Drawing.Size(255, 35);
             this.btnExportAllRawContent.TabIndex = 33;
             this.btnExportAllRawContent.Text = "Xuất toàn bộ nội dung";
             this.btnExportAllRawContent.UseVisualStyleBackColor = true;
@@ -111,10 +111,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportContentRaw.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportContentRaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportContentRaw.Location = new System.Drawing.Point(11, 751);
+            this.btnExportContentRaw.Location = new System.Drawing.Point(12, 596);
             this.btnExportContentRaw.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportContentRaw.Name = "btnExportContentRaw";
-            this.btnExportContentRaw.Size = new System.Drawing.Size(259, 35);
+            this.btnExportContentRaw.Size = new System.Drawing.Size(255, 35);
             this.btnExportContentRaw.TabIndex = 32;
             this.btnExportContentRaw.Text = "Xuất nội dung gốc";
             this.btnExportContentRaw.UseVisualStyleBackColor = true;
@@ -125,10 +125,10 @@
             this.btnGetStory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGetStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnGetStory.Location = new System.Drawing.Point(11, 713);
+            this.btnGetStory.Location = new System.Drawing.Point(14, 723);
             this.btnGetStory.Margin = new System.Windows.Forms.Padding(2);
             this.btnGetStory.Name = "btnGetStory";
-            this.btnGetStory.Size = new System.Drawing.Size(259, 35);
+            this.btnGetStory.Size = new System.Drawing.Size(255, 35);
             this.btnGetStory.TabIndex = 31;
             this.btnGetStory.Text = "Reconnect Apache";
             this.btnGetStory.UseVisualStyleBackColor = true;
@@ -139,7 +139,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label2.Location = new System.Drawing.Point(12, 684);
+            this.label2.Location = new System.Drawing.Point(13, 568);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 18);
             this.label2.TabIndex = 30;
@@ -164,14 +164,13 @@
             this.treeView1.Location = new System.Drawing.Point(0, 46);
             this.treeView1.Margin = new System.Windows.Forms.Padding(2);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(294, 628);
+            this.treeView1.Size = new System.Drawing.Size(284, 512);
             this.treeView1.TabIndex = 9;
             this.treeView1.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.btnThoat);
             this.panel1.Controls.Add(this.txtContent);
             this.panel1.Controls.Add(this.label1);
@@ -191,25 +190,14 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1223, 838);
+            this.panel1.Size = new System.Drawing.Size(1219, 779);
             this.panel1.TabIndex = 0;
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button5.Location = new System.Drawing.Point(682, 7);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(155, 30);
-            this.button5.TabIndex = 32;
-            this.button5.Text = "Chọn thư mục";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // btnThoat
             // 
             this.btnThoat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnThoat.Location = new System.Drawing.Point(748, 784);
+            this.btnThoat.Location = new System.Drawing.Point(748, 725);
             this.btnThoat.Margin = new System.Windows.Forms.Padding(2);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(89, 30);
@@ -224,19 +212,19 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtContent.Location = new System.Drawing.Point(4, 680);
+            this.txtContent.Location = new System.Drawing.Point(4, 568);
             this.txtContent.Margin = new System.Windows.Forms.Padding(4);
             this.txtContent.Multiline = true;
             this.txtContent.Name = "txtContent";
             this.txtContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtContent.Size = new System.Drawing.Size(833, 98);
+            this.txtContent.Size = new System.Drawing.Size(829, 151);
             this.txtContent.TabIndex = 30;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label1.Location = new System.Drawing.Point(842, 678);
+            this.label1.Location = new System.Drawing.Point(844, 571);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 18);
             this.label1.TabIndex = 29;
@@ -248,19 +236,19 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDiadanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtDiadanh.Location = new System.Drawing.Point(843, 703);
+            this.txtDiadanh.Location = new System.Drawing.Point(842, 596);
             this.txtDiadanh.Margin = new System.Windows.Forms.Padding(4);
             this.txtDiadanh.Multiline = true;
             this.txtDiadanh.Name = "txtDiadanh";
             this.txtDiadanh.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDiadanh.Size = new System.Drawing.Size(352, 99);
+            this.txtDiadanh.Size = new System.Drawing.Size(348, 123);
             this.txtDiadanh.TabIndex = 28;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label7.Location = new System.Drawing.Point(843, 516);
+            this.label7.Location = new System.Drawing.Point(844, 449);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(227, 18);
             this.label7.TabIndex = 25;
@@ -272,19 +260,19 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTroiCuoi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtTroiCuoi.Location = new System.Drawing.Point(843, 551);
+            this.txtTroiCuoi.Location = new System.Drawing.Point(842, 474);
             this.txtTroiCuoi.Margin = new System.Windows.Forms.Padding(4);
             this.txtTroiCuoi.Multiline = true;
             this.txtTroiCuoi.Name = "txtTroiCuoi";
             this.txtTroiCuoi.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtTroiCuoi.Size = new System.Drawing.Size(352, 123);
+            this.txtTroiCuoi.Size = new System.Drawing.Size(348, 84);
             this.txtTroiCuoi.TabIndex = 24;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label6.Location = new System.Drawing.Point(840, 317);
+            this.label6.Location = new System.Drawing.Point(840, 321);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(244, 18);
             this.label6.TabIndex = 23;
@@ -296,12 +284,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTroiTin.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtTroiTin.Location = new System.Drawing.Point(843, 339);
+            this.txtTroiTin.Location = new System.Drawing.Point(843, 343);
             this.txtTroiTin.Margin = new System.Windows.Forms.Padding(4);
             this.txtTroiTin.Multiline = true;
             this.txtTroiTin.Name = "txtTroiTin";
             this.txtTroiTin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtTroiTin.Size = new System.Drawing.Size(352, 161);
+            this.txtTroiTin.Size = new System.Drawing.Size(348, 98);
             this.txtTroiTin.TabIndex = 22;
             // 
             // txtRuttitCG
@@ -315,7 +303,7 @@
             this.txtRuttitCG.Multiline = true;
             this.txtRuttitCG.Name = "txtRuttitCG";
             this.txtRuttitCG.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtRuttitCG.Size = new System.Drawing.Size(352, 256);
+            this.txtRuttitCG.Size = new System.Drawing.Size(348, 267);
             this.txtRuttitCG.TabIndex = 21;
             // 
             // label5
@@ -342,7 +330,7 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button2.Location = new System.Drawing.Point(211, 784);
+            this.button2.Location = new System.Drawing.Point(211, 725);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(174, 30);
@@ -355,7 +343,7 @@
             // 
             this.btnXuatTroiTin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnXuatTroiTin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnXuatTroiTin.Location = new System.Drawing.Point(23, 784);
+            this.btnXuatTroiTin.Location = new System.Drawing.Point(23, 725);
             this.btnXuatTroiTin.Margin = new System.Windows.Forms.Padding(2);
             this.btnXuatTroiTin.Name = "btnXuatTroiTin";
             this.btnXuatTroiTin.Size = new System.Drawing.Size(174, 30);
@@ -370,10 +358,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 816);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 757);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1223, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1219, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -399,7 +387,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(835, 628);
+            this.dataGridView1.Size = new System.Drawing.Size(831, 512);
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -407,13 +395,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1516, 838);
+            this.ClientSize = new System.Drawing.Size(1516, 783);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "API";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "API";
+            this.Text = "API INEWS";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.API_FormClosing);
             this.Load += new System.EventHandler(this.API_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -455,7 +443,6 @@
         private System.Windows.Forms.TextBox txtContent;
         private System.Windows.Forms.Button btnGetStory;
         private System.Windows.Forms.Button btnThoat;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button btnExportContentRaw;
         private System.Windows.Forms.Button btnExportAllRawContent;
     }

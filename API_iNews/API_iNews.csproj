@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Listen.ico</ApplicationIcon>
+    <ApplicationIcon>api.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -315,6 +315,8 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="api.ico" />
     <Content Include="Listen.ico" />
     <Content Include="XMLFile1.xml">
       <SubType>Designer</SubType>
