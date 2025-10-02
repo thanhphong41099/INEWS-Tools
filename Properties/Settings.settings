@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="News2025.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="News2025_InewsServiceReference_INEWSSystemService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:8080/inewssystem</Value>
+    </Setting>
+    <Setting Name="News2025_TomcatSystem_INEWSSystem" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://192.88.8.230:8080/inewswebservice/services/inewssystem</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

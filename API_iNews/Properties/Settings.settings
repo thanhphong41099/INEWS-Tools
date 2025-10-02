@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="API_iNews.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="API_iNews_INEWSSystem_INEWSSystem" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:8080/inewswebservice/services/inewssystem</Value>
+    </Setting>
+    <Setting Name="API_iNews_INEWSQueue_INEWSQueue" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:8080/inewswebservice/services/inewsqueue</Value>
+    </Setting>
+    <Setting Name="API_iNews_INEWSStory_INEWSStory" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:8080/inewswebservice/services/inewsstory</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

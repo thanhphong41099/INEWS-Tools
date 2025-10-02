@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:storytypes="http://avid.com/inewsstory/types" xmlns:tns="http://avid.com/inewssystem" xmlns:types="http://avid.com/inewssystem/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="INEWSSystem" targetNamespace="http://avid.com/inewssystem" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://avid.com/inewssystem">
+      <xsd:import schemaLocation="http://192.88.8.230:8080/inewswebservice/services/inewssystem?xsd=inewssystem.xsd" namespace="http://avid.com/inewssystem/types" />
+      <xsd:import schemaLocation="http://192.88.8.230:8080/inewswebservice/services/inewssystem?xsd=inewsstory.xsd" namespace="http://avid.com/inewsstory/types" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetMessageRequest">
+    <wsdl:part name="body" element="types:GetMessage" />
+  </wsdl:message>
+  <wsdl:message name="GetQueuesFormFault">
+    <wsdl:part name="fault" element="types:GetQueuesFormFaultType" />
+  </wsdl:message>
+  <wsdl:message name="IsConnectedResponse">
+    <wsdl:part name="body" element="types:IsConnectedResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterNotificationServiceResponse">
+    <wsdl:part name="body" element="types:RegisterNotificationServiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetQueuesFormResponse">
+    <wsdl:part name="body" element="types:GetQueuesFormResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterNotificationServiceRequest">
+    <wsdl:part name="body" element="types:RegisterNotificationService" />
+  </wsdl:message>
+  <wsdl:message name="SendMessageResponse">
+    <wsdl:part name="body" element="types:SendMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IsConnectedRequest">
+    <wsdl:part name="body" element="types:IsConnected" />
+  </wsdl:message>
+  <wsdl:message name="SendMessageFault">
+    <wsdl:part name="fault" element="types:SendMessageFaultType" />
+  </wsdl:message>
+  <wsdl:message name="PerformSimpleSearchResponse">
+    <wsdl:part name="body" element="types:PerformSimpleSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="RemoveWatchForQueueChangesResponse">
+    <wsdl:part name="body" element="types:RemoveWatchForQueueChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="PerformSimpleSearchFault">
+    <wsdl:part name="fault" element="types:PerformSimpleSearchFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetChangedQueuesRequest">
+    <wsdl:part name="body" element="types:GetChangedQueues" />
+  </wsdl:message>
+  <wsdl:message name="PerformSimpleSearchRequest">
+    <wsdl:part name="body" element="types:PerformSimpleSearch" />
+  </wsdl:message>
+  <wsdl:message name="HasNewMessageResponse">
+    <wsdl:part name="body" element="types:HasNewMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFolderChildrenFault">
+    <wsdl:part name="fault" element="types:GetFolderChildrenFaultType" />
+  </wsdl:message>
+  <wsdl:message name="DisconnectRequest">
+    <wsdl:part name="body" element="types:Disconnect" />
+  </wsdl:message>
+  <wsdl:message name="DisconnectResponse">
+    <wsdl:part name="body" element="types:DisconnectResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterNotificationServiceFault">
+    <wsdl:part name="fault" element="types:RegisterNotificationServiceFaultType" />
+  </wsdl:message>
+  <wsdl:message name="WatchQueueForChangesFault">
+    <wsdl:part name="fault" element="types:WatchQueueForChangesFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetMessageResponse">
+    <wsdl:part name="body" element="types:GetMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelSearchResponse">
+    <wsdl:part name="body" element="types:CancelSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelSearchRequest">
+    <wsdl:part name="body" element="types:CancelSearch" />
+  </wsdl:message>
+  <wsdl:message name="GetFolderChildrenRequest">
+    <wsdl:part name="body" element="types:GetFolderChildren" />
+  </wsdl:message>
+  <wsdl:message name="RetrieveSearchResultsResponse">
+    <wsdl:part name="body" element="types:RetrieveSearchResultsResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendMessageRequest">
+    <wsdl:part name="body" element="types:SendMessage" />
+  </wsdl:message>
+  <wsdl:message name="WatchQueueForChangesResponse">
+    <wsdl:part name="body" element="types:WatchQueueForChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="RemoveWatchForQueueChangesRequest">
+    <wsdl:part name="body" element="types:RemoveWatchForQueueChanges" />
+  </wsdl:message>
+  <wsdl:message name="HasNewMessageRequest">
+    <wsdl:part name="body" element="types:HasNewMessage" />
+  </wsdl:message>
+  <wsdl:message name="ConnectResponse">
+    <wsdl:part name="body" element="types:ConnectResponse" />
+  </wsdl:message>
+  <wsdl:message name="RetrieveSearchResultsFault">
+    <wsdl:part name="fault" element="types:RetrieveSearchResultsFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetFolderChildrenResponse">
+    <wsdl:part name="body" element="types:GetFolderChildrenResponse" />
+  </wsdl:message>
+  <wsdl:message name="WatchQueueForChangesRequest">
+    <wsdl:part name="body" element="types:WatchQueueForChanges" />
+  </wsdl:message>
+  <wsdl:message name="RetrieveSearchResultsRequest">
+    <wsdl:part name="body" element="types:RetrieveSearchResults" />
+  </wsdl:message>
+  <wsdl:message name="ConnectRequest">
+    <wsdl:part name="body" element="types:Connect" />
+  </wsdl:message>
+  <wsdl:message name="GetQueuesFormRequest">
+    <wsdl:part name="body" element="types:GetQueuesForm" />
+  </wsdl:message>
+  <wsdl:message name="GetChangedQueuesResponse">
+    <wsdl:part name="body" element="types:GetChangedQueuesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConnectionFault">
+    <wsdl:part name="fault" element="types:ConnectionFaultType" />
+  </wsdl:message>
+  <wsdl:portType name="INEWSSystemPortType">
+    <wsdl:operation name="Connect">
+      <wsdl:documentation>
+        This request connects the HTTP session to an iNEWS system.  This request must be made prior to any other 
+        requests against the iNEWS system.  The connection uses up one iNEWS API license which will not be released 
+        until Disconnect is called or the HTTP session times out on the web server.  Calling Disconnect when operations 
+        are complete is highly recommended.  If unable to connect to the provided server or if the user credentials are 
+        invalid, a ConnectionFault will be returned and the message will contain details as to why the connection was 
+        refused.
+      </wsdl:documentation>
+      <wsdl:input message="tns:ConnectRequest" />
+      <wsdl:output message="tns:ConnectResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <wsdl:documentation>
+        This request is used to terminate a previous connection with an iNEWS system.  This frees up the Web Client 
+        license that was acquired upon connection.  Without calling the disconnect request, the iNEWS license will be 
+        freed when then HTTP session times out on the Web Server.  Any operations performed while not connected will 
+        return ConnectionFaults.
+      </wsdl:documentation>
+      <wsdl:input message="tns:DisconnectRequest" />
+      <wsdl:output message="tns:DisconnectResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="IsConnected">
+      <wsdl:documentation>
+        Checks whether the session is currently connected to iNEWS.
+      </wsdl:documentation>
+      <wsdl:input message="tns:IsConnectedRequest" />
+      <wsdl:output message="tns:IsConnectedResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFolderChildren">
+      <wsdl:documentation>
+        Given the full name of the folder in the iNEWS system, this request will return a list of all of that folder's 
+        children.  All of the children will be directories (either queues or folders).  If the connection has not been 
+        established or has been lost for some reason the request will return a ConnectionFault.  If the requested Folder
+        does not exist or the name provided resolves to a Queue rather then a foler, it will return a 
+        GetFolderChildrenFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetFolderChildrenRequest" />
+      <wsdl:output message="tns:GetFolderChildrenResponse" />
+      <wsdl:fault name="GetFolderChildrenFault" message="tns:GetFolderChildrenFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMessage">
+      <wsdl:documentation>
+        If there is a message pending for the account that is currently connected, this will return the next unreceived 
+        message from the system.  If the connection has not been established or has been lost for some reason the 
+        request will return a ConnectionFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetMessageRequest" />
+      <wsdl:output message="tns:GetMessageResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="HasNewMessage">
+      <wsdl:documentation>
+        If there is a message pending for the account that is currently connected, this will return true in its response.
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:HasNewMessageRequest" />
+      <wsdl:output message="tns:HasNewMessageResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="SendMessage">
+      <wsdl:documentation>
+        Given the name of a recipient iNEWS user, send that user the given message.  If the connection has not been 
+        established or has been lost for some reason the request will return a ConnectionFault.  If the user does not 
+        exist or for some other reason the message cannot be delivered the request will return a SendMessageFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:SendMessageRequest" />
+      <wsdl:output message="tns:SendMessageResponse" />
+      <wsdl:fault name="SendMessageFault" message="tns:SendMessageFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetQueuesForm">
+      <wsdl:documentation>
+        Given the full name of a queue, get that queue's form (either story form or queue form as requested).  If the 
+        connection has not been established or has been lost for some reason the request will return a ConnectionFault.  
+        If the queue does not exist or the request will return a GetQueuesFormFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetQueuesFormRequest" />
+      <wsdl:output message="tns:GetQueuesFormResponse" />
+      <wsdl:fault name="GetQueuesFormFault" message="tns:GetQueuesFormFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchQueueForChanges">
+      <wsdl:documentation>
+        Given the full name of a queue, indicates that you want to track that queue for changes.  Whether a queue has 
+        changed or not after making this request can be determined by making the GetChangedQueues request.  
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.  If the queue does not exist or the name is not a queue the request will return a
+        WatchQueueForChangesFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:WatchQueueForChangesRequest" />
+      <wsdl:output message="tns:WatchQueueForChangesResponse" />
+      <wsdl:fault name="WatchQueueForChangesFault" message="tns:WatchQueueForChangesFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChangedQueues">
+      <wsdl:documentation>
+        This request is used retrieve all of the names of the queues that have changed since they were registered for 
+        changes and have last changed since this request was last made.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetChangedQueuesRequest" />
+      <wsdl:output message="tns:GetChangedQueuesResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="RemoveWatchForQueueChanges">
+      <wsdl:documentation>
+        Given the full name of a queue, indicates that you want stop tracking that queue for changes.    
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:RemoveWatchForQueueChangesRequest" />
+      <wsdl:output message="tns:RemoveWatchForQueueChangesResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="PerformSimpleSearch">
+      <wsdl:documentation>
+        Register a simple search with the server.  The response will contain the ID of the search.  Search results will 
+        be collected by the web service for later retrieval through GetSearchResultsByID. 
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.  If the criteria provided are invalid or the server produces an error the request will return a
+        PerformSimpleSearchFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:PerformSimpleSearchRequest" />
+      <wsdl:output message="tns:PerformSimpleSearchResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+      <wsdl:fault name="PerformSimpleSearchFault" message="tns:PerformSimpleSearchFault" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveSearchResults">
+      <wsdl:documentation>
+        Retrieve the results of a search that has been previously issued by providing the search ID. 
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.  If there is has been no search registered with the provided ID a RetrieveSearchResultsFault
+        will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:RetrieveSearchResultsRequest" />
+      <wsdl:output message="tns:RetrieveSearchResultsResponse" />
+      <wsdl:fault name="RetrieveSearchResultsFault" message="tns:RetrieveSearchResultsFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterNotificationService">
+      <wsdl:documentation>
+        Registers the service that implements the inewsnotification.wsdl and is responsible for retrieving notification
+        callbacks from this service.
+      </wsdl:documentation>
+      <wsdl:input message="tns:RegisterNotificationServiceRequest" />
+      <wsdl:output message="tns:RegisterNotificationServiceResponse" />
+      <wsdl:fault name="RegisterNotificationServiceFault" message="tns:RegisterNotificationServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="CancelSearch">
+      <wsdl:documentation>
+        Cancels a search that is currently in progress.  For non-indexed searches it is a good idea to cancel them if
+        the results are no longer required as it will conserve server resources. 
+        If the connection has not been established or has been lost for some reason the request will return a 
+        ConnectionFault.
+      </wsdl:documentation>
+      <wsdl:input message="tns:CancelSearchRequest" />
+      <wsdl:output message="tns:CancelSearchResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="INEWSSystemPortBinding" type="tns:INEWSSystemPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Connect">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsConnected">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFolderChildren">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="GetFolderChildrenFault">
+        <soap:fault use="literal" name="GetFolderChildrenFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMessage">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="HasNewMessage">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SendMessage">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="SendMessageFault">
+        <soap:fault use="literal" name="SendMessageFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetQueuesForm">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="GetQueuesFormFault">
+        <soap:fault use="literal" name="GetQueuesFormFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WatchQueueForChanges">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="WatchQueueForChangesFault">
+        <soap:fault use="literal" name="WatchQueueForChangesFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetChangedQueues">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveWatchForQueueChanges">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PerformSimpleSearch">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="PerformSimpleSearchFault">
+        <soap:fault use="literal" name="PerformSimpleSearchFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveSearchResults">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="RetrieveSearchResultsFault">
+        <soap:fault use="literal" name="RetrieveSearchResultsFault" namespace="" />
+      </wsdl:fault>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterNotificationService">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="RegisterNotificationServiceFault">
+        <soap:fault use="literal" name="RegisterNotificationServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CancelSearch">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ConnectionFault">
+        <soap:fault use="literal" name="ConnectionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="INEWSSystem">
+    <wsdl:documentation>
+      The INEWSSystem is the service that is used to perform operations against an INEWS database directly.  It is also 
+      the starting point for all the other iNEWS services.  All operations are performed within the context of a Web 
+      Session which should be started with the Connect request and completed with the Disconnect request.  Any other 
+      operations performed without first having established a connection will result in a ConnectionFault.  
+    </wsdl:documentation>
+    <wsdl:port name="INEWSSystemPort" binding="tns:INEWSSystemPortBinding">
+      <soap:address location="http://192.88.8.230:8080/inewswebservice/services/inewssystem" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:system="http://avid.com/inewssystem/types" xmlns:tns="http://avid.com/inewsstory/types" elementFormDefault="qualified" targetNamespace="http://avid.com/inewsstory/types" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewssystem.xsd" namespace="http://avid.com/inewssystem/types" />
+  <xsd:element name="LockStory" type="tns:LockStoryType" />
+  <xsd:complexType name="LockStoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the LockStory request.  QueueFullName is the full path to the queue on the iNEWS server in which
+      the story resides, QueueLocator is the reference to the story of interest within the queue. Section is optional.
+      It is the section of the story to lock.  If the Section element is not specified the default behavior will
+      be to lock all sections of the story.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+      <xsd:element name="QueueLocator" type="xsd:string" />
+      <xsd:element minOccurs="0" name="Section" type="tns:SectionLockEnum" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="LockStoryResponse" type="tns:LockStoryResponseType" />
+  <xsd:complexType name="LockStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the LockStory request.  See documentation for ExtensionType in inewssytem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="LockStoryFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a LockStory request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="SaveStory" type="tns:SaveStoryType" />
+  <xsd:complexType name="SaveStoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the SaveStory request.  NSML is the NSML that will be persisted for the active story.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="StoryNSML" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SaveStoryResponse" type="tns:SaveStoryResponseType" />
+  <xsd:complexType name="SaveStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the SaveStory request.  See documentation for ExtensionType in inewssytem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="StorySaved" type="tns:StoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SaveStoryFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a SaveStory request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="UnlockStory" type="tns:UnlockStoryType" />
+  <xsd:complexType name="UnlockStoryType" />
+  <xsd:element name="UnlockStoryResponse" type="tns:UnlockStoryResponseType" />
+  <xsd:complexType name="UnlockStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="DeleteStory" type="tns:DeleteStoryType" />
+  <xsd:complexType name="DeleteStoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the DeleteStory request.  QueueFullName is the full path to the queue on the iNEWS server in which the story resides, QueueLocator is the reference to the
+      story of interest within the queue.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+      <xsd:element name="QueueLocator" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="DeleteStoryResponse" type="tns:DeleteStoryResponseType" />
+  <xsd:complexType name="DeleteStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the DeleteStory request.  See documentation for ExtensionType in inewssytem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="DeleteStoryFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a DeleteStory request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="StoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+          An iNEWS Story.  Full path is the path to the Queue in which the Story resides.  QueueLocator is an ID that
+          can be used to find a story within a Queue.
+          See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="FullPath" type="xsd:string" />
+      <xsd:element name="QueueLocator" type="xsd:string" />
+      <xsd:element name="StoryAsNSML" type="xsd:string" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+    <xsd:anyAttribute processContents="lax" />
+  </xsd:complexType>
+  <xsd:simpleType name="SectionLockEnum">
+    <xsd:annotation>
+      <xsd:documentation>
+          The section of the story to edit lock.  BODY, FORM or ALL.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BODY" />
+      <xsd:enumeration value="FORM" />
+      <xsd:enumeration value="ALL" />
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://avid.com/inewssystem" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="INEWSSystemService" targetNamespace="http://avid.com/inewssystem" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema targetNamespace="http://avid.com/inewssystem">
+      <xsd:element name="Connect">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Username" type="xsd:string" />
+            <xsd:element name="Password" type="xsd:string" />
+            <xsd:element name="Servername" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ConnectResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="Extension" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Disconnect" />
+      <xsd:element name="DisconnectResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="Extension" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="IsConnected" />
+      <xsd:element name="IsConnectedResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="IsConnected" type="xsd:boolean" />
+            <xsd:element minOccurs="0" name="Extension" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+  <message name="ConnectRequest">
+    <part name="parameters" element="tns:Connect" />
+  </message>
+  <message name="ConnectResponse">
+    <part name="parameters" element="tns:ConnectResponse" />
+  </message>
+  <message name="DisconnectRequest">
+    <part name="parameters" element="tns:Disconnect" />
+  </message>
+  <message name="DisconnectResponse">
+    <part name="parameters" element="tns:DisconnectResponse" />
+  </message>
+  <message name="IsConnectedRequest">
+    <part name="parameters" element="tns:IsConnected" />
+  </message>
+  <message name="IsConnectedResponse">
+    <part name="parameters" element="tns:IsConnectedResponse" />
+  </message>
+  <portType name="INEWSSystemPortType">
+    <operation name="Connect">
+      <input message="tns:ConnectRequest" />
+      <output message="tns:ConnectResponse" />
+    </operation>
+    <operation name="Disconnect">
+      <input message="tns:DisconnectRequest" />
+      <output message="tns:DisconnectResponse" />
+    </operation>
+    <operation name="IsConnected">
+      <input message="tns:IsConnectedRequest" />
+      <output message="tns:IsConnectedResponse" />
+    </operation>
+  </portType>
+  <binding name="INEWSSystemBinding" type="tns:INEWSSystemPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="Connect">
+      <soap:operation soapAction="http://avid.com/inewssystem/Connect" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="Disconnect">
+      <soap:operation soapAction="http://avid.com/inewssystem/Disconnect" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="IsConnected">
+      <soap:operation soapAction="http://avid.com/inewssystem/IsConnected" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="INEWSSystemService">
+    <port name="INEWSSystemPort" binding="tns:INEWSSystemBinding">
+      <soap:address location="http://localhost:8080/inewssystem" />
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://avid.com/inewsstory" xmlns:systemtypes="http://avid.com/inewssystem/types" xmlns:types="http://avid.com/inewsstory/types" name="INEWSStory" targetNamespace="http://avid.com/inewsstory" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://avid.com/inewsstory">
+      <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsstory?xsd=inewsstory.xsd" namespace="http://avid.com/inewsstory/types" />
+      <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsstory?xsd=inewssystem.xsd" namespace="http://avid.com/inewssystem/types" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="SaveStoryResponse">
+    <wsdl:part name="body" element="types:SaveStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="LockStoryFault">
+    <wsdl:part name="body" element="types:LockStoryFaultType" />
+  </wsdl:message>
+  <wsdl:message name="UnlockStoryRequest">
+    <wsdl:part name="body" element="types:UnlockStory" />
+  </wsdl:message>
+  <wsdl:message name="DeleteStoryResponse">
+    <wsdl:part name="body" element="types:DeleteStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="LockStoryRequest">
+    <wsdl:part name="body" element="types:LockStory" />
+  </wsdl:message>
+  <wsdl:message name="LockStoryResponse">
+    <wsdl:part name="body" element="types:LockStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteStoryRequest">
+    <wsdl:part name="body" element="types:DeleteStory" />
+  </wsdl:message>
+  <wsdl:message name="ConnectionFault">
+    <wsdl:part name="body" element="systemtypes:ConnectionFaultType" />
+  </wsdl:message>
+  <wsdl:message name="UnlockStoryResponse">
+    <wsdl:part name="body" element="types:UnlockStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveStoryFault">
+    <wsdl:part name="body" element="types:SaveStoryFaultType" />
+  </wsdl:message>
+  <wsdl:message name="SaveStoryRequest">
+    <wsdl:part name="body" element="types:SaveStory" />
+  </wsdl:message>
+  <wsdl:message name="DeleteStoryFault">
+    <wsdl:part name="body" element="types:DeleteStoryFaultType" />
+  </wsdl:message>
+  <wsdl:portType name="INEWSStoryPortType">
+    <wsdl:operation name="LockStory">
+      <wsdl:documentation>
+        This request acquires an edit lock on the requested story and sets it as the current story against which all other story mutation requests will work.  Any currently
+        held edit lock will be released.  For example, if you edit lock the FORM area of a story, then request the edit lock for the BODY area of the story,
+        your edit lock on the FORM will be released before the BODY edit lock is obtained.
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a ConnectionFault will be returned.  If an error occurs locking the story, a LockStoryFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:LockStoryRequest" />
+      <wsdl:output message="tns:LockStoryResponse" />
+      <wsdl:fault name="LockStoryFault" message="tns:LockStoryFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveStory">
+      <wsdl:documentation>
+        This request saves the current active story and releases its edit lock.  The story will no longer be the active story and a new lock call will need to be made to make it the active story again.
+        The story object will be returned as part of the response.
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a ConnectionFault will be returned.  If an error occurs during the saving of the story, 
+        a SaveStoryFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:SaveStoryRequest" />
+      <wsdl:output message="tns:SaveStoryResponse" />
+      <wsdl:fault name="SaveStoryFault" message="tns:SaveStoryFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="UnlockStory">
+      <wsdl:documentation>
+        This request releases an edit lock that has been acquired by this session on the current story.  If there was not a story
+        currently locked by this session the unlock request will silently complete (no error will be reported).
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a ConnectionFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:UnlockStoryRequest" />
+      <wsdl:output message="tns:UnlockStoryResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteStory">
+      <wsdl:documentation>
+        This request deletes the requested story.  
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a ConnectionFault will be returned.  
+        If an error occurs Deleting the story, a DeleteStoryFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:DeleteStoryRequest" />
+      <wsdl:output message="tns:DeleteStoryResponse" />
+      <wsdl:fault name="DeleteStoryFault" message="tns:DeleteStoryFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="INEWSStoryPortBinding" type="tns:INEWSStoryPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="LockStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnlockStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="INEWSStory">
+    <wsdl:documentation>
+            The INEWSStory is the service that is used to perform operations against a particular iNEWS Story.  The
+            requests in this service cannot be invoked before a connection to the iNEWS server has been established
+            through the System Service's Connect request.
+    </wsdl:documentation>
+    <wsdl:port name="INEWSStoryPort" binding="tns:INEWSStoryPortBinding">
+      <soap:address location="http://localhost:8080/inewswebservice/services/inewsstory" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

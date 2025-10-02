@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://avid.com/inewsqueue" xmlns:storytypes="http://avid.com/inewsstory/types" xmlns:types="http://avid.com/inewsqueue/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:systemtypes="http://avid.com/inewssystem/types" name="INEWSQueue" targetNamespace="http://avid.com/inewsqueue" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://avid.com/inewsqueue">
+      <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewsqueue.xsd" namespace="http://avid.com/inewsqueue/types" />
+      <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewssystem.xsd" namespace="http://avid.com/inewssystem/types" />
+      <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewsstory.xsd" namespace="http://avid.com/inewsstory/types" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetStoryResponse">
+    <wsdl:part name="body" element="types:GetStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetCurrentQueueRequest">
+    <wsdl:part name="body" element="types:SetCurrentQueue" />
+  </wsdl:message>
+  <wsdl:message name="HasNextRequest">
+    <wsdl:part name="body" element="types:HasNext" />
+  </wsdl:message>
+  <wsdl:message name="HasPreviousResponse">
+    <wsdl:part name="body" element="types:HasPreviousResponse" />
+  </wsdl:message>
+  <wsdl:message name="HasPreviousFault">
+    <wsdl:part name="body" element="types:HasPreviousFaultType" />
+  </wsdl:message>
+  <wsdl:message name="CreateStoryResponse">
+    <wsdl:part name="body" element="types:CreateStoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAttributesFault">
+    <wsdl:part name="body" element="types:GetAttributesFaultType" />
+  </wsdl:message>
+  <wsdl:message name="CreateStoryRequest">
+    <wsdl:part name="body" element="types:CreateStory" />
+  </wsdl:message>
+  <wsdl:message name="SetCurrentQueueResponse">
+    <wsdl:part name="body" element="types:SetCurrentQueueResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetStoryRequest">
+    <wsdl:part name="body" element="types:GetStory" />
+  </wsdl:message>
+  <wsdl:message name="GetQueueRecordsResponse">
+    <wsdl:part name="body" element="types:GetQueueRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAttributesResponse">
+    <wsdl:part name="body" element="types:GetAttributesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetCurrentQueueFault">
+    <wsdl:part name="body" element="types:SetCurrentQueueFaultType" />
+  </wsdl:message>
+  <wsdl:message name="ConnectionFault">
+    <wsdl:part name="body" element="systemtypes:ConnectionFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetAttributesRequest">
+    <wsdl:part name="body" element="types:GetAttributes" />
+  </wsdl:message>
+  <wsdl:message name="GetStoriesRequest">
+    <wsdl:part name="body" element="types:GetStories" />
+  </wsdl:message>
+  <wsdl:message name="HasNextFault">
+    <wsdl:part name="body" element="types:HasNextFaultType" />
+  </wsdl:message>
+  <wsdl:message name="HasPreviousRequest">
+    <wsdl:part name="body" element="types:HasPrevious" />
+  </wsdl:message>
+  <wsdl:message name="GetStoriesFault">
+    <wsdl:part name="body" element="types:GetStoriesFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetQueueRecordsRequest">
+    <wsdl:part name="body" element="types:GetQueueRecords" />
+  </wsdl:message>
+  <wsdl:message name="GetQueueRecordsFault">
+    <wsdl:part name="body" element="types:GetQueueRecordsFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetStoryFault">
+    <wsdl:part name="body" element="types:GetStoryFaultType" />
+  </wsdl:message>
+  <wsdl:message name="HasNextResponse">
+    <wsdl:part name="body" element="types:HasNextResponse" />
+  </wsdl:message>
+  <wsdl:message name="CreateStoryFault">
+    <wsdl:part name="body" element="types:CreateStoryFaultType" />
+  </wsdl:message>
+  <wsdl:message name="GetStoriesResponse">
+    <wsdl:part name="body" element="types:GetStoriesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="INEWSQueuePortType">
+    <wsdl:operation name="GetStories">
+      <wsdl:documentation>
+        This request retrieves stories from the current queue (see SetCurrentQueue). It behaves like a cursor against 
+        the current Queue.  This means that each GetStories request moves the position of the cursor in the Queue.  To 
+        facilitate this, one of the parameters to this request is the direction that you wish to navigate (NEXT, PREV 
+        or SAME).  You can also specify if you wish to receive the story bodies in the response and the number of 
+        stories that you wish returned.  If the number requested exceeds the number available .  All of the stories are 
+        returned in CDATA block that contain the NSML for the story.  NSML parsing is the responsibility of the caller.  
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a 
+        ConnectionFault will be returned.  If an error occurs during the story retrieval or the current queue has not 
+        been set by calling SetCurrentQueue then a GetStoriesFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetStoriesRequest" />
+      <wsdl:output message="tns:GetStoriesResponse" />
+      <wsdl:fault name="GetStoriesFault" message="tns:GetStoriesFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="HasNext">
+      <wsdl:documentation>
+        This request is used to determine if the GetStories request with a NEXT navigation direction request would return 
+        stories that have not already been retrieved or not.  
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a 
+        ConnectionFault will be returned.  If an error occurs during the request or the current queue 
+        has not been set by calling SetCurrentQueue then a HasNextFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:HasNextRequest" />
+      <wsdl:output message="tns:HasNextResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+      <wsdl:fault name="HasNextFault" message="tns:HasNextFault" />
+    </wsdl:operation>
+    <wsdl:operation name="HasPrevious">
+      <wsdl:documentation>
+        This request is used to determine if the GetStories request with a PREVIOUS navigation direction request would 
+        return stories that have not already been retrieved or not.  
+        
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a 
+        ConnectionFault will be returned.  If an error occurs during the request or the current queue 
+        has not been set by calling SetCurrentQueue then a HasPreviousFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:HasPreviousRequest" />
+      <wsdl:output message="tns:HasPreviousResponse" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+      <wsdl:fault name="HasPreviousFault" message="tns:HasPreviousFault" />
+    </wsdl:operation>
+    <wsdl:operation name="SetCurrentQueue">
+      <wsdl:documentation>
+      This request sets the current Queue for the HTTP session.  Subsequent requests through the iNEWSQueue service will
+      be performed against this Queue.  The current Queue can be changed by calling this requests again.
+      
+      If a connection was not previously established, or the connection to the iNEWS server has been lost a 
+      ConnectionFault will be returned.  If an error occurs during the setting of the Queue then a SetCurrentQueueFault 
+      will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:SetCurrentQueueRequest" />
+      <wsdl:output message="tns:SetCurrentQueueResponse" />
+      <wsdl:fault name="SetCurrentQueueFault" message="tns:SetCurrentQueueFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateStory">
+      <wsdl:documentation>
+      This request creates a new story in the current queue.  Upon execution, the new story will be created in the 
+      database and (optionally) will be set as the current story in an edit locked state.
+      
+      If a connection was not previously established, or the connection to the iNEWS server has been lost a 
+      ConnectionFault will be returned.  If an error occurs during the story creation or the current queue has not been 
+      set by calling SetCurrentQueue then a CreateStoryFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:CreateStoryRequest" />
+      <wsdl:output message="tns:CreateStoryResponse" />
+      <wsdl:fault name="CreateStoryFault" message="tns:CreateStoryFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStory">
+      <wsdl:documentation>
+        This request gets a story given a queue and a queue locator.
+
+        If a connection was not previously established, or the connection to the iNEWS server has been lost a ConnectionFault will be returned.
+        If an error occurs Getting the story, a GetStoryFault will be returned.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetStoryRequest" />
+      <wsdl:output message="tns:GetStoryResponse" />
+      <wsdl:fault name="GetStoryFault" message="tns:GetStoryFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributes">
+      <wsdl:documentation>
+              This request gets the attributes of a queue or folder.
+
+              If a connection was not previously established, or the connection to the iNEWS server has been lost a
+              ConnectionFault will be returned.
+              If an error occurs Getting the story, a GetAttributesFault will be returned.
+          </wsdl:documentation>
+      <wsdl:input message="tns:GetAttributesRequest" />
+      <wsdl:output message="tns:GetAttributesResponse" />
+      <wsdl:fault name="GetAttributesFault" message="tns:GetAttributesFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+    <wsdl:operation name="GetQueueRecords">
+      <wsdl:documentation>
+      This request gets a list of queue records from a queue, starting at the top of the queue.  Each subsequent
+      request will get the next group of records from the queue if the call is not reset.  Each group may include
+      the last record from the previous request.  Use the reset option to start listing records from the top of the
+      queue again.
+      </wsdl:documentation>
+      <wsdl:input message="tns:GetQueueRecordsRequest" />
+      <wsdl:output message="tns:GetQueueRecordsResponse" />
+      <wsdl:fault name="GetQueueRecordsFault" message="tns:GetQueueRecordsFault" />
+      <wsdl:fault name="ConnectionFault" message="tns:ConnectionFault" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="INEWSQueuePortBinding" type="tns:INEWSQueuePortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SetCurrentQueue">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStories">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HasNext">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HasPrevious">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStory">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributes">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetQueueRecords">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="INEWSQueue">
+    <wsdl:documentation>
+        The INEWSQueue is the service that is used to perform operations against a particular iNEWS Queue.  Once a
+        connection has been established to the iNEWS server through the INEWSSystem service's Connect request, a
+        queue that is to be manipulated through the INEWSQueue service is specified using the SetCurrentQueue request.
+        All subsequent operations performed through the INEWSQueue service will be performed against that "current queue"
+        until a new call to the SetCurrentQueue request is made.
+    </wsdl:documentation>
+    <wsdl:port name="INEWSQueuePort" binding="tns:INEWSQueuePortBinding">
+      <soap:address location="http://localhost:8080/inewswebservice/services/inewsqueue" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

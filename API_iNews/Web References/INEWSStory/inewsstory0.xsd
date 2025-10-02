@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:story="http://avid.com/inewsstory/types" xmlns:tns="http://avid.com/inewssystem/types" elementFormDefault="qualified" targetNamespace="http://avid.com/inewssystem/types" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsstory?xsd=inewsstory.xsd" namespace="http://avid.com/inewsstory/types" />
+  <xsd:element name="Connect" type="tns:ConnectType" />
+  <xsd:complexType name="ConnectType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the Connect request.  Username is the username of the iNEWS user to connect as, password is that 
+      user's password and server name is the name of the server that will be connected to.  The web server hosting the 
+      web service must have access to the server name provided.
+    </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Username" type="xsd:string" />
+      <xsd:element name="Password" type="xsd:string" />
+      <xsd:element name="Servername" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="ConnectResponse" type="tns:ConnectResponseType" />
+  <xsd:complexType name="ConnectResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The connect response will be empty except for the Extension.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="Disconnect" type="tns:DisconnectType" />
+  <xsd:complexType name="DisconnectType" />
+  <xsd:element name="DisconnectResponse" type="tns:DisconnectResponseType" />
+  <xsd:complexType name="DisconnectResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The disconnect response will be empty except for the Extension.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="IsConnected" type="tns:IsConnectedType" />
+  <xsd:complexType name="IsConnectedType" />
+  <xsd:element name="IsConnectedResponse" type="tns:IsConnectedResponseType" />
+  <xsd:complexType name="IsConnectedResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The isConnected response will return whether or not the iNEWS session is currently connected.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="IsConnected" type="xsd:boolean" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetFolderChildren" type="tns:GetFolderChildrenType" />
+  <xsd:complexType name="GetFolderChildrenType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the GetFolderChildren request.  FolderFullName is the fully qualified name (excluding server name) 
+      of the Folder (not Queue) whose children you wish to retrieve.  Both empty value or . (dot) maybe used to retrieve
+      the root folder.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="FolderFullName" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetFolderChildrenResponse" type="tns:GetFolderChildrenResponseType" />
+  <xsd:complexType name="GetFolderChildrenResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The returned results from GetFolderChildren request.  This returns back the full name of the folder requested and 
+      a list of its children.  See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="ParentFolderFullName" type="xsd:string" />
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="Children" type="tns:DirectoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetFolderChildrenFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetFolderChildren request.  
+        The Message contains a short description of the error.
+        See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="DirectoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+          An iNEWS directory.  Directories may be Folders (contain other Folders or Queues) or Queues (contain stories).
+          Type indicates whether it is a Folder or a Queue.  Name is the short name of the directory.  FullName is the 
+          full path to the directory on the iNEWS server.
+          See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Type" type="tns:DirectoryTypeType" />
+      <xsd:element name="Name" type="xsd:string" />
+      <xsd:element name="FullName" type="xsd:string" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+    <xsd:anyAttribute processContents="lax" />
+  </xsd:complexType>
+  <xsd:simpleType name="DirectoryTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+          An iNEWS directory type.  Valid values are "Queue" and "Folder".
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Queue" />
+      <xsd:enumeration value="Folder" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="GetMessage" type="tns:GetMessageType" />
+  <xsd:complexType name="GetMessageType" />
+  <xsd:element name="GetMessageResponse" type="tns:GetMessageResponseType" />
+  <xsd:complexType name="GetMessageResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The response from a GetMessage request.  This is the next available message for the connected user.  Recipient is 
+      the name of the user the message was sent to.  Sender is the name of the user the message was sent by.  SendDate 
+      is the date and time the message was sent.  HasMoreMessages is a boolean which will be equal to true if there are 
+      still pending messages for the connected user.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="MessageText" type="xsd:string" />
+      <xsd:element name="Recipient" type="xsd:string" />
+      <xsd:element name="Sender" type="xsd:string" />
+      <xsd:element name="SendDate" type="xsd:dateTime" />
+      <xsd:element name="HasMoreMessages" type="xsd:boolean" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="HasNewMessage" type="tns:HasNewMessageType" />
+  <xsd:complexType name="HasNewMessageType" />
+  <xsd:element name="HasNewMessageResponse" type="tns:HasNewMessageResponseType" />
+  <xsd:complexType name="HasNewMessageResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+        The response from a HasNewMessage request.  HasMoreMessages is a boolean which will be true if there are pending
+        messages for the connected user.  See documentation for ExtensionType for description of Extension's usage.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="HasMoreMessages" type="xsd:boolean" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SendMessage" type="tns:SendMessageType" />
+  <xsd:complexType name="SendMessageType">
+    <xsd:annotation>
+      <xsd:documentation>
+	  Parameters for the SendMessage request.  RecipientName is the name of the iNEWS user to whom the message will be 
+	  sent.  MessageText is the body of the message.  See documentation for ExtensionType for description of Extension's
+	  usage.
+	  </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="RecipientName" type="xsd:string" />
+      <xsd:element name="MessageText" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SendMessageResponse" type="tns:SendMessageResponseType" />
+  <xsd:complexType name="SendMessageResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the SendMessage request.  See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SendMessageFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a SendMessage request.  Usually due to a non-existent recipient.
+        The Message contains a short description of the error. 
+        See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetQueuesForm" type="tns:GetQueuesFormType" />
+  <xsd:complexType name="GetQueuesFormType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for GetQueuesForm request.  QueueFullName is the full path to the queue on the iNEWS server.  FormType 
+      is the type of form that you wish to retrieve; either Queue or Story.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+      <xsd:element name="FormType" type="tns:FormTypeType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetQueuesFormResponse" type="tns:GetQueuesFormResponseType" />
+  <xsd:complexType name="GetQueuesFormResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+        The response for a GetQueuesForm request.  QueueFullName is the full path to the queue on the iNEWS server.  
+        FormName is the name of the Form on the iNEWS server.  Form is the actual form NSML in a CDATA block.  NSML 
+        parsing is the responsibility of the caller.
+        See documentation for ExtensionType for description of Extension's usage.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+      <xsd:element name="Form" type="xsd:string" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetQueuesFormFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetQueuesForm request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="FormTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+          An iNEWS form type.  Valid values are "Queue" and "Story".
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Queue" />
+      <xsd:enumeration value="Story" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="WatchQueueForChanges" type="tns:WatchQueueForChangesType" />
+  <xsd:complexType name="WatchQueueForChangesType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for WatchQueueForChanges request.  QueueFullName is the full path to the queue on the iNEWS server.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="WatchQueueForChangesResponse" type="tns:WatchQueueForChangesResponseType" />
+  <xsd:complexType name="WatchQueueForChangesResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The watch queue response will be empty except for the Extension.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="WatchQueueForChangesFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a WatchQueueForChanges request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetChangedQueues" type="tns:GetChangedQueuesType" />
+  <xsd:complexType name="GetChangedQueuesType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for GetChangedQueues request.  
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:element name="GetChangedQueuesResponse" type="tns:GetChangedQueuesResponseType" />
+  <xsd:complexType name="GetChangedQueuesResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The getChangedQueuesResponse will contain a list of the full names of the queues that have changed since they have
+      been registered (through WatchQueueForChanges) and since the last time this request was made.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="ChangedQueueNames" type="xsd:string" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RemoveWatchForQueueChanges" type="tns:RemoveWatchForQueueChangesType" />
+  <xsd:complexType name="RemoveWatchForQueueChangesType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for RemoveWatchForQueueChanges request.  QueueFullName is the full path to the queue on the iNEWS server.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RemoveWatchForQueueChangesResponse" type="tns:RemoveWatchForQueueChangesResponseType" />
+  <xsd:complexType name="RemoveWatchForQueueChangesResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The watch queue response will be empty except for the Extension.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="PerformSimpleSearch" type="tns:PerformSimpleSearchType" />
+  <xsd:complexType name="PerformSimpleSearchType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for PerformSimpleSearch request:  
+        SearchType is the type of search to be performed.  See documentation for SearchTypeType for details.  
+        SearchPath is the full path to the directory on the iNEWS server that will be the root node of the search.
+        SearchWords are the words that the search will look for in the stories. The total size of all words' lengths + 
+            number of words cannot exceed 1024.
+        SearchOperator whether the SearchWords will be ANDed or ORed.
+        NumberOfParagraphs is the number of paragraphs to scan in the stories when performing a "SOME" search.
+        HitLimit is the maximum number of results to be returned for the search.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SearchType" type="tns:SearchTypeType" />
+      <xsd:element name="SearchPath" type="xsd:string" />
+      <xsd:element minOccurs="1" maxOccurs="unbounded" name="SearchWords" type="xsd:string" />
+      <xsd:element name="SearchOperator" type="tns:SearchOperatorType" />
+      <xsd:element name="NumberOfParagraphs" type="xsd:short" />
+      <xsd:element name="HitLimit" type="xsd:short" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="PerformSimpleSearchResponse" type="tns:PerformSimpleSearchResponseType" />
+  <xsd:complexType name="PerformSimpleSearchResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The watch queue response will be empty except for the Extension.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SearchID" type="xsd:long" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="PerformSimpleSearchFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a PerformSimpleSearch request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="SearchTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines the type of search that will be performed:  
+        Indexed causes the server to perform the search against the directory's and/or its children's indexes, if any.
+        Fast performs a seek search against the queue's sort field.
+        All performs a seek search against all the fields and the stories' body.  This is the slowest type of search.
+        Some performs a seek search against all the fields and the first 'x' paragraphs of the stories' body where 'x'
+            equals the number specified by the "NumberOfParagraphs" element of the PerformSimpleSearchType.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Indexed" />
+      <xsd:enumeration value="Fast" />
+      <xsd:enumeration value="All" />
+      <xsd:enumeration value="Some" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SearchOperatorType">
+    <xsd:annotation>
+      <xsd:documentation>
+        Defines the operator for the search.  When the number of search words is greater then one it defines whether the
+        search will AND the words or OR the words when performing the search.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="And" />
+      <xsd:enumeration value="Or" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="RetrieveSearchResults" type="tns:RetrieveSearchResultsType" />
+  <xsd:complexType name="RetrieveSearchResultsType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for RetrieveSearchResults request.  SearchID is the ID of the search whose results are to be returned.
+      ReturnFullStory indicates whether the complete stories including NSML should be retrieved from the database or 
+      whether the results will contain just the queue names and queue locators.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SearchID" type="xsd:long" />
+      <xsd:element name="ReturnFullStory" type="xsd:boolean" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RetrieveSearchResultsResponse" type="tns:RetrieveSearchResultsResponseType" />
+  <xsd:complexType name="RetrieveSearchResultsResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      SearchComplete indicates whether the search res
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SearchStatus" type="tns:SearchStatusType" />
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="Stories" type="story:StoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RetrieveSearchResultsFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a RetrieveSearchResults request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="SearchStatusType">
+    <xsd:annotation>
+      <xsd:documentation>
+          The current status of a search.  Possible values are Incomplete, Done and Aborted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Incomplete" />
+      <xsd:enumeration value="Done" />
+      <xsd:enumeration value="Aborted" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="CancelSearch" type="tns:CancelSearchType" />
+  <xsd:complexType name="CancelSearchType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for CancelSearch request.  SearchID is the ID of the search which is to be canceled.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="SearchID" type="xsd:long" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="CancelSearchResponse" type="tns:CancelSearchResponseType" />
+  <xsd:complexType name="CancelSearchResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Cancels a search that is currently being run.
+      See documentation for ExtensionType for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RegisterNotificationService" type="tns:RegisterNotificationServiceType" />
+  <xsd:complexType name="RegisterNotificationServiceType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for RegisterNotificationService request.  ServiceURL is the URL hosting the inewsnotification.wsdl 
+      implemented to process the callbacks.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="ServiceURL" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="RegisterNotificationServiceResponse" type="tns:RegisterNotificationServiceResponseType" />
+  <xsd:complexType name="RegisterNotificationServiceResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      The response to the service registration.  It will be empty.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:element name="RegisterNotificationServiceFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a RegisterNotificationService request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ConnectionFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+          An error that occurred estabilishing or using an iNEWS connection.
+          The Message contains a short description of the error.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="tns:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="ExtensionType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An extension element that allows for compatibility with future versions. This helps
+        allow Avid to extend future versions of the service without breaking existing clients.
+        This pattern is discussed by Dave Orchard in several articles, the best of which are:
+        http://www.pacificspirit.com/Authoring/Compatibility/ExaminingElementWildcardSiblings.html
+        http://www.xml.com/pub/a/2004/10/27/extend.html?page=4
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:any maxOccurs="unbounded" namespace="##targetNamespace" processContents="lax" />
+    </xsd:sequence>
+    <xsd:anyAttribute processContents="lax" />
+  </xsd:complexType>
+</xsd:schema>

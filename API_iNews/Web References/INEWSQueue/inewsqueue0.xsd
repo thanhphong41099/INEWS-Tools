@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:system="http://avid.com/inewssystem/types" xmlns:story="http://avid.com/inewsstory/types" xmlns:tns="http://avid.com/inewsqueue/types" elementFormDefault="qualified" targetNamespace="http://avid.com/inewsqueue/types" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewssystem.xsd" namespace="http://avid.com/inewssystem/types" />
+  <xsd:import schemaLocation="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewsstory.xsd" namespace="http://avid.com/inewsstory/types" />
+  <xsd:element name="SetCurrentQueue" type="tns:SetCurrentQueueType" />
+  <xsd:complexType name="SetCurrentQueueType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the SetCurrentQueue request.  QueueFullName is the full path to the queue on the iNEWS server.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SetCurrentQueueResponse" type="tns:SetCurrentQueueResponseType" />
+  <xsd:complexType name="SetCurrentQueueResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the SetCurrentQueue request.  See documentation for ExtensionType in inewssystem.xsd for description
+      of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="SetCurrentQueueFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a SetCurrentQueue request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetStories" type="tns:GetStoriesType" />
+  <xsd:complexType name="GetStoriesType">
+    <xsd:annotation>
+      <xsd:documentation>
+	   The parameters for a GetStories request.  NumberOfStoriesToGet is an integer number indication the number of 
+	   iNEWS stories to retrieve. IsStoryBodyIncluded is a boolean indicating whether the returned stories are to 
+	   include the story body or not.  Navigation indicates which direction to traverse the Queue: NEXT, PREV or SAME.  
+	   Same is to return the same stories the previous request fetched.
+	   </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="NumberOfStoriesToGet" type="xsd:int" />
+      <xsd:element name="IsStoryBodyIncluded" type="xsd:boolean" />
+      <xsd:element name="Navigation" type="tns:GetStoriesNavigationEnum" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetStoriesResponse" type="tns:GetStoriesResponseType" />
+  <xsd:complexType name="GetStoriesResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+        The response from a GetStories request.  StoriesAsNSML is a list of all the stories that the request returns.  
+        All of the stories are returned in CDATA blocks that contain the NSML for the story.  NSML parsing is the 
+        responsibility of the caller.  See documentation for ExtensionType in inewssystem.xsd for description of 
+        Extension's usage.
+        </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="Stories" type="story:StoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetStoriesFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetStories request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:simpleType name="GetStoriesNavigationEnum">
+    <xsd:annotation>
+      <xsd:documentation>
+          Navigation directions.  NEXT, PREV or SAME
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NEXT" />
+      <xsd:enumeration value="PREV" />
+      <xsd:enumeration value="SAME" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="HasNext" type="tns:HasNextType" />
+  <xsd:complexType name="HasNextType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the HasNext request.  
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:element name="HasNextResponse" type="tns:HasNextResponseType" />
+  <xsd:complexType name="HasNextResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the HasNext request.  See documentation for ExtensionType in inewssystem.xsd for description of 
+      Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="HasNext" type="xsd:boolean" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="HasNextFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a HasNext request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="HasPrevious" type="tns:HasPreviousType" />
+  <xsd:complexType name="HasPreviousType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the HasPrevious request.  
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:element name="HasPreviousResponse" type="tns:HasPreviousResponseType" />
+  <xsd:complexType name="HasPreviousResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the HasPrevious request.  See documentation for ExtensionType in inewssystem.xsd for description of 
+      Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="HasPrevious" type="xsd:boolean" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="HasPreviousFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a HasPrevious request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="CreateStory" type="tns:CreateStoryType" />
+  <xsd:complexType name="CreateStoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the CreateStory request.  NSML is the NSML for the new story and maintain edit lock specifies if 
+      the new story will be locked and set as the current story.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="NSML" type="xsd:string" />
+      <xsd:element minOccurs="1" maxOccurs="1" name="MaintainLock" type="xsd:boolean" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="CreateStoryResponse" type="tns:CreateStoryResponseType" />
+  <xsd:complexType name="CreateStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the CreateStory request.  NewStory contains the information about the story that was created.  The 
+      NSML returned may not be identical to the NSML provided as the server adds system information at the time of save.
+        
+      See documentation for ExtensionType in inewssystem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="NewStory" type="story:StoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="CreateStoryFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a CreateStory request.  
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetStory" type="tns:GetStoryType" />
+  <xsd:complexType name="GetStoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the GetStory request.  QueueFullName is the full path to the queue on the iNEWS server in which the story resides, QueueLocator is the reference to the
+      story of interest within the queue.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueFullName" type="xsd:string" />
+      <xsd:element name="QueueLocator" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetStoryResponse" type="tns:GetStoryResponseType" />
+  <xsd:complexType name="GetStoryResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the GetStory request.  See documentation for ExtensionType in inewssytem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Story" type="story:StoryType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetStoryFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetStory request.
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetAttributes" type="tns:GetAttributesType" />
+  <xsd:complexType name="GetAttributesType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the GetAttributes request.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="FullName" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetAttributesResponse" type="tns:GetAttributesResponseType" />
+  <xsd:complexType name="GetAttributesResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the GetAttributes request.  See documentation for ExtensionType in inewssytem.xsd for description of Extension's usage.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Attributes" type="tns:FolderAttributesType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetAttributesFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetAttributes request.
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="FolderAttributesType">
+    <xsd:annotation>
+      <xsd:documentation>
+                Contains all the attributes of the queue.
+            </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="FolderFullName" type="xsd:string" />
+      <xsd:element name="Inverted" type="xsd:boolean" />
+      <xsd:element name="Locked" type="xsd:boolean" />
+      <xsd:element name="PurgeLocked" type="xsd:boolean" />
+      <xsd:element name="Ordered" type="xsd:boolean" />
+      <xsd:element name="EditLocked" type="xsd:boolean" />
+      <xsd:element name="QueuePrintAuthorized" type="xsd:boolean" />
+      <xsd:element name="ReadOnly" type="xsd:boolean" />
+      <xsd:element name="Sequential" type="xsd:boolean" />
+      <xsd:element name="SkipOnBackup" type="xsd:boolean" />
+      <xsd:element name="SaveOriginalStory" type="xsd:boolean" />
+      <xsd:element name="SaveNoOtherVersionOfStory" type="xsd:boolean" />
+      <xsd:element name="BatchAllowed" type="xsd:boolean" />
+      <xsd:element name="ResolvedWritePermission" type="xsd:boolean" />
+      <xsd:element name="General" type="xsd:boolean" />
+      <xsd:element name="CanUpdate" type="xsd:boolean" />
+      <xsd:element name="Sorted" type="xsd:boolean" />
+      <xsd:element name="AutoRefresh" type="xsd:boolean" />
+      <xsd:element name="EasyLock" type="xsd:boolean" />
+      <xsd:element name="WireWatchAppends" type="xsd:boolean" />
+      <xsd:element name="EmbeddedFormAllowed" type="xsd:boolean" />
+      <xsd:element name="ProductionLock" type="xsd:boolean" />
+      <xsd:element name="Indexed" type="xsd:boolean" />
+      <xsd:element name="ShowsTextTimingClocks" type="xsd:boolean" />
+      <xsd:element name="Monitored" type="xsd:boolean" />
+      <xsd:element name="CanOrder" type="xsd:boolean" />
+      <xsd:element name="CanEnterRemove" type="xsd:boolean" />
+      <xsd:element name="CanKillAll" type="xsd:boolean" />
+      <xsd:element name="CanModifyProperties" type="xsd:boolean" />
+      <xsd:element name="CanOverrideUserLock" type="xsd:boolean" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetQueueRecords" type="tns:GetQueueRecordsType" />
+  <xsd:complexType name="GetQueueRecordsType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Parameters for the GetQueueRecords request.
+      NumberOfRecordsToGet is the number of records to request from the queue. Maximum number per request is 200.
+      Reset can be set to true to start over retrieving records from the beginning of the queue.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="NumberOfRecordsToGet" type="xsd:int" />
+      <xsd:element name="Reset" type="xsd:boolean" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetQueueRecordsResponse" type="tns:GetQueueRecordsResponseType" />
+  <xsd:complexType name="GetQueueRecordsResponseType">
+    <xsd:annotation>
+      <xsd:documentation>
+      Response from the GetQueueRecords request.  Includes a list of records from the queue.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="QueueRecord" type="tns:QueueRecordType" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="GetQueueRecordsFaultType">
+    <xsd:annotation>
+      <xsd:documentation>
+        An error that occurred during the processing of a GetQueueRecords request.
+        The Message contains a short description of the error.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Message" type="xsd:string" />
+        <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+        <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+      </xsd:sequence>
+      <xsd:anyAttribute processContents="lax" />
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="QueueRecordType">
+    <xsd:annotation>
+      <xsd:documentation>
+          A queue record.  Primarily used for comparison purposes to tell whether a story requires an update
+          because it has been modified by another client.  The MTime and StoryID should be compared to the
+          stories current MTime and StoryID.  If either has changed, the story should be refreshed.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="QueueLocator" type="xsd:string" />
+      <xsd:element name="StoryID" type="xsd:long" />
+      <xsd:element name="MTime" type="xsd:long" />
+      <xsd:element minOccurs="0" name="Extension" type="system:ExtensionType" />
+      <xsd:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="lax" />
+    </xsd:sequence>
+    <xsd:anyAttribute processContents="lax" />
+  </xsd:complexType>
+</xsd:schema>

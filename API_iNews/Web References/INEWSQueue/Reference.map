@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://localhost:8080/inewswebservice/services/inewsqueue?wsdl" filename="INEWSQueue.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewssystem.xsd" filename="inewsqueue.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewsqueue.xsd" filename="inewsqueue0.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://localhost:8080/inewswebservice/services/inewsqueue?xsd=inewsstory.xsd" filename="inewsqueue1.xsd" />
+  </Results>
+</DiscoveryClientResultsFile>
