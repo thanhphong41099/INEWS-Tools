@@ -1,25 +1,11 @@
-# 🧱 Kiến trúc hệ thống News2025 (WinForms App)
+# API_iNews
 
-## 📦 Cấu trúc thư mục
+Ứng dụng WinForms kết nối tới máy chủ iNews để truy xuất dữ liệu và vận hành các dịch vụ API.
 
+## Cấu hình
 
----
+Các thông số kết nối và đường dẫn được cấu hình trong `API_iNews/app.config`. Ứng dụng đọc trực tiếp từ `appSettings` thông qua `ConfigurationManager.AppSettings`.
 
-## 🏗️ Kiến trúc lớp tổng thể
+## Chạy ứng dụng
 
-```text
-┌────────────────────────────┐
-│         UI Layer           │
-│ (frmMain, frmTroiTinTuc...)│
-└────────────────────────────┘
-              │
-              ▼
-┌────────────────────────────┐
-│      Service Layer         │
-│ (KarismaModel, CG3Model)   │
-└────────────────────────────┘
-              │
-              ▼
-┌────────────────────────────┐
-│ External CG SDKs (KAEngine)│
-└────────────────────────────┘
+Mở solution `News2025.sln` trong Visual Studio và thiết lập `API_iNews` làm startup project. Khi chạy, ứng dụng mở trực tiếp form `API` để thao tác với dữ liệu từ iNews.

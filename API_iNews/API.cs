@@ -23,19 +23,23 @@ namespace API_iNews
     {
         private ServerAPI server;
         private string Content = string.Empty;
-        NameValueCollection AppConfig = (NameValueCollection)ConfigurationManager.GetSection("NewslineSettings");
+        private readonly NameValueCollection appSettings;
         string workingFolder = string.Empty;
         public string selectedName = string.Empty;
         DataTable tbl;
 
-        public API(NameValueCollection customConfig = null)
+        public API()
         {
             InitializeComponent();
 
-            // Nếu có truyền config → dùng, không thì lấy mặc định
-            AppConfig = customConfig ?? (NameValueCollection)ConfigurationManager.GetSection("NewslineSettings");
+            appSettings = ConfigurationManager.AppSettings;
 
-            workingFolder = AppConfig["WorkingFolder"];
+            workingFolder = GetAppSetting("WorkingFolder");
+        }
+
+        private string GetAppSetting(string key)
+        {
+            return appSettings[key] ?? string.Empty;
         }
 
         string QUEUEROOT = "CHO_DUYET_PHONG";
@@ -303,7 +307,8 @@ namespace API_iNews
                 txtRuttitCG.Text = Content;
 
                 //Xuất nội dung Content ra file ruttit.txt
-                string ruttitPath = Path.Combine(workingFolder, AppConfig["Ruttit"]);
+                string ruttitSetting = GetAppSetting("Ruttit");
+                string ruttitPath = Path.Combine(workingFolder, ruttitSetting);
                 try
                 {
                     File.WriteAllText(ruttitPath, Content, Encoding.UTF8);
@@ -386,7 +391,7 @@ namespace API_iNews
             txtDiadanh.Text = string.Join("\r\n", locations);
 
             // Đọc đường dẫn lưu từ config
-            string outPath = Path.Combine(workingFolder, AppConfig["Diadanh"]);
+            string outPath = Path.Combine(workingFolder, GetAppSetting("Diadanh"));
 
             try
             {
@@ -404,7 +409,7 @@ namespace API_iNews
                 return;
             }
 
-            string phudePath = Path.Combine(workingFolder, AppConfig["Phude"]);
+            string phudePath = Path.Combine(workingFolder, GetAppSetting("Phude"));
             if (string.IsNullOrWhiteSpace(phudePath))
             {
                 MessageBox.Show("Không tìm thấy đường dẫn lưu file phude.txt trong cấu hình!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -474,8 +479,8 @@ namespace API_iNews
         {
             try
             {
-                string pathTroiTin = Path.Combine(workingFolder, AppConfig["TroiTin"]);
-                string pathTroiCuoi = Path.Combine(workingFolder, AppConfig["TroiCuoi"]);
+                string pathTroiTin = Path.Combine(workingFolder, GetAppSetting("TroiTin"));
+                string pathTroiCuoi = Path.Combine(workingFolder, GetAppSetting("TroiCuoi"));
                 if (string.IsNullOrWhiteSpace(pathTroiTin))
                 {
                     MessageBox.Show("Không tìm thấy đường dẫn lưu file TroiTin.txt trong cấu hình!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -607,7 +612,7 @@ namespace API_iNews
             // Chạy các thao tác blocking trên background thread
             await Task.Run(() =>
             {
-                workingFolder = AppConfig["WorkingFolder"];
+                workingFolder = GetAppSetting("WorkingFolder");
 
                 // Khởi tạo server
                 server = new ServerAPI(serverIP);
