@@ -13,6 +13,7 @@ using System.Reflection.Emit;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TTDH;
@@ -22,6 +23,8 @@ namespace API_iNews
     public partial class API : Form
     {
         private ServerAPI server;
+        private CancellationTokenSource exportCancellationTokenSource;
+        private volatile bool isExportInProgress;
         private string Content = string.Empty;
         private readonly NameValueCollection appSettings;
         string workingFolder = string.Empty;
@@ -58,6 +61,9 @@ namespace API_iNews
             // Dừng server khi đóng form
             server?.Stop();
             iData?.DisconnectAsync();
+            exportCancellationTokenSource?.Cancel();
+            exportCancellationTokenSource?.Dispose();
+            exportCancellationTokenSource = null;
         }
         private void Display(List<string> queues)
         {
@@ -795,50 +801,114 @@ namespace API_iNews
         int i = 0;
         private async void btnExportAllRawContent_Click(object sender, EventArgs e)
         {
+            await ExportAllRawContentAsync(true);
+        }
+
+        private async Task ExportAllRawContentAsync(bool showCompletionDialog)
+        {
+            if (isExportInProgress)
+            {
+                string busyMessage = "Đang xử lý yêu cầu xuất khác...";
+                toolStripStatusLabel1.Text = busyMessage;
+                toolStripStatusLabelExport.Text = busyMessage;
+                return;
+            }
+
+            if (iData == null)
+            {
+                string message = "Chưa kết nối được tới iNews. Vui lòng tải lại dữ liệu trước khi xuất.";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show(message,
+                                    "Thông báo",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                }
+                return;
+            }
+
+            if (string.IsNullOrEmpty(QUEUEROOT))
+            {
+                string message = "Không có dữ liệu QUEUEROOT để xuất.";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show(message,
+                                    "Thông báo",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                }
+                return;
+            }
+
+            exportCancellationTokenSource?.Cancel();
+            exportCancellationTokenSource?.Dispose();
+            exportCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = exportCancellationTokenSource.Token;
+
+            isExportInProgress = true;
+            btnExportAllRawContent.Enabled = false;
+            Cursor = Cursors.WaitCursor;
+
+            string preparingMessage = "Đang kiểm tra dữ liệu trước khi xuất...";
+            toolStripStatusLabel1.Text = preparingMessage;
+            toolStripStatusLabelExport.Text = preparingMessage;
+
             try
             {
-                string preparingMessage = "Đang kiểm tra dữ liệu trước khi xuất...";
-                toolStripStatusLabel1.Text = preparingMessage;
-                toolStripStatusLabelExport.Text = preparingMessage;
+                List<string> folders = await Task.Run(() => iData.GetFolderChildren(QUEUEROOT), cancellationToken);
 
-                // Kiểm tra có QUEUEROOT không
-                if (string.IsNullOrEmpty(QUEUEROOT))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    string message = "Không có dữ liệu QUEUEROOT để xuất.";
-                    toolStripStatusLabel1.Text = message;
-                    toolStripStatusLabelExport.Text = message;
-                    MessageBox.Show(message,
-                                  "Thông báo",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
                     return;
                 }
-                // Lấy danh sách folder con cấp 1
-                List<string> folders = iData.GetFolderChildren(QUEUEROOT);
 
-                // Nếu không có thư mục con, trả về thông báo hoặc chuỗi rỗng
                 if (folders == null || folders.Count == 0)
                 {
                     string message = "Không có dữ liệu nào để xuất.";
                     toolStripStatusLabel1.Text = message;
                     toolStripStatusLabelExport.Text = message;
-                    MessageBox.Show(message,
-                                  "Thông báo",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
+                    if (showCompletionDialog)
+                    {
+                        MessageBox.Show(message,
+                                        "Thông báo",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Warning);
+                    }
                     return;
                 }
-
-                // Vô hiệu hóa nút và hiển thị trạng thái
-                btnExportAllRawContent.Enabled = false;
-                Cursor = Cursors.WaitCursor;
 
                 string exportingMessage = "Đang xuất tất cả content gốc...";
                 toolStripStatusLabel1.Text = exportingMessage;
                 toolStripStatusLabelExport.Text = exportingMessage;
 
-                // Thực hiện xuất dữ liệu
-                string result = await ExportAllContentAsync(QUEUEROOT);
+                string result = await ExportAllContentAsync(QUEUEROOT, folders, cancellationToken);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    string cancelMessage = "Quá trình xuất đã được hủy.";
+                    toolStripStatusLabel1.Text = cancelMessage;
+                    toolStripStatusLabelExport.Text = cancelMessage;
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    string message = "Không tìm thấy nội dung hợp lệ để xuất.";
+                    toolStripStatusLabel1.Text = message;
+                    toolStripStatusLabelExport.Text = message;
+                    if (showCompletionDialog)
+                    {
+                        MessageBox.Show(message,
+                                        "Thông báo",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                    }
+                    return;
+                }
 
                 string exportFolder = Path.GetDirectoryName(fileExport);
                 if (!string.IsNullOrEmpty(exportFolder) && !Directory.Exists(exportFolder))
@@ -846,7 +916,6 @@ namespace API_iNews
                     Directory.CreateDirectory(exportFolder);
                 }
 
-                // Ghi file với UTF-8 encoding (không BOM)
                 System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
                 File.WriteAllText(fileExport, result, utf8WithoutBom);
 
@@ -854,79 +923,106 @@ namespace API_iNews
                 toolStripStatusLabel1.Text = successMessage;
                 toolStripStatusLabelExport.Text = successMessage;
 
-                // Thông báo thành công
-                MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {fileExport}",
-                              "Thành công",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Information);
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {fileExport}",
+                                    "Thành công",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                string message = "Quá trình xuất đã được hủy.";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
             }
             catch (UnauthorizedAccessException)
             {
                 string message = "Không có quyền ghi vào đường dẫn đã cấu hình.";
                 toolStripStatusLabel1.Text = message;
                 toolStripStatusLabelExport.Text = message;
-                MessageBox.Show(message,
-                              "Lỗi quyền truy cập",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show(message,
+                                    "Lỗi quyền truy cập",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
             }
             catch (DirectoryNotFoundException)
             {
                 string message = "Không tìm thấy thư mục để lưu file đã cấu hình.";
                 toolStripStatusLabel1.Text = message;
                 toolStripStatusLabelExport.Text = message;
-                MessageBox.Show(message,
-                              "Lỗi",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show(message,
+                                    "Lỗi",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
                 string message = $"Có lỗi xảy ra khi xuất file: {ex.Message}";
                 toolStripStatusLabel1.Text = message;
                 toolStripStatusLabelExport.Text = message;
-                MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}",
-                              "Lỗi",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
+                if (showCompletionDialog)
+                {
+                    MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}",
+                                    "Lỗi",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
             }
             finally
             {
-                btnExportAllRawContent.Enabled = true;
                 Cursor = Cursors.Default;
+                btnExportAllRawContent.Enabled = true;
+                isExportInProgress = false;
+                exportCancellationTokenSource?.Dispose();
+                exportCancellationTokenSource = null;
+                if (!timer1.Enabled && label2.Text.StartsWith("Đang dừng"))
+                {
+                    label2.Text = "Đã dừng!";
+                }
             }
         }
 
-        private async Task<string> ExportAllContentAsync(string rootName)
+        private async Task<string> ExportAllContentAsync(string rootName, List<string> folders, CancellationToken cancellationToken)
         {
             return await Task.Run(() =>
             {
                 StringBuilder allContent = new StringBuilder();
 
-                // Lấy danh sách folder con cấp 1
-                List<string> folders = iData.GetFolderChildren(rootName);
-
+                folders = folders ?? new List<string>();
                 int totalFolders = folders.Count;
                 int currentFolder = 0;
 
                 foreach (string folder in folders)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     currentFolder++;
                     string folderPath = rootName + "." + folder;
 
                     // Cập nhật status trên UI thread
                     this.BeginInvoke(new Action(() =>
                     {
-                        string progressMessage = $"Đang xử lý {folder} ({currentFolder}/{totalFolders})...";
-                        toolStripStatusLabel1.Text = progressMessage;
-                        toolStripStatusLabelExport.Text = progressMessage;
+                        if (!IsDisposed && !cancellationToken.IsCancellationRequested)
+                        {
+                            string progressMessage = $"Đang xử lý {folder} ({currentFolder}/{totalFolders})...";
+                            toolStripStatusLabel1.Text = progressMessage;
+                            toolStripStatusLabelExport.Text = progressMessage;
+                        }
                     }));
 
                     // Lấy danh sách file con cấp 2
-                    List<string> files = iData.GetFolderChildren(folderPath);
+                    List<string> files = iData != null ? iData.GetFolderChildren(folderPath) : new List<string>();
 
                     foreach (string file in files)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         // BỎ QUA FILE RUNDOWN (case insensitive)
                         if (file.IndexOf("rundown", StringComparison.OrdinalIgnoreCase) >= 0)
                             continue;
@@ -936,7 +1032,7 @@ namespace API_iNews
                         try
                         {
                             // Lấy stories của file
-                            List<string> stories = iData.GetStoriesBoard(filePath);
+                            List<string> stories = iData != null ? iData.GetStoriesBoard(filePath) : new List<string>();
 
                             // BỎ QUA NẾU KHÔNG CÓ STORIES
                             if (stories == null || stories.Count == 0)
@@ -990,6 +1086,10 @@ namespace API_iNews
                             allContent.AppendLine("=====================================");
                             allContent.AppendLine();
                         }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
                         catch (Exception ex)
                         {
                             // Log lỗi nhưng tiếp tục xử lý file khác
@@ -1003,7 +1103,7 @@ namespace API_iNews
                 }
 
                 return allContent.ToString();
-            });
+            }, cancellationToken);
         }
 
         int totalSeconds = 0;   // Tổng thời gian gốc nhập vào
@@ -1036,17 +1136,26 @@ namespace API_iNews
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             txtSetTime.Enabled = true;
-            label2.Text = "Đã dừng!";
+            exportCancellationTokenSource?.Cancel();
+            label2.Text = isExportInProgress ? "Đang dừng quá trình xuất..." : "Đã dừng!";
+            toolStripStatusLabel1.Text = "Đã dừng chạy tự động.";
+            toolStripStatusLabelExport.Text = "Đã dừng chạy tự động.";
         }
 
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
+            if (isExportInProgress)
+            {
+                toolStripStatusLabelExport.Text = "Đang xuất dữ liệu, vui lòng chờ hoàn tất...";
+                return;
+            }
+
             currentSeconds--;
 
             if (currentSeconds <= 0)
             {
-                btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
+                await ExportAllRawContentAsync(false); // Xuất file khi hết thời gian
                 currentSeconds = totalSeconds;         // Reset lại về đúng số giây thiết lập
                 ShowTime();                            // Hiển thị lại toàn bộ thời gian
                 return;                                // Thoát khỏi hàm, không chạy tiếp bên dưới!
