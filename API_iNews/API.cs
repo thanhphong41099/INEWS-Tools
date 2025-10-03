@@ -80,12 +80,24 @@ namespace API_iNews
 
         private void Server_Recieve(string msg)
         {
-            toolStripStatusLabel1.Text = msg;
+            UpdateExportStatus(msg);
         }
 
         void iData_SentError(string msg)
         {
-            toolStripStatusLabel1.Text = msg;
+            UpdateExportStatus(msg);
+        }
+
+        private void UpdateExportStatus(string message)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => UpdateExportStatus(message)));
+                return;
+            }
+
+            toolStripStatusLabel1.Text = message;
+            toolStripStatusLabelExport.Text = message;
         }
         public async Task LoadTreeStoriesAsync(TreeView tree, string nodeNames)
         {
@@ -607,35 +619,39 @@ namespace API_iNews
         {
             string serverIP = System.Configuration.ConfigurationManager.AppSettings["ServerIP"];
 
-            // Hiển thị thông báo đang kết nối với IP cụ thể
-            toolStripStatusLabel1.Text = $"Đang kết nối đến server {serverIP}...";
+            UpdateExportStatus($"Đang kết nối đến server {serverIP}...");
 
-            // Chạy các thao tác blocking trên background thread
-            await Task.Run(() =>
+            try
             {
-                workingFolder = GetAppSetting("WorkingFolder");
+                await Task.Run(() =>
+                {
+                    workingFolder = GetAppSetting("WorkingFolder");
 
-                // Khởi tạo server
-                server = new ServerAPI(serverIP);
-                server.Recieve += Server_Recieve;
-                server.Start();
+                    server = new ServerAPI(serverIP);
+                    server.Recieve += Server_Recieve;
+                    server.Start();
 
-                // Cấu hình iNews settings
-                QUEUEROOT = System.Configuration.ConfigurationManager.AppSettings["QueuesRoot"];
-                queueChild = System.Configuration.ConfigurationManager.AppSettings["QueuesChild"];
-                settings.ServerName = System.Configuration.ConfigurationManager.AppSettings["iNewsServer"];
-                settings.ServerBackup = System.Configuration.ConfigurationManager.AppSettings["iNewsServerBackup"];
-                settings.UserName = System.Configuration.ConfigurationManager.AppSettings["iNewsUser"];
-                settings.Password = System.Configuration.ConfigurationManager.AppSettings["iNewsPass"];
-                fileExport = System.Configuration.ConfigurationManager.AppSettings["FileExport"];
-                
-                // Khởi tạo iNewsData
-                iData = new iNewsData(settings);
-                iData.SentError += new iNewsData.SendError(iData_SentError);
-            });
+                    QUEUEROOT = System.Configuration.ConfigurationManager.AppSettings["QueuesRoot"];
+                    queueChild = System.Configuration.ConfigurationManager.AppSettings["QueuesChild"];
+                    settings.ServerName = System.Configuration.ConfigurationManager.AppSettings["iNewsServer"];
+                    settings.ServerBackup = System.Configuration.ConfigurationManager.AppSettings["iNewsServerBackup"];
+                    settings.UserName = System.Configuration.ConfigurationManager.AppSettings["iNewsUser"];
+                    settings.Password = System.Configuration.ConfigurationManager.AppSettings["iNewsPass"];
+                    fileExport = System.Configuration.ConfigurationManager.AppSettings["FileExport"];
 
-            // Cập nhật UI và load tree data - thông báo sẽ được cập nhật qua Server_Recieve event
-            await LoadTreeQueuesAsync();
+                    iData = new iNewsData(settings);
+                    iData.SentError += new iNewsData.SendError(iData_SentError);
+                });
+
+                UpdateExportStatus($"Đã kết nối đến server {serverIP}.");
+
+                await LoadTreeQueuesAsync();
+            }
+            catch (Exception ex)
+            {
+                UpdateExportStatus($"Không thể kết nối server {serverIP}: {ex.Message}");
+                MessageBox.Show($"Không thể kết nối đến server API:\n{ex.Message}", "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void ClearData()
@@ -795,33 +811,27 @@ namespace API_iNews
         int i = 0;
         private async void btnExportAllRawContent_Click(object sender, EventArgs e)
         {
+            string preparingMessage = "Đang kiểm tra dữ liệu trước khi xuất...";
+
             try
             {
-                string preparingMessage = "Đang kiểm tra dữ liệu trước khi xuất...";
-                toolStripStatusLabel1.Text = preparingMessage;
-                toolStripStatusLabelExport.Text = preparingMessage;
+                UpdateExportStatus(preparingMessage);
 
-                // Kiểm tra có QUEUEROOT không
+                if (iData == null)
+                {
+                    string message = "Chưa kết nối đến iNews Server.";
+                    UpdateExportStatus(message);
+                    MessageBox.Show(message,
+                                  "Thông báo",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Warning);
+                    return;
+                }
+
                 if (string.IsNullOrEmpty(QUEUEROOT))
                 {
                     string message = "Không có dữ liệu QUEUEROOT để xuất.";
-                    toolStripStatusLabel1.Text = message;
-                    toolStripStatusLabelExport.Text = message;
-                    MessageBox.Show(message,
-                                  "Thông báo",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Warning);
-                    return;
-                }
-                // Lấy danh sách folder con cấp 1
-                List<string> folders = iData.GetFolderChildren(QUEUEROOT);
-
-                // Nếu không có thư mục con, trả về thông báo hoặc chuỗi rỗng
-                if (folders == null || folders.Count == 0)
-                {
-                    string message = "Không có dữ liệu nào để xuất.";
-                    toolStripStatusLabel1.Text = message;
-                    toolStripStatusLabelExport.Text = message;
+                    UpdateExportStatus(message);
                     MessageBox.Show(message,
                                   "Thông báo",
                                   MessageBoxButtons.OK,
@@ -829,32 +839,76 @@ namespace API_iNews
                     return;
                 }
 
-                // Vô hiệu hóa nút và hiển thị trạng thái
                 btnExportAllRawContent.Enabled = false;
                 Cursor = Cursors.WaitCursor;
 
-                string exportingMessage = "Đang xuất tất cả content gốc...";
-                toolStripStatusLabel1.Text = exportingMessage;
-                toolStripStatusLabelExport.Text = exportingMessage;
-
-                // Thực hiện xuất dữ liệu
-                string result = await ExportAllContentAsync(QUEUEROOT);
-
-                string exportFolder = Path.GetDirectoryName(fileExport);
-                if (!string.IsNullOrEmpty(exportFolder) && !Directory.Exists(exportFolder))
+                Exception folderException = null;
+                List<string> folders = await Task.Run(() =>
                 {
-                    Directory.CreateDirectory(exportFolder);
+                    try
+                    {
+                        return iData.GetFolderChildren(QUEUEROOT);
+                    }
+                    catch (Exception ex)
+                    {
+                        folderException = ex;
+                        return null;
+                    }
+                });
+
+                if (folderException != null)
+                {
+                    string message = $"Lỗi khi lấy danh sách dữ liệu: {folderException.Message}";
+                    UpdateExportStatus(message);
+                    MessageBox.Show(message,
+                                  "Lỗi",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Error);
+                    return;
                 }
 
-                // Ghi file với UTF-8 encoding (không BOM)
-                System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
-                File.WriteAllText(fileExport, result, utf8WithoutBom);
+                if (folders == null || folders.Count == 0)
+                {
+                    string message = "Không có dữ liệu nào để xuất.";
+                    UpdateExportStatus(message);
+                    MessageBox.Show(message,
+                                  "Thông báo",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string exportingMessage = "Đang xuất tất cả content gốc...";
+                UpdateExportStatus(exportingMessage);
+
+                string result = await ExportAllContentAsync(QUEUEROOT, folders);
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    string message = "Không có nội dung hợp lệ để xuất.";
+                    UpdateExportStatus(message);
+                    MessageBox.Show(message,
+                                  "Thông báo",
+                                  MessageBoxButtons.OK,
+                                  MessageBoxIcon.Information);
+                    return;
+                }
+
+                await Task.Run(() =>
+                {
+                    string exportFolder = Path.GetDirectoryName(fileExport);
+                    if (!string.IsNullOrEmpty(exportFolder) && !Directory.Exists(exportFolder))
+                    {
+                        Directory.CreateDirectory(exportFolder);
+                    }
+
+                    System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
+                    File.WriteAllText(fileExport, result, utf8WithoutBom);
+                });
 
                 string successMessage = $"Xuất file thành công: {fileExport}";
-                toolStripStatusLabel1.Text = successMessage;
-                toolStripStatusLabelExport.Text = successMessage;
+                UpdateExportStatus(successMessage);
 
-                // Thông báo thành công
                 MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {fileExport}",
                               "Thành công",
                               MessageBoxButtons.OK,
@@ -863,8 +917,7 @@ namespace API_iNews
             catch (UnauthorizedAccessException)
             {
                 string message = "Không có quyền ghi vào đường dẫn đã cấu hình.";
-                toolStripStatusLabel1.Text = message;
-                toolStripStatusLabelExport.Text = message;
+                UpdateExportStatus(message);
                 MessageBox.Show(message,
                               "Lỗi quyền truy cập",
                               MessageBoxButtons.OK,
@@ -873,8 +926,7 @@ namespace API_iNews
             catch (DirectoryNotFoundException)
             {
                 string message = "Không tìm thấy thư mục để lưu file đã cấu hình.";
-                toolStripStatusLabel1.Text = message;
-                toolStripStatusLabelExport.Text = message;
+                UpdateExportStatus(message);
                 MessageBox.Show(message,
                               "Lỗi",
                               MessageBoxButtons.OK,
@@ -883,8 +935,7 @@ namespace API_iNews
             catch (Exception ex)
             {
                 string message = $"Có lỗi xảy ra khi xuất file: {ex.Message}";
-                toolStripStatusLabel1.Text = message;
-                toolStripStatusLabelExport.Text = message;
+                UpdateExportStatus(message);
                 MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}",
                               "Lỗi",
                               MessageBoxButtons.OK,
@@ -894,17 +945,26 @@ namespace API_iNews
             {
                 btnExportAllRawContent.Enabled = true;
                 Cursor = Cursors.Default;
+
+                if (toolStripStatusLabel1.Text == preparingMessage)
+                {
+                    UpdateExportStatus("Sẵn sàng xuất dữ liệu.");
+                }
             }
         }
 
-        private async Task<string> ExportAllContentAsync(string rootName)
+        private async Task<string> ExportAllContentAsync(string rootName, List<string> rootFolders = null)
         {
             return await Task.Run(() =>
             {
                 StringBuilder allContent = new StringBuilder();
 
-                // Lấy danh sách folder con cấp 1
-                List<string> folders = iData.GetFolderChildren(rootName);
+                List<string> folders = rootFolders ?? iData.GetFolderChildren(rootName);
+
+                if (folders == null || folders.Count == 0)
+                {
+                    return string.Empty;
+                }
 
                 int totalFolders = folders.Count;
                 int currentFolder = 0;
@@ -914,16 +974,10 @@ namespace API_iNews
                     currentFolder++;
                     string folderPath = rootName + "." + folder;
 
-                    // Cập nhật status trên UI thread
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        string progressMessage = $"Đang xử lý {folder} ({currentFolder}/{totalFolders})...";
-                        toolStripStatusLabel1.Text = progressMessage;
-                        toolStripStatusLabelExport.Text = progressMessage;
-                    }));
+                    UpdateExportStatus($"Đang xử lý {folder} ({currentFolder}/{totalFolders})...");
 
                     // Lấy danh sách file con cấp 2
-                    List<string> files = iData.GetFolderChildren(folderPath);
+                    List<string> files = iData.GetFolderChildren(folderPath) ?? new List<string>();
 
                     foreach (string file in files)
                     {
@@ -1023,6 +1077,7 @@ namespace API_iNews
                 timer1.Start();
 
                 ShowTime(); // Hiển thị ngay số giây đầu vào
+                UpdateExportStatus($"Đã bật tự động xuất mỗi {totalSeconds} giây.");
             }
             else
             {
@@ -1037,12 +1092,18 @@ namespace API_iNews
             btnStop.Enabled = false;
             txtSetTime.Enabled = true;
             label2.Text = "Đã dừng!";
+            UpdateExportStatus("Đã dừng tự động xuất.");
         }
 
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             currentSeconds--;
+
+            if (currentSeconds > 0)
+            {
+                UpdateExportStatus($"Còn {currentSeconds} giây sẽ tự động xuất.");
+            }
 
             if (currentSeconds <= 0)
             {
