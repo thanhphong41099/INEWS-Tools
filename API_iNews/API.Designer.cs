@@ -31,6 +31,13 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.statusStripExport = new System.Windows.Forms.StatusStrip();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.lbTime = new System.Windows.Forms.Label();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtSetTime = new System.Windows.Forms.TextBox();
             this.btnExportAllRawContent = new System.Windows.Forms.Button();
             this.btnExportContentRaw = new System.Windows.Forms.Button();
             this.btnGetStory = new System.Windows.Forms.Button();
@@ -57,21 +64,14 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtSetTime = new System.Windows.Forms.TextBox();
-            this.lbTime = new System.Windows.Forms.Label();
-            this.statusStripExport = new System.Windows.Forms.StatusStrip();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -101,6 +101,83 @@
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // statusStripExport
+            // 
+            this.statusStripExport.Location = new System.Drawing.Point(0, 703);
+            this.statusStripExport.Name = "statusStripExport";
+            this.statusStripExport.Size = new System.Drawing.Size(402, 22);
+            this.statusStripExport.TabIndex = 39;
+            this.statusStripExport.Text = "statusStrip2";
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Controls.Add(this.lbTime);
+            this.panel2.Controls.Add(this.btnStart);
+            this.panel2.Controls.Add(this.btnStop);
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.txtSetTime);
+            this.panel2.Location = new System.Drawing.Point(10, 512);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(384, 81);
+            this.panel2.TabIndex = 38;
+            // 
+            // lbTime
+            // 
+            this.lbTime.AutoSize = true;
+            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.lbTime.Location = new System.Drawing.Point(21, 17);
+            this.lbTime.Name = "lbTime";
+            this.lbTime.Size = new System.Drawing.Size(64, 18);
+            this.lbTime.TabIndex = 42;
+            this.lbTime.Text = "00:00:00";
+            // 
+            // btnStart
+            // 
+            this.btnStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnStart.FlatAppearance.BorderSize = 2;
+            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStart.Location = new System.Drawing.Point(298, 41);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(77, 27);
+            this.btnStart.TabIndex = 41;
+            this.btnStart.Text = "START";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Enabled = false;
+            this.btnStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnStop.FlatAppearance.BorderSize = 2;
+            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStop.Location = new System.Drawing.Point(217, 41);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(77, 27);
+            this.btnStop.TabIndex = 40;
+            this.btnStop.Text = "STOP";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.label8.Location = new System.Drawing.Point(121, 44);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 18);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "giây (s)";
+            // 
+            // txtSetTime
+            // 
+            this.txtSetTime.Location = new System.Drawing.Point(19, 43);
+            this.txtSetTime.Name = "txtSetTime";
+            this.txtSetTime.Size = new System.Drawing.Size(100, 20);
+            this.txtSetTime.TabIndex = 38;
             // 
             // btnExportAllRawContent
             // 
@@ -204,14 +281,14 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1219, 779);
+            this.panel1.Size = new System.Drawing.Size(92, 96);
             this.panel1.TabIndex = 0;
             // 
             // btnThoat
             // 
             this.btnThoat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnThoat.Location = new System.Drawing.Point(748, 725);
+            this.btnThoat.Location = new System.Drawing.Point(748, 42);
             this.btnThoat.Margin = new System.Windows.Forms.Padding(2);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(89, 30);
@@ -225,12 +302,12 @@
             this.txtContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtContent.Location = new System.Drawing.Point(4, 568);
+            this.txtContent.Location = new System.Drawing.Point(4, -115);
             this.txtContent.Margin = new System.Windows.Forms.Padding(4);
             this.txtContent.Multiline = true;
             this.txtContent.Name = "txtContent";
             this.txtContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtContent.Size = new System.Drawing.Size(829, 151);
+            this.txtContent.Size = new System.Drawing.Size(0, 151);
             this.txtContent.TabIndex = 30;
             // 
             // label1
@@ -238,7 +315,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label1.Location = new System.Drawing.Point(844, 571);
+            this.label1.Location = new System.Drawing.Point(-283, 571);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 18);
             this.label1.TabIndex = 29;
@@ -248,7 +325,7 @@
             // 
             this.txtDiadanh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDiadanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtDiadanh.Location = new System.Drawing.Point(842, 596);
+            this.txtDiadanh.Location = new System.Drawing.Point(-285, 596);
             this.txtDiadanh.Margin = new System.Windows.Forms.Padding(4);
             this.txtDiadanh.Multiline = true;
             this.txtDiadanh.Name = "txtDiadanh";
@@ -261,7 +338,7 @@
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label7.Location = new System.Drawing.Point(844, 449);
+            this.label7.Location = new System.Drawing.Point(-283, 449);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(227, 18);
             this.label7.TabIndex = 25;
@@ -271,7 +348,7 @@
             // 
             this.txtTroiCuoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTroiCuoi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtTroiCuoi.Location = new System.Drawing.Point(842, 474);
+            this.txtTroiCuoi.Location = new System.Drawing.Point(-285, 474);
             this.txtTroiCuoi.Margin = new System.Windows.Forms.Padding(4);
             this.txtTroiCuoi.Multiline = true;
             this.txtTroiCuoi.Name = "txtTroiCuoi";
@@ -284,7 +361,7 @@
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label6.Location = new System.Drawing.Point(840, 321);
+            this.label6.Location = new System.Drawing.Point(-287, 321);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(244, 18);
             this.label6.TabIndex = 23;
@@ -294,7 +371,7 @@
             // 
             this.txtTroiTin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTroiTin.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtTroiTin.Location = new System.Drawing.Point(843, 343);
+            this.txtTroiTin.Location = new System.Drawing.Point(-284, 343);
             this.txtTroiTin.Margin = new System.Windows.Forms.Padding(4);
             this.txtTroiTin.Multiline = true;
             this.txtTroiTin.Name = "txtTroiTin";
@@ -306,7 +383,7 @@
             // 
             this.txtRuttitCG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRuttitCG.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.txtRuttitCG.Location = new System.Drawing.Point(843, 46);
+            this.txtRuttitCG.Location = new System.Drawing.Point(-284, 46);
             this.txtRuttitCG.Margin = new System.Windows.Forms.Padding(4);
             this.txtRuttitCG.Multiline = true;
             this.txtRuttitCG.Name = "txtRuttitCG";
@@ -319,7 +396,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label5.Location = new System.Drawing.Point(847, 18);
+            this.label5.Location = new System.Drawing.Point(-280, 18);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(155, 18);
             this.label5.TabIndex = 12;
@@ -339,7 +416,7 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button2.Location = new System.Drawing.Point(211, 725);
+            this.button2.Location = new System.Drawing.Point(211, 42);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(174, 30);
@@ -352,7 +429,7 @@
             // 
             this.btnXuatTroiTin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnXuatTroiTin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnXuatTroiTin.Location = new System.Drawing.Point(23, 725);
+            this.btnXuatTroiTin.Location = new System.Drawing.Point(23, 42);
             this.btnXuatTroiTin.Margin = new System.Windows.Forms.Padding(2);
             this.btnXuatTroiTin.Name = "btnXuatTroiTin";
             this.btnXuatTroiTin.Size = new System.Drawing.Size(174, 30);
@@ -367,10 +444,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 757);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 74);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1219, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(92, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -396,90 +473,13 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(831, 512);
+            this.dataGridView1.Size = new System.Drawing.Size(0, 0);
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // panel2
-            // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel2.Controls.Add(this.lbTime);
-            this.panel2.Controls.Add(this.btnStart);
-            this.panel2.Controls.Add(this.btnStop);
-            this.panel2.Controls.Add(this.label8);
-            this.panel2.Controls.Add(this.txtSetTime);
-            this.panel2.Location = new System.Drawing.Point(10, 512);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(384, 81);
-            this.panel2.TabIndex = 38;
-            // 
-            // btnStart
-            // 
-            this.btnStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnStart.FlatAppearance.BorderSize = 2;
-            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStart.Location = new System.Drawing.Point(298, 41);
-            this.btnStart.Margin = new System.Windows.Forms.Padding(2);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(77, 27);
-            this.btnStart.TabIndex = 41;
-            this.btnStart.Text = "START";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
-            // btnStop
-            // 
-            this.btnStop.Enabled = false;
-            this.btnStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnStop.FlatAppearance.BorderSize = 2;
-            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStop.Location = new System.Drawing.Point(217, 41);
-            this.btnStop.Margin = new System.Windows.Forms.Padding(2);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(77, 27);
-            this.btnStop.TabIndex = 40;
-            this.btnStop.Text = "STOP";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label8.Location = new System.Drawing.Point(121, 44);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(56, 18);
-            this.label8.TabIndex = 39;
-            this.label8.Text = "giây (s)";
-            // 
-            // txtSetTime
-            // 
-            this.txtSetTime.Location = new System.Drawing.Point(19, 43);
-            this.txtSetTime.Name = "txtSetTime";
-            this.txtSetTime.Size = new System.Drawing.Size(100, 20);
-            this.txtSetTime.TabIndex = 38;
-            // 
-            // lbTime
-            // 
-            this.lbTime.AutoSize = true;
-            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.lbTime.Location = new System.Drawing.Point(21, 17);
-            this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(64, 18);
-            this.lbTime.TabIndex = 42;
-            this.lbTime.Text = "00:00:00";
-            // 
-            // statusStripExport
-            // 
-            this.statusStripExport.Location = new System.Drawing.Point(0, 703);
-            this.statusStripExport.Name = "statusStripExport";
-            this.statusStripExport.Size = new System.Drawing.Size(402, 22);
-            this.statusStripExport.TabIndex = 39;
-            this.statusStripExport.Text = "statusStrip2";
             // 
             // API
             // 
@@ -499,13 +499,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
