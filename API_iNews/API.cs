@@ -28,6 +28,8 @@ namespace API_iNews
         public string selectedName = string.Empty;
         string fileExport = "D:\\StoryInews_exported.txt";
         DataTable tbl;
+        private string saveFileRootFolder = string.Empty;
+        private string saveFileDateFormat = "dd.MM.yyyy";
 
         public API()
         {
@@ -36,6 +38,7 @@ namespace API_iNews
             appSettings = ConfigurationManager.AppSettings;
 
             workingFolder = GetAppSetting("WorkingFolder");
+            LoadSaveFileConfig();
         }
 
         private string GetAppSetting(string key)
@@ -820,40 +823,45 @@ namespace API_iNews
                 }
 
 
-                // Chọn nơi lưu file
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                if (string.IsNullOrWhiteSpace(saveFileRootFolder))
                 {
-                    saveFileDialog.Title = "Lưu file tổng hợp Content RAW";
-                    saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-                    saveFileDialog.FilterIndex = 1;
-                    saveFileDialog.FileName = QUEUEROOT + "_ALL_CONTENT.txt";
-                    saveFileDialog.DefaultExt = "txt";
-                    saveFileDialog.RestoreDirectory = true;
-                    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-                    if (saveFileDialog.ShowDialog() != DialogResult.OK)
-                        return;
-
-                    // Vô hiệu hóa nút và hiển thị trạng thái
-                    btnExportAllRawContent.Enabled = false;
-                    toolStripStatusLabel1.Text = "Đang xuất tất cả content...";
-                    Cursor = Cursors.WaitCursor;
-
-                    // Thực hiện xuất dữ liệu
-                    string result = await ExportAllContentAsync(QUEUEROOT);
-
-                    // Ghi file với UTF-8 encoding (không BOM)
-                    System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
-                    File.WriteAllText(saveFileDialog.FileName, result, utf8WithoutBom);
-
-                    // Thông báo thành công
-                    MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {saveFileDialog.FileName}",
-                                  "Thành công",
+                    MessageBox.Show("Chưa cấu hình đường dẫn RootFolderPath trong SaveFileConfig.ini.",
+                                  "Thiếu cấu hình",
                                   MessageBoxButtons.OK,
-                                  MessageBoxIcon.Information);
-
-                    toolStripStatusLabel1.Text = "Hoàn tất xuất file tổng hợp";
+                                  MessageBoxIcon.Warning);
+                    return;
                 }
+
+                string formattedDate = DateTime.Now.ToString(string.IsNullOrWhiteSpace(saveFileDateFormat)
+                    ? "dd.MM.yyyy"
+                    : saveFileDateFormat);
+                string targetDirectory = Path.Combine(saveFileRootFolder, formattedDate);
+
+                // Vô hiệu hóa nút và hiển thị trạng thái
+                btnExportAllRawContent.Enabled = false;
+                toolStripStatusLabel1.Text = "Đang xuất tất cả content...";
+                Cursor = Cursors.WaitCursor;
+
+                Directory.CreateDirectory(targetDirectory);
+
+                string timePrefix = DateTime.Now.ToString("HHmmss");
+                string exportFileName = $"{timePrefix}_{QUEUEROOT}_ALL_CONTENT.txt";
+                string exportFilePath = Path.Combine(targetDirectory, exportFileName);
+
+                // Thực hiện xuất dữ liệu
+                string result = await ExportAllContentAsync(QUEUEROOT);
+
+                // Ghi file với UTF-8 encoding (không BOM)
+                System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
+                File.WriteAllText(exportFilePath, result, utf8WithoutBom);
+
+                // Thông báo thành công
+                MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {exportFilePath}",
+                              "Thành công",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Information);
+
+                toolStripStatusLabel1.Text = "Hoàn tất xuất file tổng hợp";
             }
             catch (Exception ex)
             {
@@ -867,6 +875,62 @@ namespace API_iNews
             {
                 btnExportAllRawContent.Enabled = true;
                 Cursor = Cursors.Default;
+            }
+        }
+
+        private void LoadSaveFileConfig()
+        {
+            try
+            {
+                string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SaveFileConfig.ini");
+                if (!File.Exists(configFilePath))
+                {
+                    return;
+                }
+
+                string currentSection = string.Empty;
+                foreach (string rawLine in File.ReadAllLines(configFilePath))
+                {
+                    if (string.IsNullOrWhiteSpace(rawLine))
+                        continue;
+
+                    string line = rawLine.Trim();
+
+                    if (line.StartsWith("#") || line.StartsWith(";"))
+                        continue;
+
+                    if (line.StartsWith("[") && line.EndsWith("]"))
+                    {
+                        currentSection = line.Substring(1, line.Length - 2);
+                        continue;
+                    }
+
+                    if (!string.Equals(currentSection, "SaveFileConfig", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    int equalsIndex = line.IndexOf('=');
+                    if (equalsIndex <= 0)
+                        continue;
+
+                    string key = line.Substring(0, equalsIndex).Trim();
+                    string value = line.Substring(equalsIndex + 1).Trim();
+
+                    if (key.Equals("RootFolderPath", StringComparison.OrdinalIgnoreCase))
+                    {
+                        saveFileRootFolder = value;
+                    }
+                    else if (key.Equals("DateFormatOfFolder", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            saveFileDateFormat = value;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Giữ nguyên giá trị mặc định nếu có lỗi khi đọc file cấu hình
             }
         }
 
