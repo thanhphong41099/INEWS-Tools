@@ -123,29 +123,29 @@ namespace API_iNews
 
         private async void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            TreeNode node = e.Node;
-            if (node != null && node.Nodes.Count == 1 && node.Nodes[0].Text == "Loading...")
-            {
-                // Hiển thị loading state
-                toolStripStatusLabel1.Text = "Đang tải dữ liệu...";
+            //TreeNode node = e.Node;
+            //if (node != null && node.Nodes.Count == 1 && node.Nodes[0].Text == "Loading...")
+            //{
+            //    // Hiển thị loading state
+            //    toolStripStatusLabel1.Text = "Đang tải dữ liệu...";
                 
-                node.Nodes.Clear();
+            //    node.Nodes.Clear();
                 
-                // Chạy việc lấy dữ liệu trên background thread
-                List<string> queues = await Task.Run(() => iData.GetFolderChildren(node.Tag.ToString()));
+            //    // Chạy việc lấy dữ liệu trên background thread
+            //    List<string> queues = await Task.Run(() => iData.GetFolderChildren(node.Tag.ToString()));
                 
-                // Cập nhật UI trên UI thread
-                foreach (string child in queues)
-                {
-                    TreeNode newNode = new TreeNode(child)
-                    {
-                        Tag = node.Tag + "." + child
-                    };
+            //    // Cập nhật UI trên UI thread
+            //    foreach (string child in queues)
+            //    {
+            //        TreeNode newNode = new TreeNode(child)
+            //        {
+            //            Tag = node.Tag + "." + child
+            //        };
 
-                    node.Nodes.Add(newNode);
-                }
-                node.Expand();
-            }
+            //        node.Nodes.Add(newNode);
+            //    }
+            //    node.Expand();
+            //}
         }
 
         private async Task LoadTreeQueuesAsync()
@@ -158,11 +158,11 @@ namespace API_iNews
             TreeNode node = treeView1.SelectedNode;
             if (node != null && node.Tag != null)
             {
-                if (node.Nodes.Count > 0)
-                {
-                    treeView1_BeforeExpand(sender, new TreeViewCancelEventArgs(node, false, TreeViewAction.ByMouse));
-                }
-                else
+                //if (node.Nodes.Count > 0)
+                //{
+                //    treeView1_BeforeExpand(sender, new TreeViewCancelEventArgs(node, false, TreeViewAction.ByMouse));
+                //}
+                //else
                 {
                     // Hiển thị trạng thái loading
                     toolStripStatusLabel1.Text = "Đang tải stories...";
