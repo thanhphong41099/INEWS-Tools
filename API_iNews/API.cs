@@ -797,10 +797,17 @@ namespace API_iNews
         {
             try
             {
+                string preparingMessage = "Đang kiểm tra dữ liệu trước khi xuất...";
+                toolStripStatusLabel1.Text = preparingMessage;
+                toolStripStatusLabelExport.Text = preparingMessage;
+
                 // Kiểm tra có QUEUEROOT không
                 if (string.IsNullOrEmpty(QUEUEROOT))
                 {
-                    MessageBox.Show("Không có dữ liệu QUEUEROOT để xuất.",
+                    string message = "Không có dữ liệu QUEUEROOT để xuất.";
+                    toolStripStatusLabel1.Text = message;
+                    toolStripStatusLabelExport.Text = message;
+                    MessageBox.Show(message,
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Warning);
@@ -812,56 +819,76 @@ namespace API_iNews
                 // Nếu không có thư mục con, trả về thông báo hoặc chuỗi rỗng
                 if (folders == null || folders.Count == 0)
                 {
-                    MessageBox.Show("Không có dữ liệu nào để xuất.",
+                    string message = "Không có dữ liệu nào để xuất.";
+                    toolStripStatusLabel1.Text = message;
+                    toolStripStatusLabelExport.Text = message;
+                    MessageBox.Show(message,
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Warning);
                     return;
                 }
 
+                // Vô hiệu hóa nút và hiển thị trạng thái
+                btnExportAllRawContent.Enabled = false;
+                Cursor = Cursors.WaitCursor;
 
-                // Chọn nơi lưu file
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                string exportingMessage = "Đang xuất tất cả content gốc...";
+                toolStripStatusLabel1.Text = exportingMessage;
+                toolStripStatusLabelExport.Text = exportingMessage;
+
+                // Thực hiện xuất dữ liệu
+                string result = await ExportAllContentAsync(QUEUEROOT);
+
+                string exportFolder = Path.GetDirectoryName(fileExport);
+                if (!string.IsNullOrEmpty(exportFolder) && !Directory.Exists(exportFolder))
                 {
-                    saveFileDialog.Title = "Lưu file tổng hợp Content RAW";
-                    saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-                    saveFileDialog.FilterIndex = 1;
-                    saveFileDialog.FileName = QUEUEROOT + "_ALL_CONTENT.txt";
-                    saveFileDialog.DefaultExt = "txt";
-                    saveFileDialog.RestoreDirectory = true;
-                    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-                    if (saveFileDialog.ShowDialog() != DialogResult.OK)
-                        return;
-
-                    // Vô hiệu hóa nút và hiển thị trạng thái
-                    btnExportAllRawContent.Enabled = false;
-                    toolStripStatusLabel1.Text = "Đang xuất tất cả content...";
-                    Cursor = Cursors.WaitCursor;
-
-                    // Thực hiện xuất dữ liệu
-                    string result = await ExportAllContentAsync(QUEUEROOT);
-
-                    // Ghi file với UTF-8 encoding (không BOM)
-                    System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
-                    File.WriteAllText(saveFileDialog.FileName, result, utf8WithoutBom);
-
-                    // Thông báo thành công
-                    MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {saveFileDialog.FileName}",
-                                  "Thành công",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Information);
-
-                    toolStripStatusLabel1.Text = "Hoàn tất xuất file tổng hợp";
+                    Directory.CreateDirectory(exportFolder);
                 }
+
+                // Ghi file với UTF-8 encoding (không BOM)
+                System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
+                File.WriteAllText(fileExport, result, utf8WithoutBom);
+
+                string successMessage = $"Xuất file thành công: {fileExport}";
+                toolStripStatusLabel1.Text = successMessage;
+                toolStripStatusLabelExport.Text = successMessage;
+
+                // Thông báo thành công
+                MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {fileExport}",
+                              "Thành công",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Information);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                string message = "Không có quyền ghi vào đường dẫn đã cấu hình.";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
+                MessageBox.Show(message,
+                              "Lỗi quyền truy cập",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                string message = "Không tìm thấy thư mục để lưu file đã cấu hình.";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
+                MessageBox.Show(message,
+                              "Lỗi",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
+                string message = $"Có lỗi xảy ra khi xuất file: {ex.Message}";
+                toolStripStatusLabel1.Text = message;
+                toolStripStatusLabelExport.Text = message;
                 MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}",
                               "Lỗi",
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Error);
-                toolStripStatusLabel1.Text = "Lỗi khi xuất file";
             }
             finally
             {
@@ -890,7 +917,9 @@ namespace API_iNews
                     // Cập nhật status trên UI thread
                     this.BeginInvoke(new Action(() =>
                     {
-                        toolStripStatusLabel1.Text = $"Đang xử lý {folder} ({currentFolder}/{totalFolders})...";
+                        string progressMessage = $"Đang xử lý {folder} ({currentFolder}/{totalFolders})...";
+                        toolStripStatusLabel1.Text = progressMessage;
+                        toolStripStatusLabelExport.Text = progressMessage;
                     }));
 
                     // Lấy danh sách file con cấp 2

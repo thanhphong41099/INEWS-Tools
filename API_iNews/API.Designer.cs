@@ -64,6 +64,7 @@
             this.txtSetTime = new System.Windows.Forms.TextBox();
             this.lbTime = new System.Windows.Forms.Label();
             this.statusStripExport = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelExport = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -474,12 +475,20 @@
             this.lbTime.Text = "00:00:00";
             // 
             // statusStripExport
-            // 
+            //
+            this.statusStripExport.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.statusStripExport.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelExport});
             this.statusStripExport.Location = new System.Drawing.Point(0, 703);
             this.statusStripExport.Name = "statusStripExport";
             this.statusStripExport.Size = new System.Drawing.Size(402, 22);
             this.statusStripExport.TabIndex = 39;
             this.statusStripExport.Text = "statusStrip2";
+            //
+            // toolStripStatusLabelExport
+            //
+            this.toolStripStatusLabelExport.Name = "toolStripStatusLabelExport";
+            this.toolStripStatusLabelExport.Size = new System.Drawing.Size(0, 17);
             // 
             // API
             // 
@@ -501,6 +510,8 @@
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.statusStripExport.ResumeLayout(false);
+            this.statusStripExport.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -546,5 +557,6 @@
         private System.Windows.Forms.TextBox txtSetTime;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.StatusStrip statusStripExport;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExport;
     }
 }
