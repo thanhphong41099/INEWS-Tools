@@ -14,6 +14,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Services.Description;
 using System.Windows.Forms;
 using TTDH;
 
@@ -37,7 +38,6 @@ namespace API_iNews
             appSettings = ConfigurationManager.AppSettings;
 
             workingFolder = GetAppSetting("WorkingFolder");
-            LoadSaveFileConfig();
         }
 
         private string GetAppSetting(string key)
@@ -83,11 +83,13 @@ namespace API_iNews
         private void Server_Recieve(string msg)
         {
             toolStripStatusLabel1.Text = msg;
+            label2.Text = msg;
         }
 
         void iData_SentError(string msg)
         {
             toolStripStatusLabel1.Text = msg;
+            label2.Text = msg;
         }
         public async Task LoadTreeStoriesAsync(TreeView tree, string nodeNames)
         {
@@ -183,14 +185,10 @@ namespace API_iNews
                     await Task.Run(() =>
                     {
                         List<string> queues = iData.GetStoriesBoard(name);
-                        string mapping = System.Configuration.ConfigurationManager.AppSettings["Fields"];
+                        string mapping = ConfigurationManager.AppSettings["Fields"];
                         ProcessingXMl2Class process = new ProcessingXMl2Class();
                         process.FieldMapping = mapping;
-                        bool isExpXML = System.Configuration.ConfigurationManager.AppSettings["ExportStoryToXML"] == "1";
-                        if (isExpXML)
-                        {
-                            ExportXML(queues);
-                        }
+
                         tbl = process.GetDataRows(queues);
                         
                         // Cập nhật UI trên UI thread
@@ -211,14 +209,14 @@ namespace API_iNews
         {
             if (queues == null || queues.Count <= 0)
                 return;
-            string folder = System.Configuration.ConfigurationManager.AppSettings["FolderToSave"];
+            string folder = ConfigurationManager.AppSettings["FolderToSave"];
             int a = 1;
             foreach (string s in queues)
             {
                 if (!string.IsNullOrEmpty(s))
                 {
 
-                    System.IO.File.WriteAllText(folder + "\\story_" + a.ToString() + ".xml", s, Encoding.Unicode);
+                    File.WriteAllText(folder + "\\story_" + a.ToString() + ".xml", s, Encoding.Unicode);
                     //
                 }
                 a++;
@@ -545,10 +543,10 @@ namespace API_iNews
                 await Task.Run(() =>
                 {
                     List<string> queues = iData.GetStoriesBoard(name);
-                    string mapping = System.Configuration.ConfigurationManager.AppSettings["Fields"];
+                    string mapping = ConfigurationManager.AppSettings["Fields"];
                     ProcessingXMl2Class process = new ProcessingXMl2Class();
                     process.FieldMapping = mapping;
-                    bool isExpXML = System.Configuration.ConfigurationManager.AppSettings["ExportStory2XML"] == "1";
+                    bool isExpXML = ConfigurationManager.AppSettings["ExportStory2XML"] == "1";
                     if (isExpXML)
                     {
                         ExportXML(queues);
@@ -607,7 +605,7 @@ namespace API_iNews
 
         private async Task ConnectServerToLoadDataAsync()
         {
-            string serverIP = System.Configuration.ConfigurationManager.AppSettings["ServerIP"];
+            string serverIP = ConfigurationManager.AppSettings["ServerIP"];
 
             // Hiển thị thông báo đang kết nối với IP cụ thể
             toolStripStatusLabel1.Text = $"Đang kết nối đến server {serverIP}...";
@@ -623,13 +621,13 @@ namespace API_iNews
                 server.Start();
 
                 // Cấu hình iNews settings
-                QUEUEROOT = System.Configuration.ConfigurationManager.AppSettings["QueuesRoot"];
-                queueChild = System.Configuration.ConfigurationManager.AppSettings["QueuesChild"];
-                settings.ServerName = System.Configuration.ConfigurationManager.AppSettings["iNewsServer"];
-                settings.ServerBackup = System.Configuration.ConfigurationManager.AppSettings["iNewsServerBackup"];
-                settings.UserName = System.Configuration.ConfigurationManager.AppSettings["iNewsUser"];
-                settings.Password = System.Configuration.ConfigurationManager.AppSettings["iNewsPass"];
-                saveFileRootFolder = System.Configuration.ConfigurationManager.AppSettings["RootFolderPath"];
+                QUEUEROOT = ConfigurationManager.AppSettings["QueuesRoot"];
+                queueChild = ConfigurationManager.AppSettings["QueuesChild"];
+                settings.ServerName = ConfigurationManager.AppSettings["iNewsServer"];
+                settings.ServerBackup = ConfigurationManager.AppSettings["iNewsServerBackup"];
+                settings.UserName = ConfigurationManager.AppSettings["iNewsUser"];
+                settings.Password = ConfigurationManager.AppSettings["iNewsPass"];
+                saveFileRootFolder = ConfigurationManager.AppSettings["RootFolderPath"];
 
 
                 // Khởi tạo iNewsData
@@ -668,7 +666,7 @@ namespace API_iNews
         {
             try
             {
-                var keyTroiTin = System.Configuration.ConfigurationManager.AppSettings["KeyTroiTin"];
+                var keyTroiTin = ConfigurationManager.AppSettings["KeyTroiTin"];
                 if (!String.IsNullOrEmpty(Content) && Content.Contains(keyTroiTin.Split(new string[] { "..." }, StringSplitOptions.None)[0]))
                 {
                     var matches = Regex.Matches(Content, keyTroiTin.Replace("...", @"\s*(.*?)\s*"), RegexOptions.Singleline);
@@ -691,7 +689,7 @@ namespace API_iNews
         {
             try
             {
-                var keyTroiCuoi = System.Configuration.ConfigurationManager.AppSettings["KeyTroiCuoi"];
+                var keyTroiCuoi = ConfigurationManager.AppSettings["KeyTroiCuoi"];
                 if (!String.IsNullOrEmpty(Content) && Content.Contains(keyTroiCuoi.Split(new string[] { "..." }, StringSplitOptions.None)[0]))
                 {
                     var matches = Regex.Matches(Content, keyTroiCuoi.Replace("...", @"\s*(.*?)\s*"), RegexOptions.Singleline);
@@ -762,12 +760,6 @@ namespace API_iNews
                         System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
                         File.WriteAllText(saveFileDialog.FileName, exportContent.ToString(), utf8WithoutBom);
 
-                        // Thông báo thành công
-                        MessageBox.Show($"Xuất file thành công!\n\nĐường dẫn: {saveFileDialog.FileName}",
-                                      "Thành công",
-                                      MessageBoxButtons.OK,
-                                      MessageBoxIcon.Information);
-
                         // Cập nhật status bar
                         toolStripStatusLabel1.Text = "Đã xuất file: " + Path.GetFileName(saveFileDialog.FileName);
                     }
@@ -800,173 +792,29 @@ namespace API_iNews
         {
             try
             {
-                // Kiểm tra treeView có node không
-                if (treeView1.Nodes.Count == 0)
+                // Lấy danh sách tên bản tin cấp 1 từ TreeView
+                List<string> banTinNames = GetBanTinNamesFromTreeView();
+
+                if (banTinNames.Count == 0)
                 {
-                    MessageBox.Show("Không có dữ liệu node trên cây để xuất.",
-                        "Thông báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    MessageBox.Show("Không tìm thấy bản tin nào trong TreeView!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(saveFileRootFolder))
+                // Vòng lặp xuất tất cả bản tin bất đồng bộ tuần tự
+                foreach (var banTin in banTinNames)
                 {
-                    MessageBox.Show("Chưa cấu hình đường dẫn RootFolderPath trong Config",
-                        "Thiếu cấu hình",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    return;
+                    await CreateAndExportBanTinAsync(banTin, saveFileRootFolder);
                 }
 
-                string formattedDate = DateTime.Now.ToString(string.IsNullOrWhiteSpace(saveFileDateFormat)
-                    ? "dd.MM.yyyy"
-                    : saveFileDateFormat);
-                string targetDirectory = Path.Combine(saveFileRootFolder, formattedDate);
-
-                btnExportAllRawContent.Enabled = false;
-                toolStripStatusLabel1.Text = "Đang xuất tất cả content...";
-                Cursor = Cursors.WaitCursor;
-
-                Directory.CreateDirectory(targetDirectory);
-
-                string timePrefix = DateTime.Now.ToString("HH_mm_ss");
-                string exportFileName = $"{timePrefix}_ALL_STORY_INEWS.txt";
-                string exportFilePath = Path.Combine(targetDirectory, exportFileName);
-
-                // Thu thập danh sách node Tag/Text cấp 1 trên cây
-                List<string> nodeNames = new List<string>();
-                foreach (TreeNode node in treeView1.Nodes)
-                {
-                    // Nếu cần node con cấp 2 thì lặp thêm với node.Child
-                    nodeNames.Add(node.Text); // hoặc node.Tag.ToString() nếu logic khác
-                }
-
-                // Thực hiện xuất dữ liệu theo danh sách node này
-                string result = await ExportNodeContentAsync(nodeNames);
-
-                System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
-                File.WriteAllText(exportFilePath, result, utf8WithoutBom);
-
-                toolStripStatusLabel1.Text = "Hoàn tất xuất file tổng hợp";
+                label2.Text = $"Đã xuất toàn bộ bản tin vào {saveFileRootFolder}.";
             }
             catch (Exception ex)
             {
-                toolStripStatusLabel1.Text = "Lỗi khi xuất file";
-            }
-            finally
-            {
-                btnExportAllRawContent.Enabled = true;
-                Cursor = Cursors.Default;
+                MessageBox.Show("Lỗi khi xuất bản tin: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private async Task<string> ExportNodeContentAsync(List<string> nodeNames)
-        {
-            return await Task.Run(() =>
-            {
-                StringBuilder allContent = new StringBuilder();
-
-                foreach (string nodeName in nodeNames)
-                {
-                    // Nếu nodeName là Tag đầy đủ, dùng luôn; nếu là Text, có thể cần xử lý thêm
-                    List<string> stories = iData.GetStoriesBoard(nodeName);
-                    if (stories == null || stories.Count == 0) continue;
-
-                    string mapping = System.Configuration.ConfigurationManager.AppSettings["Fields"];
-                    ProcessingXMl2Class process = new ProcessingXMl2Class();
-                    process.FieldMapping = mapping;
-                    DataTable tblTemp = process.GetDataRows(stories);
-
-                    if (tblTemp == null || tblTemp.Rows.Count == 0) continue;
-
-                    bool hasRealContent = false;
-                    foreach (DataRow row in tblTemp.Rows)
-                    {
-                        string content = row["Content"]?.ToString() ?? string.Empty;
-                        if (!string.IsNullOrWhiteSpace(content))
-                        {
-                            hasRealContent = true;
-                            break;
-                        }
-                    }
-                    if (!hasRealContent) continue;
-
-                    allContent.AppendLine("[" + nodeName + "]");
-                    foreach (DataRow row in tblTemp.Rows)
-                    {
-                        string content = row["Content"]?.ToString() ?? string.Empty;
-                        if (!string.IsNullOrWhiteSpace(content))
-                        {
-                            allContent.AppendLine("[]");
-                            allContent.AppendLine("#");
-                            allContent.AppendLine(content);
-                            allContent.AppendLine();
-                        }
-                    }
-                    allContent.AppendLine("=====================================");
-                    allContent.AppendLine();
-                }
-                return allContent.ToString();
-            });
-        }
-
-
-        private void LoadSaveFileConfig()
-        {
-            try
-            {
-                string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SaveFileConfig.ini");
-                if (!File.Exists(configFilePath))
-                {
-                    return;
-                }
-
-                string currentSection = string.Empty;
-                foreach (string rawLine in File.ReadAllLines(configFilePath))
-                {
-                    if (string.IsNullOrWhiteSpace(rawLine))
-                        continue;
-
-                    string line = rawLine.Trim();
-
-                    if (line.StartsWith("#") || line.StartsWith(";"))
-                        continue;
-
-                    if (line.StartsWith("[") && line.EndsWith("]"))
-                    {
-                        currentSection = line.Substring(1, line.Length - 2);
-                        continue;
-                    }
-
-                    if (!string.Equals(currentSection, "SaveFileConfig", StringComparison.OrdinalIgnoreCase))
-                        continue;
-
-                    int equalsIndex = line.IndexOf('=');
-                    if (equalsIndex <= 0)
-                        continue;
-
-                    string key = line.Substring(0, equalsIndex).Trim();
-                    string value = line.Substring(equalsIndex + 1).Trim();
-
-                    if (key.Equals("RootFolderPath", StringComparison.OrdinalIgnoreCase))
-                    {
-                        saveFileRootFolder = value;
-                    }
-                    else if (key.Equals("DateFormatOfFolder", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!string.IsNullOrWhiteSpace(value))
-                        {
-                            saveFileDateFormat = value;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // Giữ nguyên giá trị mặc định nếu có lỗi khi đọc file cấu hình
-            }
-        }
 
         int totalSeconds = 0;   // Tổng thời gian gốc nhập vào
         int currentSeconds = 0; // Thời gian còn lại của vòng lặp
@@ -1022,6 +870,83 @@ namespace API_iNews
         {
             TimeSpan ts = TimeSpan.FromSeconds(currentSeconds);
             lbTime.Text = ts.ToString(@"hh\:mm\:ss");
+        }
+
+        private List<string> GetBanTinNamesFromTreeView()
+        {
+            List<string> banTinNames = new List<string>();
+
+            // Giả sử node gốc là node đầu tiên trong treeView1.Nodes
+            TreeNode rootNode = treeView1.Nodes[0];
+
+            foreach (TreeNode childNode in rootNode.Nodes)
+            {
+                if (childNode.Tag != null)
+                {
+                    banTinNames.Add(childNode.Tag.ToString());
+                }
+                else
+                {
+                    // Nếu muốn lấy Text thay cho Tag, sử dụng childNode.Text
+                    banTinNames.Add(childNode.Text);
+                }
+            }
+
+            return banTinNames;
+        }
+
+        private async Task ExportAllBanTinTblsAsync(string RootFolderPath)
+        {
+            // Lấy danh sách tên bản tin cấp 1 từ TreeView
+            List<string> banTinNames = GetBanTinNamesFromTreeView();
+
+            // Duyệt từng bản tin và gọi hàm tạo + xuất file không đồng bộ
+            foreach (var banTin in banTinNames)
+            {
+                await CreateAndExportBanTinAsync(banTin, RootFolderPath);
+            }
+        }
+
+        private async Task<DataTable> CreateAndExportBanTinAsync(string banTinName, string saveFileRootFolder)
+        {
+            // Tạo DataTable dựa trên tên bản tin
+            DataTable tbl = await Task.Run(() =>
+            {
+                List<string> queues = iData.GetStoriesBoard(banTinName);
+                string mapping = ConfigurationManager.AppSettings["Fields"];
+                ProcessingXMl2Class process = new ProcessingXMl2Class();
+                process.FieldMapping = mapping;
+                // trả về tbl đúng của bản tin
+                return process.GetDataRows(queues);
+            });
+
+            // Xuất dữ liệu ra file .txt
+            await Task.Run(() =>
+            {
+                // Định dạng tên file: HH_MM_SS_Tên_bản_tin.txt
+                string timeStamp = DateTime.Now.ToString("HH_mm_ss");
+                string safeBanTinName = banTinName.Replace(" ", "_");
+
+                string dateFolder = DateTime.Now.ToString(saveFileDateFormat);
+                string folderPath = Path.Combine(saveFileRootFolder, dateFolder);
+
+                string filePath = Path.Combine(folderPath, $"{timeStamp}_{safeBanTinName}.txt");
+
+
+                // Tạo thư mục nếu chưa tồn tại
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                using (var writer = new StreamWriter(filePath))
+                {
+                    foreach (DataRow row in tbl.Rows)
+                    {
+                        string content = row["Content"]?.ToString() ?? string.Empty;
+                        writer.WriteLine(content);
+                    }
+                }
+            });
+
+            return tbl;
         }
 
 

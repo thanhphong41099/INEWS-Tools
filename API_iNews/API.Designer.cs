@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.statusStripExport = new System.Windows.Forms.StatusStrip();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbTime = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
@@ -84,7 +83,6 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.statusStripExport);
             this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportAllRawContent);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportContentRaw);
@@ -101,14 +99,6 @@
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // statusStripExport
-            // 
-            this.statusStripExport.Location = new System.Drawing.Point(0, 703);
-            this.statusStripExport.Name = "statusStripExport";
-            this.statusStripExport.Size = new System.Drawing.Size(402, 22);
-            this.statusStripExport.TabIndex = 39;
-            this.statusStripExport.Text = "statusStrip2";
             // 
             // panel2
             // 
@@ -229,12 +219,12 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label2.Location = new System.Drawing.Point(13, 665);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.label2.Location = new System.Drawing.Point(8, 704);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 18);
+            this.label2.Size = new System.Drawing.Size(62, 15);
             this.label2.TabIndex = 30;
-            this.label2.Text = "Label trạng thái";
+            this.label2.Text = "Trạng thái";
             // 
             // label3
             // 
@@ -545,6 +535,5 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtSetTime;
         private System.Windows.Forms.Label lbTime;
-        private System.Windows.Forms.StatusStrip statusStripExport;
     }
 }
