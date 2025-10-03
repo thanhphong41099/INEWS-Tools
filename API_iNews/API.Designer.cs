@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnExportAllRawContent = new System.Windows.Forms.Button();
@@ -54,6 +55,15 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtSetTime = new System.Windows.Forms.TextBox();
+            this.lbTime = new System.Windows.Forms.Label();
+            this.statusStripExport = new System.Windows.Forms.StatusStrip();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -61,6 +71,7 @@
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -73,6 +84,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.statusStripExport);
+            this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportAllRawContent);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportContentRaw);
             this.splitContainer1.Panel1.Controls.Add(this.btnGetStory);
@@ -83,7 +96,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
-            this.splitContainer1.Size = new System.Drawing.Size(1516, 783);
+            this.splitContainer1.Panel2Collapsed = true;
+            this.splitContainer1.Size = new System.Drawing.Size(406, 729);
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
@@ -95,10 +109,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportAllRawContent.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportAllRawContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportAllRawContent.Location = new System.Drawing.Point(12, 635);
+            this.btnExportAllRawContent.Location = new System.Drawing.Point(220, 612);
             this.btnExportAllRawContent.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportAllRawContent.Name = "btnExportAllRawContent";
-            this.btnExportAllRawContent.Size = new System.Drawing.Size(255, 35);
+            this.btnExportAllRawContent.Size = new System.Drawing.Size(170, 35);
             this.btnExportAllRawContent.TabIndex = 33;
             this.btnExportAllRawContent.Text = "Xuất toàn bộ nội dung";
             this.btnExportAllRawContent.UseVisualStyleBackColor = true;
@@ -111,10 +125,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportContentRaw.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportContentRaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportContentRaw.Location = new System.Drawing.Point(12, 596);
+            this.btnExportContentRaw.Location = new System.Drawing.Point(43, 612);
             this.btnExportContentRaw.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportContentRaw.Name = "btnExportContentRaw";
-            this.btnExportContentRaw.Size = new System.Drawing.Size(255, 35);
+            this.btnExportContentRaw.Size = new System.Drawing.Size(173, 35);
             this.btnExportContentRaw.TabIndex = 32;
             this.btnExportContentRaw.Text = "Xuất nội dung gốc";
             this.btnExportContentRaw.UseVisualStyleBackColor = true;
@@ -125,12 +139,12 @@
             this.btnGetStory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGetStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnGetStory.Location = new System.Drawing.Point(14, 723);
+            this.btnGetStory.Location = new System.Drawing.Point(291, 658);
             this.btnGetStory.Margin = new System.Windows.Forms.Padding(2);
             this.btnGetStory.Name = "btnGetStory";
-            this.btnGetStory.Size = new System.Drawing.Size(255, 35);
+            this.btnGetStory.Size = new System.Drawing.Size(102, 35);
             this.btnGetStory.TabIndex = 31;
-            this.btnGetStory.Text = "Reconnect Apache";
+            this.btnGetStory.Text = "Reconnect";
             this.btnGetStory.UseVisualStyleBackColor = true;
             this.btnGetStory.Click += new System.EventHandler(this.btnGetStory_Click);
             // 
@@ -139,7 +153,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label2.Location = new System.Drawing.Point(13, 568);
+            this.label2.Location = new System.Drawing.Point(13, 665);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 18);
             this.label2.TabIndex = 30;
@@ -151,9 +165,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.label3.Location = new System.Drawing.Point(13, 13);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 18);
+            this.label3.Size = new System.Drawing.Size(85, 18);
             this.label3.TabIndex = 10;
-            this.label3.Text = "Cây ruttit";
+            this.label3.Text = "Story Inews";
             // 
             // treeView1
             // 
@@ -164,7 +178,7 @@
             this.treeView1.Location = new System.Drawing.Point(0, 46);
             this.treeView1.Margin = new System.Windows.Forms.Padding(2);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(284, 512);
+            this.treeView1.Size = new System.Drawing.Size(400, 458);
             this.treeView1.TabIndex = 9;
             this.treeView1.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -386,17 +400,98 @@
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Controls.Add(this.lbTime);
+            this.panel2.Controls.Add(this.btnStart);
+            this.panel2.Controls.Add(this.btnStop);
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.txtSetTime);
+            this.panel2.Location = new System.Drawing.Point(10, 512);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(384, 81);
+            this.panel2.TabIndex = 38;
+            // 
+            // btnStart
+            // 
+            this.btnStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnStart.FlatAppearance.BorderSize = 2;
+            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStart.Location = new System.Drawing.Point(298, 41);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(77, 27);
+            this.btnStart.TabIndex = 41;
+            this.btnStart.Text = "START";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Enabled = false;
+            this.btnStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnStop.FlatAppearance.BorderSize = 2;
+            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStop.Location = new System.Drawing.Point(217, 41);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(77, 27);
+            this.btnStop.TabIndex = 40;
+            this.btnStop.Text = "STOP";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.label8.Location = new System.Drawing.Point(121, 44);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 18);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "giây (s)";
+            // 
+            // txtSetTime
+            // 
+            this.txtSetTime.Location = new System.Drawing.Point(19, 43);
+            this.txtSetTime.Name = "txtSetTime";
+            this.txtSetTime.Size = new System.Drawing.Size(100, 20);
+            this.txtSetTime.TabIndex = 38;
+            // 
+            // lbTime
+            // 
+            this.lbTime.AutoSize = true;
+            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.lbTime.Location = new System.Drawing.Point(21, 17);
+            this.lbTime.Name = "lbTime";
+            this.lbTime.Size = new System.Drawing.Size(64, 18);
+            this.lbTime.TabIndex = 42;
+            this.lbTime.Text = "00:00:00";
+            // 
+            // statusStripExport
+            // 
+            this.statusStripExport.Location = new System.Drawing.Point(0, 703);
+            this.statusStripExport.Name = "statusStripExport";
+            this.statusStripExport.Size = new System.Drawing.Size(402, 22);
+            this.statusStripExport.TabIndex = 39;
+            this.statusStripExport.Text = "statusStrip2";
+            // 
             // API
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1516, 783);
+            this.ClientSize = new System.Drawing.Size(406, 729);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "API";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "API INEWS";
+            this.Text = "STORY INEWS THOISU";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.API_FormClosing);
             this.Load += new System.EventHandler(this.API_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -409,6 +504,8 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -440,5 +537,14 @@
         private System.Windows.Forms.Button btnThoat;
         private System.Windows.Forms.Button btnExportContentRaw;
         private System.Windows.Forms.Button btnExportAllRawContent;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtSetTime;
+        private System.Windows.Forms.Label lbTime;
+        private System.Windows.Forms.StatusStrip statusStripExport;
     }
 }

@@ -26,6 +26,7 @@ namespace API_iNews
         private readonly NameValueCollection appSettings;
         string workingFolder = string.Empty;
         public string selectedName = string.Empty;
+        string fileExport = "D:\\StoryInews_exported.txt";
         DataTable tbl;
 
         public API()
@@ -74,7 +75,9 @@ namespace API_iNews
         private async void API_Load(object sender, EventArgs e)
         {
             await ConnectServerToLoadDataAsync();
+            lbTime.Text = "00:00:00";
         }
+
         private void Server_Recieve(string msg)
         {
             toolStripStatusLabel1.Text = msg;
@@ -624,6 +627,7 @@ namespace API_iNews
                 settings.ServerBackup = System.Configuration.ConfigurationManager.AppSettings["iNewsServerBackup"];
                 settings.UserName = System.Configuration.ConfigurationManager.AppSettings["iNewsUser"];
                 settings.Password = System.Configuration.ConfigurationManager.AppSettings["iNewsPass"];
+                fileExport = System.Configuration.ConfigurationManager.AppSettings["FileExport"];
                 
                 // Khởi tạo iNewsData
                 iData = new iNewsData(settings);
@@ -788,7 +792,7 @@ namespace API_iNews
                               MessageBoxIcon.Error);
             }
         }
-
+        int i = 0;
         private async void btnExportAllRawContent_Click(object sender, EventArgs e)
         {
             try
@@ -972,6 +976,64 @@ namespace API_iNews
                 return allContent.ToString();
             });
         }
+
+        int totalSeconds = 0;   // Tổng thời gian gốc nhập vào
+        int currentSeconds = 0; // Thời gian còn lại của vòng lặp
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(txtSetTime.Text.Trim(), out totalSeconds) && totalSeconds > 0)
+            {
+                //btnExportAllRawContent.PerformClick();
+                currentSeconds = totalSeconds;
+                btnStart.Enabled = false;
+                btnStop.Enabled = true;
+                txtSetTime.Enabled = false;
+                label2.Text = "Đang chạy tự động...";
+                timer1.Interval = 1000; // 1 giây
+                timer1.Start();
+
+                ShowTime(); // Hiển thị ngay số giây đầu vào
+            }
+            else
+            {
+                MessageBox.Show("Thời gian nhập vào không hợp lệ (phải là số nguyên dương, tính bằng giây).");
+            }
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            btnStart.Enabled = true;
+            btnStop.Enabled = false;
+            txtSetTime.Enabled = true;
+            label2.Text = "Đã dừng!";
+        }
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            currentSeconds--;
+
+            if (currentSeconds <= 0)
+            {
+                btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
+                currentSeconds = totalSeconds;         // Reset lại về đúng số giây thiết lập
+                ShowTime();                            // Hiển thị lại toàn bộ thời gian
+                return;                                // Thoát khỏi hàm, không chạy tiếp bên dưới!
+            }
+
+            ShowTime();
+        }
+
+
+        void ShowTime()
+        {
+            TimeSpan ts = TimeSpan.FromSeconds(currentSeconds);
+            lbTime.Text = ts.ToString(@"hh\:mm\:ss");
+        }
+
+
     }
 
 }
