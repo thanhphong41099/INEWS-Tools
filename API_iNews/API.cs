@@ -797,7 +797,7 @@ namespace API_iNews
 
                 if (banTinNames.Count == 0)
                 {
-                    MessageBox.Show("Không tìm thấy bản tin nào trong TreeView!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    label2.Text = "Không có bản tin nào để xuất.";
                     return;
                 }
 
@@ -807,11 +807,11 @@ namespace API_iNews
                     await CreateAndExportBanTinAsync(banTin, saveFileRootFolder);
                 }
 
-                label2.Text = $"Đã xuất toàn bộ bản tin vào {saveFileRootFolder}.";
+                label2.Text = $"Đã xuất toàn bộ bản tin vào {DateTime.Now:HH:mm:ss}.";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi xuất bản tin: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                label2.Text = "Lỗi khi xuất bản tin.";
             }
         }
 
@@ -893,18 +893,6 @@ namespace API_iNews
             }
 
             return banTinNames;
-        }
-
-        private async Task ExportAllBanTinTblsAsync(string RootFolderPath)
-        {
-            // Lấy danh sách tên bản tin cấp 1 từ TreeView
-            List<string> banTinNames = GetBanTinNamesFromTreeView();
-
-            // Duyệt từng bản tin và gọi hàm tạo + xuất file không đồng bộ
-            foreach (var banTin in banTinNames)
-            {
-                await CreateAndExportBanTinAsync(banTin, RootFolderPath);
-            }
         }
 
         private async Task<DataTable> CreateAndExportBanTinAsync(string banTinName, string saveFileRootFolder)
