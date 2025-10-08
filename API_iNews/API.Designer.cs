@@ -63,7 +63,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.checkExportStory = new System.Windows.Forms.CheckBox();
-            this.cbbStory = new System.Windows.Forms.ComboBox();
+            this.cbbNode = new System.Windows.Forms.ComboBox();
             this.lbTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -106,7 +106,7 @@
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.lbTime);
-            this.panel2.Controls.Add(this.cbbStory);
+            this.panel2.Controls.Add(this.cbbNode);
             this.panel2.Controls.Add(this.checkExportStory);
             this.panel2.Controls.Add(this.btnStart);
             this.panel2.Controls.Add(this.btnStop);
@@ -476,14 +476,15 @@
             this.checkExportStory.UseVisualStyleBackColor = true;
             this.checkExportStory.CheckedChanged += new System.EventHandler(this.checkExportStory_CheckedChanged);
             // 
-            // cbbStory
+            // cbbNode
             // 
-            this.cbbStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.cbbStory.FormattingEnabled = true;
-            this.cbbStory.Location = new System.Drawing.Point(217, 10);
-            this.cbbStory.Name = "cbbStory";
-            this.cbbStory.Size = new System.Drawing.Size(158, 24);
-            this.cbbStory.TabIndex = 44;
+            this.cbbNode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.cbbNode.FormattingEnabled = true;
+            this.cbbNode.Location = new System.Drawing.Point(217, 10);
+            this.cbbNode.Name = "cbbNode";
+            this.cbbNode.Size = new System.Drawing.Size(158, 24);
+            this.cbbNode.TabIndex = 44;
+            this.cbbNode.SelectedIndexChanged += new System.EventHandler(this.cbbNode_SelectedIndexChanged);
             // 
             // lbTime
             // 
@@ -558,7 +559,7 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtSetTime;
-        private System.Windows.Forms.ComboBox cbbStory;
+        private System.Windows.Forms.ComboBox cbbNode;
         private System.Windows.Forms.CheckBox checkExportStory;
         private System.Windows.Forms.Label lbTime;
     }
