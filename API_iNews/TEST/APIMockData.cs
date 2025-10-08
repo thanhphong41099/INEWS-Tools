@@ -103,10 +103,5 @@ namespace API_iNews
 
             return string.Join(Environment.NewLine, lines);
         }
-
-        private void btnLoadMockData_Click(object sender, EventArgs e)
-        {
-            LoadMockDataForTreeView();
-        }
     }
 }

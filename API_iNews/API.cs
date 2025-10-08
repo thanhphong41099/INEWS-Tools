@@ -1094,6 +1094,11 @@ namespace API_iNews
                 label2.Text = "Chế độ xuất bản tin đã chọn.";
             }
         }
+
+        private void btnLoadMockData_Click(object sender, EventArgs e)
+        {
+            LoadMockDataForTreeView();
+        }
     }
 
 }

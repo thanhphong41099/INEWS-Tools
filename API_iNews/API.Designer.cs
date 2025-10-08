@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnLoadMockData = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbTime = new System.Windows.Forms.Label();
             this.checkExportStory = new System.Windows.Forms.CheckBox();
@@ -84,6 +85,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnLoadMockData);
             this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportAllRawContent);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportContentRaw);
@@ -100,6 +102,21 @@
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // btnLoadMockData
+            // 
+            this.btnLoadMockData.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnLoadMockData.FlatAppearance.BorderSize = 2;
+            this.btnLoadMockData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLoadMockData.Location = new System.Drawing.Point(291, 15);
+            this.btnLoadMockData.Margin = new System.Windows.Forms.Padding(2);
+            this.btnLoadMockData.Name = "btnLoadMockData";
+            this.btnLoadMockData.Size = new System.Drawing.Size(102, 27);
+            this.btnLoadMockData.TabIndex = 42;
+            this.btnLoadMockData.Text = "MOCK TEST";
+            this.btnLoadMockData.UseVisualStyleBackColor = true;
+            this.btnLoadMockData.Visible = false;
+            this.btnLoadMockData.Click += new System.EventHandler(this.btnLoadMockData_Click);
             // 
             // panel2
             // 
@@ -550,5 +567,6 @@
         private System.Windows.Forms.TextBox txtSetTime;
         private System.Windows.Forms.CheckBox checkExportStory;
         private System.Windows.Forms.Label lbTime;
+        private System.Windows.Forms.Button btnLoadMockData;
     }
 }

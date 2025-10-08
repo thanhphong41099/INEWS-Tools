@@ -106,6 +106,9 @@
     <Compile Include="ServerForm.Designer.cs">
       <DependentUpon>ServerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TEST\APIMockData.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Web References\INEWSQueue\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
