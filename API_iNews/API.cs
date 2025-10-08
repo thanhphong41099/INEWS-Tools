@@ -888,6 +888,11 @@ namespace API_iNews
         {
             List<string> banTinNames = new List<string>();
 
+            if (treeView1.Nodes.Count == 0)
+            {
+                return banTinNames;
+            }
+
             // Giả sử node gốc là node đầu tiên trong treeView1.Nodes
             TreeNode rootNode = treeView1.Nodes[0];
 
@@ -905,6 +910,66 @@ namespace API_iNews
             }
 
             return banTinNames;
+        }
+
+        private List<string> GetCheckedBanTinNamesFromTreeView()
+        {
+            List<string> checkedNames = new List<string>();
+
+            CollectCheckedNodes(treeView1.Nodes, checkedNames);
+
+            return checkedNames;
+        }
+
+        private void CollectCheckedNodes(TreeNodeCollection nodes, List<string> results)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Checked && node.Tag != null)
+                {
+                    string nodeName = node.Tag.ToString();
+                    if (!string.IsNullOrWhiteSpace(nodeName))
+                    {
+                        results.Add(nodeName);
+                    }
+                }
+
+                if (node.Nodes.Count > 0)
+                {
+                    CollectCheckedNodes(node.Nodes, results);
+                }
+            }
+        }
+
+        private void ClearNodeChecks(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Checked = false;
+
+                if (node.Nodes.Count > 0)
+                {
+                    ClearNodeChecks(node.Nodes);
+                }
+            }
+        }
+
+        private void ToggleTreeViewCheckBoxes(bool enable)
+        {
+            treeView1.BeginUpdate();
+            try
+            {
+                if (!enable)
+                {
+                    ClearNodeChecks(treeView1.Nodes);
+                }
+
+                treeView1.CheckBoxes = enable;
+            }
+            finally
+            {
+                treeView1.EndUpdate();
+            }
         }
 
         private async Task<DataTable> CreateAndExportBanTinAsync(string banTinName, string saveFileRootFolder)
@@ -978,29 +1043,56 @@ namespace API_iNews
 
         private async Task ExportSelectedStoryAsync()
         {
-            string selectedNodeName = cbbNode.SelectedItem as string;
+            List<string> selectedNodeNames = GetCheckedBanTinNamesFromTreeView();
 
-            if (string.IsNullOrWhiteSpace(selectedNodeName))
+            if (selectedNodeNames.Count == 0)
+            {
+                string fallbackNodeName = cbbNode.SelectedItem as string;
+                if (!string.IsNullOrWhiteSpace(fallbackNodeName))
+                {
+                    selectedNodeNames.Add(fallbackNodeName);
+                }
+            }
+
+            if (selectedNodeNames.Count == 0)
             {
                 label2.Text = "Vui lòng chọn bản tin cần xuất.";
                 return;
             }
 
-            try
+            List<string> exportedNodes = new List<string>();
+            List<string> failedNodes = new List<string>();
+
+            foreach (string nodeName in selectedNodeNames)
             {
-                await CreateAndExportBanTinAsync(selectedNodeName, saveFileRootFolder);
-                label2.Text = $"Đã xuất bản tin {selectedNodeName} vào {DateTime.Now:HH:mm:ss}.";
+                try
+                {
+                    await CreateAndExportBanTinAsync(nodeName, saveFileRootFolder);
+                    exportedNodes.Add(nodeName);
+                }
+                catch (Exception)
+                {
+                    failedNodes.Add(nodeName);
+                }
             }
-            catch (Exception)
+
+            if (failedNodes.Count > 0)
             {
-                label2.Text = "Lỗi khi xuất bản tin đã chọn.";
+                label2.Text = $"Lỗi khi xuất các bản tin: {string.Join(", ", failedNodes)}.";
+            }
+            else
+            {
+                label2.Text = $"Đã xuất {exportedNodes.Count} bản tin vào {DateTime.Now:HH:mm:ss}.";
             }
         }
 
         private void checkExportStory_CheckedChanged(object sender, EventArgs e)
         {
-            cbbNode.Enabled = checkExportStory.Checked;
-            if (!checkExportStory.Checked)
+            bool enableStorySelection = checkExportStory.Checked;
+            cbbNode.Enabled = enableStorySelection;
+            ToggleTreeViewCheckBoxes(enableStorySelection);
+
+            if (!enableStorySelection)
             {
                 cbbNode.SelectedIndex = -1;
             }
