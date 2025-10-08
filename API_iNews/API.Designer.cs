@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lbTime = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -63,6 +62,9 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.checkExportStory = new System.Windows.Forms.CheckBox();
+            this.cbbStory = new System.Windows.Forms.ComboBox();
+            this.lbTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -104,31 +106,23 @@
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.lbTime);
+            this.panel2.Controls.Add(this.cbbStory);
+            this.panel2.Controls.Add(this.checkExportStory);
             this.panel2.Controls.Add(this.btnStart);
             this.panel2.Controls.Add(this.btnStop);
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.txtSetTime);
-            this.panel2.Location = new System.Drawing.Point(10, 512);
+            this.panel2.Location = new System.Drawing.Point(10, 523);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(384, 81);
+            this.panel2.Size = new System.Drawing.Size(384, 90);
             this.panel2.TabIndex = 38;
-            // 
-            // lbTime
-            // 
-            this.lbTime.AutoSize = true;
-            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.lbTime.Location = new System.Drawing.Point(21, 17);
-            this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(64, 18);
-            this.lbTime.TabIndex = 42;
-            this.lbTime.Text = "00:00:00";
             // 
             // btnStart
             // 
             this.btnStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnStart.FlatAppearance.BorderSize = 2;
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStart.Location = new System.Drawing.Point(298, 41);
+            this.btnStart.Location = new System.Drawing.Point(298, 46);
             this.btnStart.Margin = new System.Windows.Forms.Padding(2);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(77, 27);
@@ -143,7 +137,7 @@
             this.btnStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnStop.FlatAppearance.BorderSize = 2;
             this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStop.Location = new System.Drawing.Point(217, 41);
+            this.btnStop.Location = new System.Drawing.Point(217, 46);
             this.btnStop.Margin = new System.Windows.Forms.Padding(2);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(77, 27);
@@ -156,7 +150,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label8.Location = new System.Drawing.Point(121, 44);
+            this.label8.Location = new System.Drawing.Point(121, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 18);
             this.label8.TabIndex = 39;
@@ -164,7 +158,7 @@
             // 
             // txtSetTime
             // 
-            this.txtSetTime.Location = new System.Drawing.Point(19, 43);
+            this.txtSetTime.Location = new System.Drawing.Point(19, 48);
             this.txtSetTime.Name = "txtSetTime";
             this.txtSetTime.Size = new System.Drawing.Size(100, 20);
             this.txtSetTime.TabIndex = 38;
@@ -176,7 +170,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportAllRawContent.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportAllRawContent.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportAllRawContent.Location = new System.Drawing.Point(220, 612);
+            this.btnExportAllRawContent.Location = new System.Drawing.Point(220, 618);
             this.btnExportAllRawContent.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportAllRawContent.Name = "btnExportAllRawContent";
             this.btnExportAllRawContent.Size = new System.Drawing.Size(170, 35);
@@ -192,7 +186,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportContentRaw.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnExportContentRaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportContentRaw.Location = new System.Drawing.Point(43, 612);
+            this.btnExportContentRaw.Location = new System.Drawing.Point(43, 618);
             this.btnExportContentRaw.Margin = new System.Windows.Forms.Padding(2);
             this.btnExportContentRaw.Name = "btnExportContentRaw";
             this.btnExportContentRaw.Size = new System.Drawing.Size(173, 35);
@@ -206,7 +200,7 @@
             this.btnGetStory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGetStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnGetStory.Location = new System.Drawing.Point(291, 658);
+            this.btnGetStory.Location = new System.Drawing.Point(291, 660);
             this.btnGetStory.Margin = new System.Windows.Forms.Padding(2);
             this.btnGetStory.Name = "btnGetStory";
             this.btnGetStory.Size = new System.Drawing.Size(102, 35);
@@ -242,10 +236,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.treeView1.Location = new System.Drawing.Point(0, 46);
+            this.treeView1.Location = new System.Drawing.Point(11, 46);
             this.treeView1.Margin = new System.Windows.Forms.Padding(2);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(400, 458);
+            this.treeView1.Size = new System.Drawing.Size(382, 472);
             this.treeView1.TabIndex = 9;
             this.treeView1.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -471,6 +465,36 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // checkExportStory
+            // 
+            this.checkExportStory.AutoSize = true;
+            this.checkExportStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.checkExportStory.Location = new System.Drawing.Point(196, 15);
+            this.checkExportStory.Name = "checkExportStory";
+            this.checkExportStory.Size = new System.Drawing.Size(15, 14);
+            this.checkExportStory.TabIndex = 43;
+            this.checkExportStory.UseVisualStyleBackColor = true;
+            this.checkExportStory.CheckedChanged += new System.EventHandler(this.checkExportStory_CheckedChanged);
+            // 
+            // cbbStory
+            // 
+            this.cbbStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.cbbStory.FormattingEnabled = true;
+            this.cbbStory.Location = new System.Drawing.Point(217, 10);
+            this.cbbStory.Name = "cbbStory";
+            this.cbbStory.Size = new System.Drawing.Size(158, 24);
+            this.cbbStory.TabIndex = 44;
+            // 
+            // lbTime
+            // 
+            this.lbTime.AutoSize = true;
+            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.lbTime.Location = new System.Drawing.Point(16, 16);
+            this.lbTime.Name = "lbTime";
+            this.lbTime.Size = new System.Drawing.Size(64, 18);
+            this.lbTime.TabIndex = 45;
+            this.lbTime.Text = "00:00:00";
+            // 
             // API
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -534,6 +558,8 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtSetTime;
+        private System.Windows.Forms.ComboBox cbbStory;
+        private System.Windows.Forms.CheckBox checkExportStory;
         private System.Windows.Forms.Label lbTime;
     }
 }

@@ -937,7 +937,10 @@ namespace API_iNews
             return tbl;
         }
 
+        private void checkExportStory_CheckedChanged(object sender, EventArgs e)
+        {
 
+        }
     }
 
 }
