@@ -78,6 +78,7 @@ namespace API_iNews
         {
             await ConnectServerToLoadDataAsync();
             lbTime.Text = "00:00:00";
+            checkExportStory_CheckedChanged(checkExportStory, EventArgs.Empty);
         }
 
         private void Server_Recieve(string msg)
@@ -123,6 +124,7 @@ namespace API_iNews
                     {
                         root.Expand();
                         tree.Nodes.Add(root);
+                        PopulateNodeComboBox();
                     }));
                 }
             });
@@ -158,6 +160,7 @@ namespace API_iNews
         private async Task LoadTreeQueuesAsync()
         {
             await LoadTreeStoriesAsync(treeView1, QUEUEROOT);
+            PopulateNodeComboBox();
         }
 
         private async void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -652,6 +655,7 @@ namespace API_iNews
             txtTroiCuoi.Clear();
             // Clear TreeView
             treeView1.Nodes.Clear();
+            cbbNode.Items.Clear();
             // Clear Status
             toolStripStatusLabel1.Text = "";
             toolStripStatusLabel2.Text = "";
@@ -660,6 +664,7 @@ namespace API_iNews
             selectedName = string.Empty;
             tbl = null;
             this.Refresh();
+            checkExportStory_CheckedChanged(checkExportStory, EventArgs.Empty);
         }
 
         public void LoadContentTroiTin()
@@ -850,13 +855,20 @@ namespace API_iNews
         }
 
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
             currentSeconds--;
 
             if (currentSeconds <= 0)
             {
-                btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
+                if (checkExportStory.Checked)
+                {
+                    await ExportSelectedStoryAsync();
+                }
+                else
+                {
+                    btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
+                }
                 currentSeconds = totalSeconds;         // Reset lại về đúng số giây thiết lập
                 ShowTime();                            // Hiển thị lại toàn bộ thời gian
                 return;                                // Thoát khỏi hàm, không chạy tiếp bên dưới!
@@ -937,9 +949,62 @@ namespace API_iNews
             return tbl;
         }
 
+        private void PopulateNodeComboBox()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(PopulateNodeComboBox));
+                return;
+            }
+
+            cbbNode.Items.Clear();
+
+            foreach (TreeNode root in treeView1.Nodes)
+            {
+                foreach (TreeNode child in root.Nodes)
+                {
+                    string nodeName = child.Tag != null ? child.Tag.ToString() : child.Text;
+                    if (!string.IsNullOrWhiteSpace(nodeName) && !cbbNode.Items.Contains(nodeName))
+                    {
+                        cbbNode.Items.Add(nodeName);
+                    }
+                }
+            }
+
+            if (cbbNode.Items.Count > 0 && cbbNode.SelectedIndex == -1)
+            {
+                cbbNode.SelectedIndex = 0;
+            }
+        }
+
+        private async Task ExportSelectedStoryAsync()
+        {
+            string selectedNodeName = cbbNode.SelectedItem as string;
+
+            if (string.IsNullOrWhiteSpace(selectedNodeName))
+            {
+                label2.Text = "Vui lòng chọn bản tin cần xuất.";
+                return;
+            }
+
+            try
+            {
+                await CreateAndExportBanTinAsync(selectedNodeName, saveFileRootFolder);
+                label2.Text = $"Đã xuất bản tin {selectedNodeName} vào {DateTime.Now:HH:mm:ss}.";
+            }
+            catch (Exception)
+            {
+                label2.Text = "Lỗi khi xuất bản tin đã chọn.";
+            }
+        }
+
         private void checkExportStory_CheckedChanged(object sender, EventArgs e)
         {
-
+            cbbNode.Enabled = checkExportStory.Checked;
+            if (!checkExportStory.Checked)
+            {
+                cbbNode.SelectedIndex = -1;
+            }
         }
 
         private void cbbNode_SelectedIndexChanged(object sender, EventArgs e)
