@@ -30,6 +30,7 @@ namespace API_iNews
         DataTable tbl;
         private string saveFileRootFolder = "D\\TEST";
         private string saveFileDateFormat = "dd.MM.yyyy";
+        private bool isMockMode;
 
         public API()
         {
@@ -164,7 +165,36 @@ namespace API_iNews
         private async void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeNode node = treeView1.SelectedNode;
-            if (node != null && node.Tag != null)
+            if (node == null)
+            {
+                return;
+            }
+
+            if (isMockMode)
+            {
+                if (node.Level == 0)
+                {
+                    return;
+                }
+
+                string banTinName = node.Text;
+                string fullName = node.Tag?.ToString() ?? banTinName;
+
+                toolStripStatusLabel1.Text = $"Đang xem mock data cho {banTinName}.";
+                toolStripStatusLabel2.Text = fullName;
+                label2.Text = fullName;
+                selectedName = fullName;
+
+                tbl = CreateMockDataTable(banTinName);
+                dataGridView1.DataSource = tbl;
+                ApplyDataGridViewStyle(dataGridView1);
+                GetDataContent();
+                LoadContentTroiTin();
+                LoadContentTroiCuoi();
+                return;
+            }
+
+            if (node.Tag != null)
             {
                 //if (node.Nodes.Count > 0)
                 //{
@@ -174,14 +204,14 @@ namespace API_iNews
                 {
                     // Hiển thị trạng thái loading
                     toolStripStatusLabel1.Text = "Đang tải stories...";
-                    
+
                     string name = node.Tag.ToString().Replace("INEWS.", "");
                     if (!string.IsNullOrEmpty(queueChild))
                         name = name + "." + queueChild;
                     toolStripStatusLabel2.Text = name;
                     label2.Text = name + "." + queueChild;
                     selectedName = name;
-                    
+
                     // Chạy việc lấy dữ liệu trên background thread
                     await Task.Run(() =>
                     {
@@ -191,7 +221,7 @@ namespace API_iNews
                         process.FieldMapping = mapping;
 
                         tbl = process.GetDataRows(queues);
-                        
+
                         // Cập nhật UI trên UI thread
                         this.BeginInvoke(new Action(() =>
                         {
@@ -607,6 +637,7 @@ namespace API_iNews
         private async Task ConnectServerToLoadDataAsync()
         {
             string serverIP = ConfigurationManager.AppSettings["ServerIP"];
+            isMockMode = false;
 
             // Hiển thị thông báo đang kết nối với IP cụ thể
             toolStripStatusLabel1.Text = $"Đang kết nối đến server {serverIP}...";
@@ -974,6 +1005,11 @@ namespace API_iNews
             // Tạo DataTable dựa trên tên bản tin
             DataTable tbl = await Task.Run(() =>
             {
+                if (isMockMode)
+                {
+                    return CreateMockDataTable(banTinName);
+                }
+
                 List<string> queues = iData.GetStoriesBoard(banTinName);
                 string mapping = ConfigurationManager.AppSettings["Fields"];
                 ProcessingXMl2Class process = new ProcessingXMl2Class();
