@@ -150,7 +150,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label8.Location = new System.Drawing.Point(121, 49);
+            this.label8.Location = new System.Drawing.Point(117, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 18);
             this.label8.TabIndex = 39;
@@ -158,7 +158,7 @@
             // 
             // txtSetTime
             // 
-            this.txtSetTime.Location = new System.Drawing.Point(19, 48);
+            this.txtSetTime.Location = new System.Drawing.Point(15, 48);
             this.txtSetTime.Name = "txtSetTime";
             this.txtSetTime.Size = new System.Drawing.Size(100, 20);
             this.txtSetTime.TabIndex = 38;

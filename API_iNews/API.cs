@@ -923,20 +923,19 @@ namespace API_iNews
             // Xuất dữ liệu ra file .txt
             await Task.Run(() =>
             {
-                // Định dạng tên file: HH_MM_SS_Tên_bản_tin.txt
-                string timeStamp = DateTime.Now.ToString("HH_mm_ss");
+                // Bỏ timestamp - chỉ dùng tên bản tin
                 string safeBanTinName = banTinName.Replace(" ", "_");
-
                 string dateFolder = DateTime.Now.ToString(saveFileDateFormat);
                 string folderPath = Path.Combine(saveFileRootFolder, dateFolder);
 
-                string filePath = Path.Combine(folderPath, $"{timeStamp}_{safeBanTinName}.txt");
-
+                // Tên file không có timestamp
+                string filePath = Path.Combine(folderPath, $"{safeBanTinName}.txt");
 
                 // Tạo thư mục nếu chưa tồn tại
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-                using (var writer = new StreamWriter(filePath))
+                // Ghi file - sẽ tự động ghi đè nếu file đã tồn tại
+                using (var writer = new StreamWriter(filePath, false))  // false = ghi đè
                 {
                     foreach (DataRow row in tbl.Rows)
                     {
