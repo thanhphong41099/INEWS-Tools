@@ -124,7 +124,6 @@ namespace API_iNews
                     {
                         root.Expand();
                         tree.Nodes.Add(root);
-                        PopulateNodeComboBox();
                     }));
                 }
             });
@@ -160,7 +159,6 @@ namespace API_iNews
         private async Task LoadTreeQueuesAsync()
         {
             await LoadTreeStoriesAsync(treeView1, QUEUEROOT);
-            PopulateNodeComboBox();
         }
 
         private async void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -655,7 +653,6 @@ namespace API_iNews
             txtTroiCuoi.Clear();
             // Clear TreeView
             treeView1.Nodes.Clear();
-            cbbNode.Items.Clear();
             // Clear Status
             toolStripStatusLabel1.Text = "";
             toolStripStatusLabel2.Text = "";
@@ -1013,46 +1010,9 @@ namespace API_iNews
             return tbl;
         }
 
-        private void PopulateNodeComboBox()
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(PopulateNodeComboBox));
-                return;
-            }
-
-            cbbNode.Items.Clear();
-
-            foreach (TreeNode root in treeView1.Nodes)
-            {
-                foreach (TreeNode child in root.Nodes)
-                {
-                    string nodeName = child.Tag != null ? child.Tag.ToString() : child.Text;
-                    if (!string.IsNullOrWhiteSpace(nodeName) && !cbbNode.Items.Contains(nodeName))
-                    {
-                        cbbNode.Items.Add(nodeName);
-                    }
-                }
-            }
-
-            if (cbbNode.Items.Count > 0 && cbbNode.SelectedIndex == -1)
-            {
-                cbbNode.SelectedIndex = 0;
-            }
-        }
-
         private async Task ExportSelectedStoryAsync()
         {
             List<string> selectedNodeNames = GetCheckedBanTinNamesFromTreeView();
-
-            if (selectedNodeNames.Count == 0)
-            {
-                string fallbackNodeName = cbbNode.SelectedItem as string;
-                if (!string.IsNullOrWhiteSpace(fallbackNodeName))
-                {
-                    selectedNodeNames.Add(fallbackNodeName);
-                }
-            }
 
             if (selectedNodeNames.Count == 0)
             {
@@ -1082,25 +1042,21 @@ namespace API_iNews
             }
             else
             {
-                label2.Text = $"Đã xuất {exportedNodes.Count} bản tin vào {DateTime.Now:HH:mm:ss}.";
+                label2.Text = $"Đã xuất bản tin vào {DateTime.Now:HH:mm:ss}.";
             }
         }
 
         private void checkExportStory_CheckedChanged(object sender, EventArgs e)
         {
-            bool enableStorySelection = checkExportStory.Checked;
-            cbbNode.Enabled = enableStorySelection;
-            ToggleTreeViewCheckBoxes(enableStorySelection);
-
-            if (!enableStorySelection)
+            ToggleTreeViewCheckBoxes(checkExportStory.Checked);
+            if (!checkExportStory.Checked)
             {
-                cbbNode.SelectedIndex = -1;
+                label2.Text = "Chế độ xuất tất cả bản tin.";
             }
-        }
-
-        private void cbbNode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            else
+            {
+                label2.Text = "Chế độ xuất bản tin đã chọn.";
+            }
         }
     }
 

@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lbTime = new System.Windows.Forms.Label();
+            this.checkExportStory = new System.Windows.Forms.CheckBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -62,9 +64,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.checkExportStory = new System.Windows.Forms.CheckBox();
-            this.cbbNode = new System.Windows.Forms.ComboBox();
-            this.lbTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -106,7 +105,6 @@
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.lbTime);
-            this.panel2.Controls.Add(this.cbbNode);
             this.panel2.Controls.Add(this.checkExportStory);
             this.panel2.Controls.Add(this.btnStart);
             this.panel2.Controls.Add(this.btnStop);
@@ -116,6 +114,28 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(384, 90);
             this.panel2.TabIndex = 38;
+            // 
+            // lbTime
+            // 
+            this.lbTime.AutoSize = true;
+            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.lbTime.Location = new System.Drawing.Point(16, 16);
+            this.lbTime.Name = "lbTime";
+            this.lbTime.Size = new System.Drawing.Size(64, 18);
+            this.lbTime.TabIndex = 45;
+            this.lbTime.Text = "00:00:00";
+            // 
+            // checkExportStory
+            // 
+            this.checkExportStory.AutoSize = true;
+            this.checkExportStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.checkExportStory.Location = new System.Drawing.Point(240, 15);
+            this.checkExportStory.Name = "checkExportStory";
+            this.checkExportStory.Size = new System.Drawing.Size(135, 22);
+            this.checkExportStory.TabIndex = 43;
+            this.checkExportStory.Text = "Checklist bản tin";
+            this.checkExportStory.UseVisualStyleBackColor = true;
+            this.checkExportStory.CheckedChanged += new System.EventHandler(this.checkExportStory_CheckedChanged);
             // 
             // btnStart
             // 
@@ -465,37 +485,6 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // checkExportStory
-            // 
-            this.checkExportStory.AutoSize = true;
-            this.checkExportStory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.checkExportStory.Location = new System.Drawing.Point(196, 15);
-            this.checkExportStory.Name = "checkExportStory";
-            this.checkExportStory.Size = new System.Drawing.Size(15, 14);
-            this.checkExportStory.TabIndex = 43;
-            this.checkExportStory.UseVisualStyleBackColor = true;
-            this.checkExportStory.CheckedChanged += new System.EventHandler(this.checkExportStory_CheckedChanged);
-            // 
-            // cbbNode
-            // 
-            this.cbbNode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.cbbNode.FormattingEnabled = true;
-            this.cbbNode.Location = new System.Drawing.Point(217, 10);
-            this.cbbNode.Name = "cbbNode";
-            this.cbbNode.Size = new System.Drawing.Size(158, 24);
-            this.cbbNode.TabIndex = 44;
-            this.cbbNode.SelectedIndexChanged += new System.EventHandler(this.cbbNode_SelectedIndexChanged);
-            // 
-            // lbTime
-            // 
-            this.lbTime.AutoSize = true;
-            this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.lbTime.Location = new System.Drawing.Point(16, 16);
-            this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(64, 18);
-            this.lbTime.TabIndex = 45;
-            this.lbTime.Text = "00:00:00";
-            // 
             // API
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -559,7 +548,6 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtSetTime;
-        private System.Windows.Forms.ComboBox cbbNode;
         private System.Windows.Forms.CheckBox checkExportStory;
         private System.Windows.Forms.Label lbTime;
     }
