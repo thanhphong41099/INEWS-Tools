@@ -31,6 +31,7 @@ namespace API_iNews
         private string saveFileRootFolder = "D\\TEST";
         private string saveFileDateFormat = "dd.MM.yyyy";
         private bool isMockMode;
+        private bool isUpdatingTreeViewChecks;
 
         public API()
         {
@@ -232,6 +233,27 @@ namespace API_iNews
                             LoadContentTroiCuoi();
                         }));
                     });
+                }
+            }
+        }
+
+        private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (isUpdatingTreeViewChecks)
+            {
+                return;
+            }
+
+            if (e.Node.Level == 0 && e.Node.Index == 0)
+            {
+                isUpdatingTreeViewChecks = true;
+                try
+                {
+                    SetAllNodesChecked(treeView1.Nodes, e.Node.Checked);
+                }
+                finally
+                {
+                    isUpdatingTreeViewChecks = false;
                 }
             }
         }
@@ -825,6 +847,12 @@ namespace API_iNews
         {
             try
             {
+                if (checkExportStory.Checked)
+                {
+                    await ExportSelectedStoryAsync();
+                    return;
+                }
+
                 // Lấy danh sách tên bản tin cấp 1 từ TreeView
                 List<string> banTinNames = GetBanTinNamesFromTreeView();
 
@@ -889,14 +917,7 @@ namespace API_iNews
 
             if (currentSeconds <= 0)
             {
-                if (checkExportStory.Checked)
-                {
-                    await ExportSelectedStoryAsync();
-                }
-                else
-                {
-                    btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
-                }
+                btnExportAllRawContent.PerformClick(); // Xuất file khi hết thời gian
                 currentSeconds = totalSeconds;         // Reset lại về đúng số giây thiết lập
                 ShowTime();                            // Hiển thị lại toàn bộ thời gian
                 return;                                // Thoát khỏi hàm, không chạy tiếp bên dưới!
@@ -965,6 +986,19 @@ namespace API_iNews
                 if (node.Nodes.Count > 0)
                 {
                     CollectCheckedNodes(node.Nodes, results);
+                }
+            }
+        }
+
+        private void SetAllNodesChecked(TreeNodeCollection nodes, bool isChecked)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Checked = isChecked;
+
+                if (node.Nodes.Count > 0)
+                {
+                    SetAllNodesChecked(node.Nodes, isChecked);
                 }
             }
         }
