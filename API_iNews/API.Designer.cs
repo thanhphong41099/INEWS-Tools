@@ -65,6 +65,7 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.btnExportXML = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -85,6 +86,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btnExportXML);
             this.splitContainer1.Panel1.Controls.Add(this.btnLoadMockData);
             this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.btnExportAllRawContent);
@@ -504,6 +506,20 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btnExportXML
+            // 
+            this.btnExportXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnExportXML.Location = new System.Drawing.Point(185, 660);
+            this.btnExportXML.Margin = new System.Windows.Forms.Padding(2);
+            this.btnExportXML.Name = "btnExportXML";
+            this.btnExportXML.Size = new System.Drawing.Size(102, 35);
+            this.btnExportXML.TabIndex = 43;
+            this.btnExportXML.Text = "Export XML";
+            this.btnExportXML.UseVisualStyleBackColor = true;
+            this.btnExportXML.Click += new System.EventHandler(this.btnExportXML_Click);
+            // 
             // API
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -570,5 +586,6 @@
         private System.Windows.Forms.CheckBox checkExportStory;
         private System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Button btnLoadMockData;
+        private System.Windows.Forms.Button btnExportXML;
     }
 }

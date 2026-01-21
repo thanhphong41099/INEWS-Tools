@@ -28,6 +28,7 @@ namespace API_iNews
         string workingFolder = string.Empty;
         public string selectedName = string.Empty;
         DataTable tbl;
+        private List<string> currentRawXmlList;
         private string saveFileRootFolder = "D\\TEST";
         private string saveFileDateFormat = "dd.MM.yyyy";
         private bool isMockMode;
@@ -217,6 +218,7 @@ namespace API_iNews
                     await Task.Run(() =>
                     {
                         List<string> queues = iData.GetStoriesBoard(name);
+                        currentRawXmlList = queues;
                         string mapping = ConfigurationManager.AppSettings["Fields"];
                         ProcessingXMl2Class process = new ProcessingXMl2Class();
                         process.FieldMapping = mapping;
@@ -258,28 +260,31 @@ namespace API_iNews
             }
         }
 
-        private void ExportXML(List<string> queues)
+        private void ExportXML(List<string> queues, string folderPath = null)
         {
             if (queues == null || queues.Count <= 0)
                 return;
-            string folder = ConfigurationManager.AppSettings["FolderToSave"];
+            
+            string folder = folderPath;
+            if (string.IsNullOrEmpty(folder))
+            {
+                folder = ConfigurationManager.AppSettings["FolderToSave"];
+            }
+
+            // Đảm bảo thư mục tồn tại
+            if (!Directory.Exists(folder))
+            {
+                try { Directory.CreateDirectory(folder); } catch { }
+            }
+
             int a = 1;
             foreach (string s in queues)
             {
                 if (!string.IsNullOrEmpty(s))
                 {
-
-                    File.WriteAllText(folder + "\\story_" + a.ToString() + ".xml", s, Encoding.Unicode);
-                    //
+                    File.WriteAllText(Path.Combine(folder, "story_" + a.ToString() + ".xml"), s, Encoding.Unicode);
                 }
                 a++;
-                //string xml = queues[0];
-                //if (!string.IsNullOrEmpty(xml))
-                //{
-                //    string folder = System.Configuration.ConfigurationManager.AppSettings["FolderToSave"];
-                //    System.IO.File.WriteAllText(folder + "\\story.xml", xml, Encoding.Unicode);
-                //    toolStripStatusLabel1.Text = "Đã xuất XML story thành công.";
-                //
             }
             toolStripStatusLabel1.Text = "Đã xuất XML story thành công.";
         }
@@ -1132,6 +1137,41 @@ namespace API_iNews
         private void btnLoadMockData_Click(object sender, EventArgs e)
         {
             LoadMockDataForTreeView();
+        }
+
+        private void btnExportXML_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra dữ liệu
+                if (currentRawXmlList == null || currentRawXmlList.Count == 0)
+                {
+                    MessageBox.Show("Chưa có dữ liệu XML. Vui lòng chọn một bản tin (Queue) để tải dữ liệu trước.",
+                                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Chọn thư mục lưu
+                using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+                {
+                    fbd.Description = "Chọn thư mục để lưu các file XML";
+                    if (fbd.ShowDialog() == DialogResult.OK)
+                    {
+                        string safeName = selectedName.Replace(" ", "_").Replace(".", "_");
+                        string saveDir = Path.Combine(fbd.SelectedPath, safeName);
+
+                        // Gọi lại hàm ExportXML dùng chung
+                        ExportXML(currentRawXmlList, saveDir);
+
+                        MessageBox.Show($"Đã xuất thành công {currentRawXmlList.Count} file XML vào thư mục:\n{saveDir}",
+                                        "Xuất dữ liệu thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xuất XML: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)

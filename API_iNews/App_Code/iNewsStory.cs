@@ -61,12 +61,12 @@ namespace TTDH
                 if (header == null)
                     continue;
                 //170415-thanhth:Bo sung cai nay de no biet la story kieu float hay break thi ko doc du lieu
-                //bool isFloat = header.SelectSingleNode("meta").Attributes["float"] != null ? header.SelectSingleNode("meta").Attributes["float"].Value == "true" : false;
-                //bool isBreak = header.SelectSingleNode("meta").Attributes["break"] != null ? header.SelectSingleNode("meta").Attributes["break"].Value == "true" : false;
-                ////bool isHold = header.SelectSingleNode("meta").Attributes["hold"] != null ? header.SelectSingleNode("meta").Attributes["hold"].Value == "true" : false;
-                //if (isFloat || isBreak)
-                //    continue;
-                //row["FormName"] = header.SelectSingleNode("formname").InnerText;
+               bool isFloat = header.SelectSingleNode("meta").Attributes["float"] != null ? header.SelectSingleNode("meta").Attributes["float"].Value == "true" : false;
+                bool isBreak = header.SelectSingleNode("meta").Attributes["break"] != null ? header.SelectSingleNode("meta").Attributes["break"].Value == "true" : false;
+                bool isHold = header.SelectSingleNode("meta").Attributes["hold"] != null ? header.SelectSingleNode("meta").Attributes["hold"].Value == "true" : false;
+                if (isFloat || isBreak)
+                    continue;
+                row["FormName"] = header.SelectSingleNode("formname").InnerText;
                 row["StoryID"] = header.SelectSingleNode("storyid").InnerText;
                 //get title
                 XmlNode body = root.ChildNodes[1];
