@@ -54,5 +54,37 @@ namespace API_iNews
             var xmlList = GetStoriesXml(queuePath);
             return StoryXmlParser.ToDataTable(xmlList, fieldMapping);
         }
+
+        public List<string> GetFolderChildren(string folderPath)
+        {
+            var result = new List<string>();
+            if (!_connection.Connect()) return result;
+
+            try
+            {
+                var request = new API_iNews.INEWSSystem.GetFolderChildrenType
+                {
+                    FolderFullName = folderPath
+                };
+
+                var response = _connection.SystemService.GetFolderChildren(request);
+                if (response?.Children != null)
+                {
+                    foreach (var child in response.Children)
+                    {
+                        if (!string.IsNullOrEmpty(child?.Name))
+                        {
+                            result.Add(child.Name);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetFolderChildren Error: {ex.Message}");
+            }
+
+            return result;
+        }
     }
 }
