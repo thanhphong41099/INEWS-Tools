@@ -76,7 +76,20 @@ Mọi lỗi kết nối hoặc SOAP exception sẽ được chuyển về UI th�
 - Proxy SOAP sinh từ wsdl iNews (INEWSSystem, INEWSQueue, INEWSStory).
 - Không sử dụng cơ sở dữ liệu cục bộ; dữ liệu dạng NSML được chuyển sang `DataTable` trong bộ nhớ.
 
+## Bridge cho WPF .NET 10 (Option 3)
+Nếu cần giữ SOAP client .NET Framework 4.8 nhưng muốn WPF .NET 10 gọi qua API, dùng project `INews.BridgeHost` để chạy TCP server (giao thức giống `ServerAPI`/`ClientAPI`).
+
+### Cách chạy BridgeHost
+1. Mở solution `INews.Library/INews.Library.sln`.
+2. Set startup project: `INews.BridgeHost`.
+3. Cập nhật `INews.BridgeHost/App.config` cho `iNewsServer`, `iNewsUser`, `QueuesRoot`, `Fields`, `BridgeHostIP`, `BridgeHostPort`.
+4. Run (F5). Console sẽ lắng nghe TCP và trả dữ liệu DataTable dạng XML.
+
+### Lệnh TCP hỗ trợ
+- `PING` → trả `OK`
+- `GET_TREE` → trả cây queue theo `QueuesRoot`
+- `QUEUE|<QueueFullName>` → trả XML `DataTable` của stories
+
 ## Lưu ý tối ưu
 - Hàm `ProcessContentWithPhude` chưa được sử dụng; có thể cân nhắc loại bỏ cùng khóa `Phude` trong cấu hình.
 - Nút "Get Stories" trên `ClientForm` không có xử lý, nên bổ sung logic hoặc ẩn để tránh nhầm lẫn.
-
