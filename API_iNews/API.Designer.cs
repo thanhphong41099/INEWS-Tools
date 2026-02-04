@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(API));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnExportXML = new System.Windows.Forms.Button();
             this.btnLoadMockData = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbTime = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.btnExportXML = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -95,7 +95,6 @@
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.treeView1);
-            this.splitContainer1.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel1_Paint);
             // 
             // splitContainer1.Panel2
             // 
@@ -105,6 +104,20 @@
             this.splitContainer1.SplitterDistance = 290;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // btnExportXML
+            // 
+            this.btnExportXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnExportXML.Location = new System.Drawing.Point(185, 660);
+            this.btnExportXML.Margin = new System.Windows.Forms.Padding(2);
+            this.btnExportXML.Name = "btnExportXML";
+            this.btnExportXML.Size = new System.Drawing.Size(102, 35);
+            this.btnExportXML.TabIndex = 43;
+            this.btnExportXML.Text = "Export XML";
+            this.btnExportXML.UseVisualStyleBackColor = true;
+            this.btnExportXML.Click += new System.EventHandler(this.btnExportXML_Click);
             // 
             // btnLoadMockData
             // 
@@ -505,20 +518,6 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // btnExportXML
-            // 
-            this.btnExportXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExportXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnExportXML.Location = new System.Drawing.Point(185, 660);
-            this.btnExportXML.Margin = new System.Windows.Forms.Padding(2);
-            this.btnExportXML.Name = "btnExportXML";
-            this.btnExportXML.Size = new System.Drawing.Size(102, 35);
-            this.btnExportXML.TabIndex = 43;
-            this.btnExportXML.Text = "Export XML";
-            this.btnExportXML.UseVisualStyleBackColor = true;
-            this.btnExportXML.Click += new System.EventHandler(this.btnExportXML_Click);
             // 
             // API
             // 

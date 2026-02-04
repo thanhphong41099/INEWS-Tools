@@ -73,6 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InewsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InewsForm.Designer.cs">
+      <DependentUpon>InewsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="API.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +92,7 @@
     <Compile Include="App_Code\ServerAPI.cs" />
     <Compile Include="App_Code\Utility.cs" />
     <Compile Include="App_Code\WebServiceSettings.cs" />
+    <Compile Include="Services\INewsService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TEST\APIMockData.cs">
@@ -106,6 +113,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="InewsForm.resx">
+      <DependentUpon>InewsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="API.resx">
       <DependentUpon>API.cs</DependentUpon>
     </EmbeddedResource>
