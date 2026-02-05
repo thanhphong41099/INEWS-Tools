@@ -37,6 +37,7 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnVideoID = new System.Windows.Forms.Button();
             this.mainLayout.SuspendLayout();
             this.topPanel.SuspendLayout();
             this.grpQueue.SuspendLayout();
@@ -62,6 +63,7 @@
             // 
             this.topPanel.Controls.Add(this.btnConnect);
             this.topPanel.Controls.Add(this.btnExportXML);
+            this.topPanel.Controls.Add(this.btnVideoID);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.topPanel.Location = new System.Drawing.Point(3, 3);
             this.topPanel.Name = "topPanel";
@@ -128,6 +130,17 @@
             this.lbStatus.Size = new System.Drawing.Size(60, 17);
             this.lbStatus.Text = "Trạng thái";
             // 
+            // btnVideoID
+            // 
+            this.btnVideoID.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVideoID.Location = new System.Drawing.Point(260, 8);
+            this.btnVideoID.Name = "btnVideoID";
+            this.btnVideoID.Size = new System.Drawing.Size(120, 32);
+            this.btnVideoID.TabIndex = 2;
+            this.btnVideoID.Text = "Export Video List";
+            this.btnVideoID.UseVisualStyleBackColor = true;
+            this.btnVideoID.Click += new System.EventHandler(this.btnVideoID_Click);
+            // 
             // FormInews
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -159,5 +172,6 @@
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         public System.Windows.Forms.ToolStripStatusLabel lbStatus;
+        private System.Windows.Forms.Button btnVideoID;
     }
 }

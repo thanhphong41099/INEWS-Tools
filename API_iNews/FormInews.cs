@@ -132,6 +132,26 @@ namespace API_iNews
             await ExportStories();
         }
 
+        private string GetExportPath()
+        {
+            // Get Base Path from Config
+            string folderToSave = ConfigurationManager.AppSettings["FolderToSave"];
+            if (string.IsNullOrEmpty(folderToSave))
+            {
+                folderToSave = @"D:\TEST\XML"; // Default fallback
+            }
+
+            // Append selected queue name
+            // Sanitize queue name for file system just in case
+            string safeQueueName = _selectedQueue;
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                safeQueueName = safeQueueName.Replace(c, '_');
+            }
+
+            return System.IO.Path.Combine(folderToSave, safeQueueName);
+        }
+
         private async Task ExportStories()
         {
             if (!_service.IsConnected)
@@ -148,22 +168,7 @@ namespace API_iNews
 
             try
             {
-                // Get Base Path from Config
-                string folderToSave = ConfigurationManager.AppSettings["FolderToSave"];
-                if (string.IsNullOrEmpty(folderToSave))
-                {
-                    folderToSave = @"D:\TEST\XML"; // Default fallback
-                }
-
-                // Append selected queue name
-                // Sanitize queue name for file system just in case
-                string safeQueueName = _selectedQueue;
-                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-                {
-                    safeQueueName = safeQueueName.Replace(c, '_');
-                }
-
-                string exportPath = System.IO.Path.Combine(folderToSave, safeQueueName);
+                string exportPath = GetExportPath();
 
                 // Create directory if not exists
                 if (!System.IO.Directory.Exists(exportPath))
@@ -219,6 +224,144 @@ namespace API_iNews
                 if (string.IsNullOrEmpty(_selectedQueue)) _selectedQueue = node.Text;
 
                 lbStatus.Text = $"Đã chọn: {_selectedQueue}";
+            }
+        }
+
+        private async void btnVideoID_Click(object sender, EventArgs e)
+        {
+            await ExtractVideoIds();
+        }
+
+        private async Task ExtractVideoIds()
+        {
+            if (!_service.IsConnected)
+            {
+                MessageBox.Show("Vui lòng kết nối trước!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_selectedQueue))
+            {
+                MessageBox.Show("Vui lòng chọn một Queue!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                lbStatus.Text = $"Đang tải dữ liệu từ {_selectedQueue}...";
+                btnVideoID.Enabled = false;
+
+                // 1. Get raw stories
+                var rawStories = await _service.GetRawStoriesAsync(_selectedQueue);
+
+                if (rawStories == null || rawStories.Count == 0)
+                {
+                    lbStatus.Text = "Không tìm thấy tin nào.";
+                    MessageBox.Show("Queue rỗng hoặc không lấy được tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // 2. Extract to DataTable
+                DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
+
+                // 3. Save to TXT
+                string exportPath = GetExportPath();
+                if (!System.IO.Directory.Exists(exportPath))
+                {
+                    System.IO.Directory.CreateDirectory(exportPath);
+                }
+                string filePath = System.IO.Path.Combine(exportPath, "video_ids.txt");
+
+                await Task.Run(() => SaveDataTableToTxt(dt, filePath));
+
+                lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file.";
+                MessageBox.Show($"Đã xuất thành công {dt.Rows.Count} dòng vào file:\n{filePath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                lbStatus.Text = $"Lỗi: {ex.Message}";
+                MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnVideoID.Enabled = true;
+            }
+        }
+
+        private void SaveDataTableToTxt(DataTable dt, string filePath)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            // Header
+            sb.AppendLine("Page\tTitle\tVideo ID");
+            sb.AppendLine(new string('-', 50));
+
+            // Rows
+            foreach (DataRow row in dt.Rows)
+            {
+                string page = row["page-number"]?.ToString() ?? "";
+                string title = row["title"]?.ToString() ?? "";
+                string vid = row["video-id"]?.ToString() ?? "";
+                sb.AppendLine($"{page}\t{title}\t{vid}");
+            }
+
+            System.IO.File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private DataTable CreateVideoIdTable(List<string> rawXmlList)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("page-number");
+            dt.Columns.Add("title");
+            dt.Columns.Add("video-id");
+
+            foreach (string xml in rawXmlList)
+            {
+                try
+                {
+                    DataRow row = dt.NewRow();
+                    row["page-number"] = ExtractField(xml, "page-number");
+                    row["title"] = ExtractField(xml, "title");
+                    row["video-id"] = ExtractField(xml, "video-id");
+                    
+                    // Only add if at least one field has data (optional cleaning)
+                    if (!string.IsNullOrEmpty(row["title"].ToString()) || !string.IsNullOrEmpty(row["video-id"].ToString()))
+                    {
+                        dt.Rows.Add(row);
+                    }
+                }
+                catch { }
+            }
+            return dt;
+        }
+
+        private string ExtractField(string xmlInfo, string fieldName)
+        {
+            try
+            {
+                // Simple regex extraction similar to how typical XML attributes/elements might look in NSML/iNews XML
+                // Adjust regex based on actual XML format. Assuming <field id="fieldName">value</field> or similar
+                // Based on common iNews formats seen in API.cs or assumed structure:
+                // Searching for a pattern like: <f id="page-number">value</f> or similar key-value pairs
+                
+                // Fallback to a generous regex finding the tag
+                // Implementation note: The exact format depends on iNews NSML. 
+                // Common pattern: <f id="fieldName">Value</f>
+                
+                string pattern = $@"<f id=""{fieldName}"">(.*?)</f>";
+                var match = System.Text.RegularExpressions.Regex.Match(xmlInfo, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
+                
+                if (match.Success)
+                {
+                    return match.Groups[1].Value.Trim();
+                }
+                
+                // If not found, return empty
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
     }
