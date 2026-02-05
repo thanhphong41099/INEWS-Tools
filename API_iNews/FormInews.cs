@@ -28,9 +28,10 @@ namespace API_iNews
             this.FormClosing += FormInews_FormClosing;
         }
 
-        private void FormInews_Load(object sender, EventArgs e)
+        private async void FormInews_Load(object sender, EventArgs e)
         {
-
+            // Auto connect on load
+            await ConnectToServer();
         }
 
         private void FormInews_FormClosing(object sender, FormClosingEventArgs e)
@@ -145,43 +146,61 @@ namespace API_iNews
                 return;
             }
 
-            using (var fbd = new FolderBrowserDialog())
+            try
             {
-                if (fbd.ShowDialog() == DialogResult.OK)
+                // Get Base Path from Config
+                string folderToSave = ConfigurationManager.AppSettings["FolderToSave"];
+                if (string.IsNullOrEmpty(folderToSave))
                 {
-                    try
-                    {
-                        lbStatus.Text = $"Đang lấy tin từ {_selectedQueue}...";
-                        btnExportXML.Enabled = false;
-
-                        var rawStories = await _service.GetRawStoriesAsync(_selectedQueue);
-
-                        if (rawStories == null || rawStories.Count == 0)
-                        {
-                            lbStatus.Text = "Không tìm thấy tin nào trong queue này.";
-                            MessageBox.Show("Queue rỗng hoặc không lấy được tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            lbStatus.Text = $"Đang xuất {rawStories.Count} tin...";
-                            // Run export on background thread to keep UI responsive
-                            await Task.Run(() => _service.ExportStoriesToXml(rawStories, fbd.SelectedPath));
-
-                            lbStatus.Text = $"Xuất thành công {rawStories.Count} file XML!";
-                            MessageBox.Show($"Đã xuất xong {rawStories.Count} tin vào thư mục:\n{fbd.SelectedPath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        string err = (_service as INewsService)?.LastError ?? ex.Message;
-                        lbStatus.Text = $"Lỗi xuất XML: {err}";
-                        MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    finally
-                    {
-                        btnExportXML.Enabled = true;
-                    }
+                    folderToSave = @"D:\TEST\XML"; // Default fallback
                 }
+
+                // Append selected queue name
+                // Sanitize queue name for file system just in case
+                string safeQueueName = _selectedQueue;
+                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                {
+                    safeQueueName = safeQueueName.Replace(c, '_');
+                }
+
+                string exportPath = System.IO.Path.Combine(folderToSave, safeQueueName);
+
+                // Create directory if not exists
+                if (!System.IO.Directory.Exists(exportPath))
+                {
+                    System.IO.Directory.CreateDirectory(exportPath);
+                }
+
+                lbStatus.Text = $"Đang lấy tin từ {_selectedQueue}...";
+                btnExportXML.Enabled = false;
+
+                var rawStories = await _service.GetRawStoriesAsync(_selectedQueue);
+
+                if (rawStories == null || rawStories.Count == 0)
+                {
+                    lbStatus.Text = "Không tìm thấy tin nào trong queue này.";
+                    MessageBox.Show("Queue rỗng hoặc không lấy được tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    lbStatus.Text = $"Đang xuất {rawStories.Count} tin...";
+                    
+                    // Run export on background thread
+                    await Task.Run(() => _service.ExportStoriesToXml(rawStories, exportPath));
+
+                    lbStatus.Text = $"Xuất thành công {rawStories.Count} file XML!";
+                    MessageBox.Show($"Đã xuất xong {rawStories.Count} tin vào thư mục:\n{exportPath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                string err = (_service as INewsService)?.LastError ?? ex.Message;
+                lbStatus.Text = $"Lỗi xuất XML: {err}";
+                MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnExportXML.Enabled = true;
             }
         }
 
