@@ -27,6 +27,11 @@ namespace API_iNews
         bool IsConnected { get; }
 
         /// <summary>
+        /// Gets the last error message from the iNews service.
+        /// </summary>
+        string LastError { get; }
+
+        /// <summary>
         /// Gets the list of child queues for a given folder/queue.
         /// </summary>
         Task<List<string>> GetQueueChildrenAsync(string parentQueueName);
@@ -57,8 +62,10 @@ namespace API_iNews
         private iNewsData _iNewsData;
         private WebServiceSettings _settings;
         private bool _isConnected;
+        private string _lastError;
 
         public bool IsConnected => _isConnected; // Simple tracking, real check is internal to iNewsData/iNews
+        public string LastError => _lastError;
 
         public INewsService()
         {
@@ -73,10 +80,20 @@ namespace API_iNews
 
             // iNewsData acts as a facade in the existing code, we wrap it here.
             _iNewsData = new iNewsData(_settings);
+            _iNewsData.SentError += OnINewsError;
+        }
+
+        private void OnINewsError(string msg)
+        {
+            _lastError = msg;
+            // Optionally could log here or fire an event if INewsService had one
         }
 
         public async Task<bool> ConnectAsync()
         {
+            // Reset error state
+            _lastError = null;
+
             return await Task.Run(() =>
             {
                 // In the legacy code, iNewsData creates a new connection per call using 'using (iNews inews = ...)'
@@ -85,10 +102,14 @@ namespace API_iNews
                 // We will verify connectivity by trying a lightweight operation or using IsConnect.
                 try
                 {
-                    return _iNewsData.IsConnect();
+                    bool result = _iNewsData.IsConnect();
+                    _isConnected = result;
+                    return result;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _lastError = ex.Message;
+                    _isConnected = false;
                     return false;
                 }
             });
@@ -96,9 +117,16 @@ namespace API_iNews
 
         public void Disconnect()
         {
-            // Legacy iNewsData handles disconnect via DisconnectAsync which runs Task.Run internally
-            _iNewsData.DisconnectAsync();
-            _isConnected = false;
+            try
+            {
+                // Legacy iNewsData handles disconnect via DisconnectAsync which runs Task.Run internally
+                _iNewsData.DisconnectAsync();
+            }
+            catch { }
+            finally
+            {
+                _isConnected = false;
+            }
         }
 
         public async Task<List<string>> GetQueueChildrenAsync(string parentQueueName)

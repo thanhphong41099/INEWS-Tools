@@ -132,31 +132,8 @@ namespace API_iNews
             });
         }
 
-        private async void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            //TreeNode node = e.Node;
-            //if (node != null && node.Nodes.Count == 1 && node.Nodes[0].Text == "Loading...")
-            //{
-            //    // Hiển thị loading state
-            //    toolStripStatusLabel1.Text = "Đang tải dữ liệu...";
-                
-            //    node.Nodes.Clear();
-                
-            //    // Chạy việc lấy dữ liệu trên background thread
-            //    List<string> queues = await Task.Run(() => iData.GetFolderChildren(node.Tag.ToString()));
-                
-            //    // Cập nhật UI trên UI thread
-            //    foreach (string child in queues)
-            //    {
-            //        TreeNode newNode = new TreeNode(child)
-            //        {
-            //            Tag = node.Tag + "." + child
-            //        };
-
-            //        node.Nodes.Add(newNode);
-            //    }
-            //    node.Expand();
-            //}
         }
 
         private async Task LoadTreeQueuesAsync()
@@ -257,34 +234,7 @@ namespace API_iNews
             }
         }
 
-        private void ExportXML(List<string> queues, string folderPath = null)
-        {
-            if (queues == null || queues.Count <= 0)
-                return;
-            
-            string folder = folderPath;
-            if (string.IsNullOrEmpty(folder))
-            {
-                folder = ConfigurationManager.AppSettings["FolderToSave"];
-            }
 
-            // Đảm bảo thư mục tồn tại
-            if (!Directory.Exists(folder))
-            {
-                try { Directory.CreateDirectory(folder); } catch { }
-            }
-
-            int a = 1;
-            foreach (string s in queues)
-            {
-                if (!string.IsNullOrEmpty(s))
-                {
-                    File.WriteAllText(Path.Combine(folder, "story_" + a.ToString() + ".xml"), s, Encoding.Unicode);
-                }
-                a++;
-            }
-            toolStripStatusLabel1.Text = "Đã xuất XML story thành công.";
-        }
 
         private void GetQueueChange()
         {
@@ -1050,19 +1000,17 @@ namespace API_iNews
         private async Task<DataTable> CreateAndExportBanTinAsync(string banTinName, string saveFileRootFolder)
         {
             // Tạo DataTable dựa trên tên bản tin
-            DataTable tbl = await Task.Run(() =>
+            // Tạo DataTable dựa trên tên bản tin
+            DataTable tbl = await Task.Run(async () =>
             {
                 if (isMockMode)
                 {
                     //return CreateMockDataTable(banTinName);
                 }
 
-                List<string> queues = iData.GetStoriesBoard(banTinName);
-                string mapping = ConfigurationManager.AppSettings["Fields"];
-                ProcessingXMl2Class process = new ProcessingXMl2Class();
-                process.FieldMapping = mapping;
+                List<string> queues = await _inewsService.GetRawStoriesAsync(banTinName);
                 // trả về tbl đúng của bản tin
-                return process.GetDataRows(queues);
+                return _inewsService.ProcessStories(queues);
             });
 
             // Xuất dữ liệu ra file .txt
@@ -1144,7 +1092,6 @@ namespace API_iNews
 
         private void btnLoadMockData_Click(object sender, EventArgs e)
         {
-            //LoadMockDataForTreeView();
         }
 
         private void btnExportXML_Click(object sender, EventArgs e)
@@ -1168,8 +1115,8 @@ namespace API_iNews
                         string safeName = selectedName.Replace(" ", "_").Replace(".", "_");
                         string saveDir = Path.Combine(fbd.SelectedPath, safeName);
 
-                        // Gọi lại hàm ExportXML dùng chung
-                        ExportXML(currentRawXmlList, saveDir);
+                        // Gọi Service để export
+                        _inewsService.ExportStoriesToXml(currentRawXmlList, saveDir);
 
                         MessageBox.Show($"Đã xuất thành công {currentRawXmlList.Count} file XML vào thư mục:\n{saveDir}",
                                         "Xuất dữ liệu thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
