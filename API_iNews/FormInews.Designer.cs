@@ -78,6 +78,7 @@
             this.btnConnect.TabIndex = 0;
             this.btnConnect.Text = "Connect Server";
             this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // btnExportXML
             // 
@@ -88,6 +89,7 @@
             this.btnExportXML.TabIndex = 1;
             this.btnExportXML.Text = "Export XML";
             this.btnExportXML.UseVisualStyleBackColor = true;
+            this.btnExportXML.Click += new System.EventHandler(this.btnExportXML_Click);
             // 
             // grpQueue
             // 
@@ -108,6 +110,7 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(788, 351);
             this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // statusStrip1
             // 

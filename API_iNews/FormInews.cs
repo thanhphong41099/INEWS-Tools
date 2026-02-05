@@ -25,10 +25,12 @@ namespace API_iNews
             ROOT_QUEUE = ConfigurationManager.AppSettings["QueuesRoot"] ?? "VO_BAN_TIN";
 
             // Wire up events
-            this.btnConnect.Click += BtnConnect_Click;
-            this.btnExportXML.Click += BtnExportXML_Click;
-            this.treeView1.AfterSelect += TreeView1_AfterSelect;
             this.FormClosing += FormInews_FormClosing;
+        }
+
+        private void FormInews_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void FormInews_FormClosing(object sender, FormClosingEventArgs e)
@@ -40,7 +42,48 @@ namespace API_iNews
             catch { }
         }
 
-        private async void BtnConnect_Click(object sender, EventArgs e)
+        private async Task LoadTree(string rootQueueName)
+        {
+            try
+            {
+                treeView1.Nodes.Clear();
+                TreeNode rootNode = new TreeNode(rootQueueName) { Tag = rootQueueName };
+                treeView1.Nodes.Add(rootNode);
+
+                var children = await _service.GetQueueChildrenAsync(rootQueueName);
+                if (children != null)
+                {
+                    foreach (var child in children)
+                    {
+                        // iNews returns names, we assume full path might be needed or just name relative to parent
+                        // legacy GetFolderChildren usually returns just names for folders
+                        string childValues = child.Trim(); 
+                        if(!string.IsNullOrEmpty(childValues))
+                        {
+                             TreeNode childNode = new TreeNode(childValues);
+                             // Start full path construction if needed, for now just simplistic
+                             childNode.Tag = $"{rootQueueName}.{childValues}"; 
+                             rootNode.Nodes.Add(childNode);
+                        }
+                    }
+                }
+                
+                rootNode.Expand();
+            }
+            catch (Exception ex)
+            {
+                lbStatus.Text = $"Lỗi tải cây thư mục: {ex.Message}";
+            }
+        }
+
+
+
+        private async void btnConnect_Click(object sender, EventArgs e)
+        {
+            await ConnectToServer();
+        }
+
+        private async Task ConnectToServer()
         {
             try
             {
@@ -83,54 +126,12 @@ namespace API_iNews
             }
         }
 
-        private async Task LoadTree(string rootQueueName)
+        private async void btnExportXML_Click(object sender, EventArgs e)
         {
-            try
-            {
-                treeView1.Nodes.Clear();
-                TreeNode rootNode = new TreeNode(rootQueueName) { Tag = rootQueueName };
-                treeView1.Nodes.Add(rootNode);
-
-                var children = await _service.GetQueueChildrenAsync(rootQueueName);
-                if (children != null)
-                {
-                    foreach (var child in children)
-                    {
-                        // iNews returns names, we assume full path might be needed or just name relative to parent
-                        // legacy GetFolderChildren usually returns just names for folders
-                        string childValues = child.Trim(); 
-                        if(!string.IsNullOrEmpty(childValues))
-                        {
-                             TreeNode childNode = new TreeNode(childValues);
-                             // Start full path construction if needed, for now just simplistic
-                             childNode.Tag = $"{rootQueueName}.{childValues}"; 
-                             rootNode.Nodes.Add(childNode);
-                        }
-                    }
-                }
-                
-                rootNode.Expand();
-            }
-            catch (Exception ex)
-            {
-                lbStatus.Text = $"Lỗi tải cây thư mục: {ex.Message}";
-            }
+            await ExportStories();
         }
 
-        private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            if (e.Node != null)
-            {
-                // Assuming the Tag contains the full queue path needed for getting stories
-                _selectedQueue = e.Node.Tag as string;
-                // If tag is null (fallback), use Text, but typically Tag is safer
-                if (string.IsNullOrEmpty(_selectedQueue)) _selectedQueue = e.Node.Text;
-                
-                lbStatus.Text = $"Đã chọn: {_selectedQueue}";
-            }
-        }
-
-        private async void BtnExportXML_Click(object sender, EventArgs e)
+        private async Task ExportStories()
         {
             if (!_service.IsConnected)
             {
@@ -154,7 +155,7 @@ namespace API_iNews
                         btnExportXML.Enabled = false;
 
                         var rawStories = await _service.GetRawStoriesAsync(_selectedQueue);
-                        
+
                         if (rawStories == null || rawStories.Count == 0)
                         {
                             lbStatus.Text = "Không tìm thấy tin nào trong queue này.";
@@ -165,7 +166,7 @@ namespace API_iNews
                             lbStatus.Text = $"Đang xuất {rawStories.Count} tin...";
                             // Run export on background thread to keep UI responsive
                             await Task.Run(() => _service.ExportStoriesToXml(rawStories, fbd.SelectedPath));
-                            
+
                             lbStatus.Text = $"Xuất thành công {rawStories.Count} file XML!";
                             MessageBox.Show($"Đã xuất xong {rawStories.Count} tin vào thư mục:\n{fbd.SelectedPath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -184,9 +185,22 @@ namespace API_iNews
             }
         }
 
-        private void FormInews_Load(object sender, EventArgs e)
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            SelectQueue(e.Node);
+        }
 
+        private void SelectQueue(TreeNode node)
+        {
+            if (node != null)
+            {
+                // Assuming the Tag contains the full queue path needed for getting stories
+                _selectedQueue = node.Tag as string;
+                // If tag is null (fallback), use Text, but typically Tag is safer
+                if (string.IsNullOrEmpty(_selectedQueue)) _selectedQueue = node.Text;
+
+                lbStatus.Text = $"Đã chọn: {_selectedQueue}";
+            }
         }
     }
 }
