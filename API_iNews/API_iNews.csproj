@@ -73,6 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormInews.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInews.Designer.cs">
+      <DependentUpon>FormInews.cs</DependentUpon>
+    </Compile>
     <Compile Include="InewsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +119,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormInews.resx">
+      <DependentUpon>FormInews.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InewsForm.resx">
       <DependentUpon>InewsForm.cs</DependentUpon>
     </EmbeddedResource>
