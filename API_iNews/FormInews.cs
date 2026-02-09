@@ -261,21 +261,38 @@ namespace API_iNews
                     return;
                 }
 
+                // --- DEBUG: START ---
+                // Dump the first story to a text file to check format
+                if (rawStories.Count > 0)
+                {
+                   try {
+                        string debugPath = System.IO.Path.Combine(GetExportPath(), "debug_first_story.xml");
+                        if (!System.IO.Directory.Exists(GetExportPath())) System.IO.Directory.CreateDirectory(GetExportPath());
+                        System.IO.File.WriteAllText(debugPath, rawStories[0]);
+                   } catch {}
+                }
+                // --- DEBUG: END ---
+
                 // 2. Extract to DataTable
                 DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
 
-                // 3. Save to TXT
-                string exportPath = GetExportPath();
-                if (!System.IO.Directory.Exists(exportPath))
+                // 3. Save to Text File
+                string exportFolder = GetExportPath();
+                if (!System.IO.Directory.Exists(exportFolder))
                 {
-                    System.IO.Directory.CreateDirectory(exportPath);
+                    System.IO.Directory.CreateDirectory(exportFolder);
                 }
-                string filePath = System.IO.Path.Combine(exportPath, "video_ids.txt");
 
-                await Task.Run(() => SaveDataTableToTxt(dt, filePath));
+                string fileName = $"VideoIDs_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                string fullPath = System.IO.Path.Combine(exportFolder, fileName);
 
-                lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file.";
-                MessageBox.Show($"Đã xuất thành công {dt.Rows.Count} dòng vào file:\n{filePath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SaveDataTableToTxt(dt, fullPath);
+
+                lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file: {fileName}";
+                
+                // Show in MessageBox
+                string msg = $"Đã xuất thành công {dt.Rows.Count} dòng dữ liệu.\n\nĐường dẫn:\n{fullPath}";
+                MessageBox.Show(msg, "Xuất Vdieo ID Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -294,18 +311,25 @@ namespace API_iNews
 
             // Header
             sb.AppendLine("Page\tTitle\tVideo ID");
-            sb.AppendLine(new string('-', 50));
+            // Removed separator line to ensure clean TSV format
 
             // Rows
             foreach (DataRow row in dt.Rows)
             {
-                string page = row["page-number"]?.ToString() ?? "";
-                string title = row["title"]?.ToString() ?? "";
-                string vid = row["video-id"]?.ToString() ?? "";
+                string page = SanitizeField(row["page-number"]?.ToString());
+                string title = SanitizeField(row["title"]?.ToString());
+                string vid = SanitizeField(row["video-id"]?.ToString());
                 sb.AppendLine($"{page}\t{title}\t{vid}");
             }
 
             System.IO.File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private string SanitizeField(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+            // Replace tabs and newlines with space to maintain TSV structure
+            return input.Replace("\t", " ").Replace("\r", " ").Replace("\n", " ").Trim();
         }
 
         private DataTable CreateVideoIdTable(List<string> rawXmlList)
@@ -324,7 +348,7 @@ namespace API_iNews
                     row["title"] = ExtractField(xml, "title");
                     row["video-id"] = ExtractField(xml, "video-id");
                     
-                    // Only add if at least one field has data (optional cleaning)
+                    // Only add if at least one field has data
                     if (!string.IsNullOrEmpty(row["title"].ToString()) || !string.IsNullOrEmpty(row["video-id"].ToString()))
                     {
                         dt.Rows.Add(row);
@@ -339,16 +363,11 @@ namespace API_iNews
         {
             try
             {
-                // Simple regex extraction similar to how typical XML attributes/elements might look in NSML/iNews XML
-                // Adjust regex based on actual XML format. Assuming <field id="fieldName">value</field> or similar
-                // Based on common iNews formats seen in API.cs or assumed structure:
-                // Searching for a pattern like: <f id="page-number">value</f> or similar key-value pairs
+                // Improved regex to handle attributes order, quotes, and whitespace
+                // Matches: <f id="fieldName">...</f> or <f id='fieldName'>...</f>
+                // Case insensitive, singleline mode
+                string pattern = $@"<f[^>]*id\s*=\s*[""']{fieldName}[""'][^>]*>(.*?)</f>";
                 
-                // Fallback to a generous regex finding the tag
-                // Implementation note: The exact format depends on iNews NSML. 
-                // Common pattern: <f id="fieldName">Value</f>
-                
-                string pattern = $@"<f id=""{fieldName}"">(.*?)</f>";
                 var match = System.Text.RegularExpressions.Regex.Match(xmlInfo, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
                 
                 if (match.Success)
@@ -356,7 +375,6 @@ namespace API_iNews
                     return match.Groups[1].Value.Trim();
                 }
                 
-                // If not found, return empty
                 return string.Empty;
             }
             catch
