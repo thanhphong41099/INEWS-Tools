@@ -209,12 +209,12 @@ namespace API_iNews
             }
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            SelectQueue(e.Node);
+            await SelectQueue(e.Node);
         }
 
-        private void SelectQueue(TreeNode node)
+        private async Task SelectQueue(TreeNode node)
         {
             if (node != null)
             {
@@ -224,6 +224,38 @@ namespace API_iNews
                 if (string.IsNullOrEmpty(_selectedQueue)) _selectedQueue = node.Text;
 
                 lbStatus.Text = $"Đã chọn: {_selectedQueue}";
+
+                // Load Data to Grid
+                await LoadStoriesToGrid();
+            }
+        }
+
+        private async Task LoadStoriesToGrid()
+        {
+            if (string.IsNullOrEmpty(_selectedQueue)) return;
+            // Ensure connected
+            if (!_service.IsConnected) return;
+
+            try
+            {
+                lbStatus.Text = $"Đang tải dữ liệu từ {_selectedQueue}...";
+                
+                // 1. Get raw stories
+                var rawStories = await _service.GetRawStoriesAsync(_selectedQueue);
+
+                if (rawStories != null)
+                {
+                    // 2. Create DataTable using config Config fields
+                    DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
+
+                    // 3. Bind to Grid
+                    dataGridView1.DataSource = dt;
+                    lbStatus.Text = $"Đã tải {dt.Rows.Count} tin.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lbStatus.Text = $"Lỗi tải dữ liệu: {ex.Message}";
             }
         }
 
