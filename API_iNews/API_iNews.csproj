@@ -315,7 +315,7 @@
     <Content Include="api.ico" />
     <Content Include="Listen.ico" />
     <Content Include="story_sample.txt" />
-    <Content Include="videoID_List_sample.txt" />
+    <Content Include="videoID_list_sample.xml" />
     <Content Include="XMLFile1.xml">
       <SubType>Designer</SubType>
     </Content>

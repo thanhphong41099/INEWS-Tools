@@ -272,10 +272,10 @@ namespace API_iNews
                 }
 
                 // Fixed filename as requested
-                string fileName = "videoID_list.txt";
+                string fileName = "videoID_list.xml";
                 string fullPath = System.IO.Path.Combine(exportFolder, fileName);
 
-                SaveDataTableToTxt(dt, fullPath);
+                SaveDataTableToXml(dt, fullPath);
 
                 lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file: {fileName}";
                 
@@ -294,24 +294,22 @@ namespace API_iNews
             }
         }
 
-        private void SaveDataTableToTxt(DataTable dt, string filePath)
+        private void SaveDataTableToXml(DataTable dt, string filePath)
         {
-            StringBuilder sb = new StringBuilder();
+            // Use XDocument/XElement for clean XML creation
+            System.Xml.Linq.XElement root = new System.Xml.Linq.XElement("Stories");
 
-            // Header
-            sb.AppendLine("Page\tTitle\tVideo ID");
-            // Removed separator line to ensure clean TSV format
-
-            // Rows
             foreach (DataRow row in dt.Rows)
             {
-                string page = SanitizeField(row["page-number"]?.ToString());
-                string title = SanitizeField(row["title"]?.ToString());
-                string vid = SanitizeField(row["video-id"]?.ToString());
-                sb.AppendLine($"{page}\t{title}\t{vid}");
+                root.Add(new System.Xml.Linq.XElement("Story",
+                    new System.Xml.Linq.XElement("Page", row["page-number"]?.ToString()?.Trim()),
+                    new System.Xml.Linq.XElement("Title", row["title"]?.ToString()?.Trim()),
+                    new System.Xml.Linq.XElement("VideoID", row["video-id"]?.ToString()?.Trim())
+                ));
             }
 
-            System.IO.File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+            // Save with indentation for readability
+            root.Save(filePath);
         }
 
         private string SanitizeField(string input)
@@ -357,6 +355,7 @@ namespace API_iNews
                 // 2. Attributes order: id="..." can be anywhere
                 // 3. Quotes: both ' and " are supported
                 // 4. Content: captures everything inside
+                // 5. EXCLUDE SELF-CLOSING TAGS: Use negative lookbehind (?<!/) to ensure tag doesn't end with />
                 
                 // Pattern explanation:
                 // <(\w+)       : Match start tag name (Group 1)
@@ -366,11 +365,12 @@ namespace API_iNews
                 // {fieldName}  : The field name we want
                 // \2           : Match closing quote (backreference to Group 2)
                 // [^>]*        : Any attributes after id
+                // (?<!/)       : Negative lookbehind - ensure previous char was NOT '/' (i.e. not self-closing)
                 // >            : End of start tag
                 // (.*?)        : The content (Group 3)
                 // </\1>        : Closing tag matching start tag (backreference to Group 1)
                 
-                string pattern = $@"<(\w+)[^>]*\bid\s*=\s*([""']){fieldName}\2[^>]*>(.*?)</\1>";
+                string pattern = $@"<(\w+)[^>]*\bid\s*=\s*([""']){fieldName}\2[^>]*(?<!/)\s*>(.*?)</\1>";
                 
                 var match = System.Text.RegularExpressions.Regex.Match(xmlInfo, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
                 
