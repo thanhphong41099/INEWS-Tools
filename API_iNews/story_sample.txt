@@ -1,0 +1,91 @@
+﻿<nsml:nsml xmlns:nsml="http://avid.com/nsml" version="3.1">
+	<head>
+		<meta break="false" float="1" hold="false" mcserror="false" rate="180" version="12" wordlength="6" words="89"/>
+		<rgroup number="54"/>
+		<wgroup number="55"/>
+		<egroup number="56"/>
+		<formname>VTV-SF</formname>
+		<storyid>1b62c310:0198e185:698923ca</storyid>
+	</head>
+	<fields>
+		<string aready="false" bg="0" id="title" ro="false" uec="false" urgency="1">0209 TCKD SANG TB DIEM BAO TT CHAU AU KHACH HANG TRUONG THANH THUC DAY THI TRUONG DO CHOI</string>
+		<string aready="false" bg="0" id="vtv-phong" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-nthien" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="create-by" ro="false" uec="false" urgency="1">dothanhhiep</string>
+		<string aready="false" bg="0" id="vtv-diempv1" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-pv2" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-diempv2" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-ttviet" ro="false" uec="false" urgency="1">Chờ duyệt</string>
+		<string aready="false" bg="0" id="vtv-duyetp" ro="false" uec="false" urgency="1">Duyệt</string>
+		<string aready="false" bg="0" id="endorse-by" ro="false" uec="false" urgency="1">vuduccuong</string>
+		<string aready="false" bg="0" id="vtv-duyetban" ro="false" uec="false" urgency="1"/>
+		<date aready="false" bg="0" id="create-date" ro="false" uec="false" urgency="1">1770568181</date>
+		<date aready="false" bg="0" id="modify-date" ro="false" uec="false" urgency="1">1770595274</date>
+		<string aready="false" bg="0" id="modify-by" ro="false" uec="false" urgency="1">ngoclam</string>
+		<string aready="false" bg="0" id="vtv-dvth" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-xuly" ro="false" uec="false" urgency="1"/>
+		<boolean aready="false" bg="0" id="vtv-chbcbs" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chbhline" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb9h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb10h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb11h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chbdhvh" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb12h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv_chb13h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb14h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb16h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chbqt" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chbcstn" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb18h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb19h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb20h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb22h" ro="false" uec="false" urgency="1">false</boolean>
+		<boolean aready="false" bg="0" id="vtv-chb23" ro="false" uec="false" urgency="1">false</boolean>
+		<string aready="false" bg="0" id="vtv-qp1" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-diemqp1" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-qp2" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-diemqp2" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="page-number" ro="false" uec="false" urgency="1">26</string>
+		<string aready="false" bg="0" id="vtv-bang" ro="false" uec="false" urgency="1"/>
+		<duration aready="false" bg="0" id="audio-time" ro="false" uec="false" urgency="1">29</duration>
+		<duration aready="false" bg="0" id="runs-time" ro="false" uec="1" urgency="1">158</duration>
+		<duration aready="false" bg="0" id="total-time" ro="false" uec="false" urgency="1">187</duration>
+		<string aready="false" bg="0" id="cume-time" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="event-status" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-at" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-cam" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-dve" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-dohoa" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="vtv-status" ro="false" uec="false" urgency="1"/>
+		<date aready="false" bg="0" id="air-date" ro="false" uec="false" urgency="1"/>
+		<string aready="false" bg="0" id="video-id" ro="false" uec="false" urgency="1">TS020926BKC</string>
+		<string aready="false" bg="0" id="vtv-dhsx" ro="false" uec="false" urgency="1"/>
+	</fields>
+	<body family="0" findent="0" font="" pindent="0" pitch="0" rindent="0" tabs="24">
+		<p family="0" font="" pitch="0"/>
+		<p family="0" font="" pitch="0">
+			<cc>##CG:</cc>
+		</p>
+		<p family="0" font="" pitch="0">
+			<cc>KHÁCH HÀNG TRƯỞNG THÀNH THÚC ĐẨY THỊ TRƯỜNG ĐỒ CHƠI CHÂU ÂU</cc>
+		</p>
+		<p family="0" font="" pitch="0">
+			<cc>[]</cc>
+		</p>
+		<p family="0" font="" pitch="0">
+			<cc>##</cc>
+		</p>
+	</body>
+	<aeset family="0" font="" pitch="0">
+		<ae family="0" font="" id="0" pitch="0" runs="0" type="G" version="C3.0">
+			<ap family="0" font="" pitch="0">
+				<u family="0" font="" pitch="0">PTV</u>
+			</ap>
+		</ae>
+		<ae family="0" font="" id="1" pitch="0" runs="0" type="G" version="C3.0">
+			<ap family="0" font="" pitch="0">
+				<u family="0" font="" pitch="0">VTR (K1 + K2)</u>
+			</ap>
+		</ae>
+	</aeset>
+</nsml:nsml>

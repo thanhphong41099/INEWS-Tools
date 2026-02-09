@@ -261,18 +261,6 @@ namespace API_iNews
                     return;
                 }
 
-                // --- DEBUG: START ---
-                // Dump the first story to a text file to check format
-                if (rawStories.Count > 0)
-                {
-                   try {
-                        string debugPath = System.IO.Path.Combine(GetExportPath(), "debug_first_story.xml");
-                        if (!System.IO.Directory.Exists(GetExportPath())) System.IO.Directory.CreateDirectory(GetExportPath());
-                        System.IO.File.WriteAllText(debugPath, rawStories[0]);
-                   } catch {}
-                }
-                // --- DEBUG: END ---
-
                 // 2. Extract to DataTable
                 DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
 
@@ -283,7 +271,8 @@ namespace API_iNews
                     System.IO.Directory.CreateDirectory(exportFolder);
                 }
 
-                string fileName = $"VideoIDs_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                // Fixed filename as requested
+                string fileName = "videoID_list.txt";
                 string fullPath = System.IO.Path.Combine(exportFolder, fileName);
 
                 SaveDataTableToTxt(dt, fullPath);
@@ -292,7 +281,7 @@ namespace API_iNews
                 
                 // Show in MessageBox
                 string msg = $"Đã xuất thành công {dt.Rows.Count} dòng dữ liệu.\n\nĐường dẫn:\n{fullPath}";
-                MessageBox.Show(msg, "Xuất Vdieo ID Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(msg, "Xuất Video ID Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -363,16 +352,31 @@ namespace API_iNews
         {
             try
             {
-                // Improved regex to handle attributes order, quotes, and whitespace
-                // Matches: <f id="fieldName">...</f> or <f id='fieldName'>...</f>
-                // Case insensitive, singleline mode
-                string pattern = $@"<f[^>]*id\s*=\s*[""']{fieldName}[""'][^>]*>(.*?)</f>";
+                // Improved regex to handle:
+                // 1. Tag names: 'string' (new) or 'f' (old) or any word char
+                // 2. Attributes order: id="..." can be anywhere
+                // 3. Quotes: both ' and " are supported
+                // 4. Content: captures everything inside
+                
+                // Pattern explanation:
+                // <(\w+)       : Match start tag name (Group 1)
+                // [^>]*        : Any attributes before id
+                // \bid\s*=\s*  : The id attribute
+                // (["'])       : Quote char (Group 2)
+                // {fieldName}  : The field name we want
+                // \2           : Match closing quote (backreference to Group 2)
+                // [^>]*        : Any attributes after id
+                // >            : End of start tag
+                // (.*?)        : The content (Group 3)
+                // </\1>        : Closing tag matching start tag (backreference to Group 1)
+                
+                string pattern = $@"<(\w+)[^>]*\bid\s*=\s*([""']){fieldName}\2[^>]*>(.*?)</\1>";
                 
                 var match = System.Text.RegularExpressions.Regex.Match(xmlInfo, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
                 
                 if (match.Success)
                 {
-                    return match.Groups[1].Value.Trim();
+                    return match.Groups[3].Value.Trim();
                 }
                 
                 return string.Empty;
