@@ -14,6 +14,7 @@ namespace API_iNews
     public partial class FormInews : Form
     {
         private readonly IINewsService _service;
+        private readonly Services.StoryExportService _exportService;
         private string _selectedQueue;
         private readonly string ROOT_QUEUE ;
 
@@ -21,6 +22,7 @@ namespace API_iNews
         {
             InitializeComponent();
             _service = new INewsService();
+            _exportService = new Services.StoryExportService();
             // Get from config or fallback to default
             ROOT_QUEUE = ConfigurationManager.AppSettings["QueuesRoot"] ?? "VO_BAN_TIN";
 
@@ -246,7 +248,8 @@ namespace API_iNews
                 if (rawStories != null)
                 {
                     // 2. Create DataTable using config Config fields
-                    DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
+                    string fieldsConfig = ConfigurationManager.AppSettings["Fields"];
+                    DataTable dt = await Task.Run(() => _exportService.CreateStoryTable(rawStories, fieldsConfig));
 
                     // 3. Bind to Grid
                     dataGridView1.DataSource = dt;
@@ -294,7 +297,8 @@ namespace API_iNews
                 }
 
                 // 2. Extract to DataTable
-                DataTable dt = await Task.Run(() => CreateVideoIdTable(rawStories));
+                string fieldsConfig = ConfigurationManager.AppSettings["Fields"];
+                DataTable dt = await Task.Run(() => _exportService.CreateStoryTable(rawStories, fieldsConfig));
 
                 // 3. Save to Text File
                 string exportFolder = GetExportPath();
@@ -307,7 +311,7 @@ namespace API_iNews
                 string fileName = "videoID_list.xml";
                 string fullPath = System.IO.Path.Combine(exportFolder, fileName);
 
-                SaveDataTableToXml(dt, fullPath);
+                _exportService.SaveStoriesToXml(dt, fullPath);
 
                 lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file: {fileName}";
                 
@@ -326,123 +330,6 @@ namespace API_iNews
             }
         }
 
-        private void SaveDataTableToXml(DataTable dt, string filePath)
-        {
-            // Use XDocument/XElement for clean XML creation
-            System.Xml.Linq.XElement root = new System.Xml.Linq.XElement("Stories");
 
-            foreach (DataRow row in dt.Rows)
-            {
-                System.Xml.Linq.XElement story = new System.Xml.Linq.XElement("Story");
-                foreach (DataColumn col in dt.Columns)
-                {
-                    // Use the column name (from config) as the XML tag name
-                    story.Add(new System.Xml.Linq.XElement(col.ColumnName, row[col]?.ToString()?.Trim()));
-                }
-                root.Add(story);
-            }
-
-            // Save with indentation for readability
-            root.Save(filePath);
-        }
-
-        private string SanitizeField(string input)
-        {
-            if (string.IsNullOrEmpty(input)) return "";
-            // Replace tabs and newlines with space to maintain TSV structure
-            return input.Replace("\t", " ").Replace("\r", " ").Replace("\n", " ").Trim();
-        }
-
-        private DataTable CreateVideoIdTable(List<string> rawXmlList)
-        {
-            DataTable dt = new DataTable();
-
-            // 1. Get fields from Config
-            string fieldsConfig = ConfigurationManager.AppSettings["Fields"];
-            if (string.IsNullOrEmpty(fieldsConfig))
-            {
-                fieldsConfig = "title,page-number"; // Default fallback
-            }
-
-            // 2. Create Columns dynamically
-            // Split by comma and clean whitespace
-            string[] fields = fieldsConfig.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(f => f.Trim())
-                                          .ToArray();
-
-            foreach (string field in fields)
-            {
-                if (!dt.Columns.Contains(field))
-                {
-                    dt.Columns.Add(field);
-                }
-            }
-
-            // 3. Extract Data
-            foreach (string xml in rawXmlList)
-            {
-                try
-                {
-                    DataRow row = dt.NewRow();
-                    bool hasData = false;
-
-                    foreach (string field in fields)
-                    {
-                        string val = ExtractField(xml, field);
-                        row[field] = val;
-                        if (!string.IsNullOrEmpty(val)) hasData = true;
-                    }
-
-                    // Only add if at least one field has data
-                    if (hasData)
-                    {
-                        dt.Rows.Add(row);
-                    }
-                }
-                catch { }
-            }
-            return dt;
-        }
-
-        private string ExtractField(string xmlInfo, string fieldName)
-        {
-            try
-            {
-                // Improved regex to handle:
-                // 1. Tag names: 'string' (new) or 'f' (old) or any word char
-                // 2. Attributes order: id="..." can be anywhere
-                // 3. Quotes: both ' and " are supported
-                // 4. Content: captures everything inside
-                // 5. EXCLUDE SELF-CLOSING TAGS: Use negative lookbehind (?<!/) to ensure tag doesn't end with />
-                
-                // Pattern explanation:
-                // <(\w+)       : Match start tag name (Group 1)
-                // [^>]*        : Any attributes before id
-                // \bid\s*=\s*  : The id attribute
-                // (["'])       : Quote char (Group 2)
-                // {fieldName}  : The field name we want
-                // \2           : Match closing quote (backreference to Group 2)
-                // [^>]*        : Any attributes after id
-                // (?<!/)       : Negative lookbehind - ensure previous char was NOT '/' (i.e. not self-closing)
-                // >            : End of start tag
-                // (.*?)        : The content (Group 3)
-                // </\1>        : Closing tag matching start tag (backreference to Group 1)
-                
-                string pattern = $@"<(\w+)[^>]*\bid\s*=\s*([""']){fieldName}\2[^>]*(?<!/)\s*>(.*?)</\1>";
-                
-                var match = System.Text.RegularExpressions.Regex.Match(xmlInfo, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
-                
-                if (match.Success)
-                {
-                    return match.Groups[3].Value.Trim();
-                }
-                
-                return string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
     }
 }

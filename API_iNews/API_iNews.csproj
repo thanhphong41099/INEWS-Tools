@@ -95,6 +95,7 @@
     <Compile Include="Services\INewsService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\StoryExportService.cs" />
     <Compile Include="TEST\APIMockData.cs">
       <SubType>Form</SubType>
     </Compile>
