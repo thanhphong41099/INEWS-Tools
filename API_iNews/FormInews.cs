@@ -301,11 +301,13 @@ namespace API_iNews
 
             foreach (DataRow row in dt.Rows)
             {
-                root.Add(new System.Xml.Linq.XElement("Story",
-                    new System.Xml.Linq.XElement("Page", row["page-number"]?.ToString()?.Trim()),
-                    new System.Xml.Linq.XElement("Title", row["title"]?.ToString()?.Trim()),
-                    new System.Xml.Linq.XElement("VideoID", row["video-id"]?.ToString()?.Trim())
-                ));
+                System.Xml.Linq.XElement story = new System.Xml.Linq.XElement("Story");
+                foreach (DataColumn col in dt.Columns)
+                {
+                    // Use the column name (from config) as the XML tag name
+                    story.Add(new System.Xml.Linq.XElement(col.ColumnName, row[col]?.ToString()?.Trim()));
+                }
+                root.Add(story);
             }
 
             // Save with indentation for readability
@@ -322,21 +324,45 @@ namespace API_iNews
         private DataTable CreateVideoIdTable(List<string> rawXmlList)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("page-number");
-            dt.Columns.Add("title");
-            dt.Columns.Add("video-id");
 
+            // 1. Get fields from Config
+            string fieldsConfig = ConfigurationManager.AppSettings["Fields"];
+            if (string.IsNullOrEmpty(fieldsConfig))
+            {
+                fieldsConfig = "title,page-number"; // Default fallback
+            }
+
+            // 2. Create Columns dynamically
+            // Split by comma and clean whitespace
+            string[] fields = fieldsConfig.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(f => f.Trim())
+                                          .ToArray();
+
+            foreach (string field in fields)
+            {
+                if (!dt.Columns.Contains(field))
+                {
+                    dt.Columns.Add(field);
+                }
+            }
+
+            // 3. Extract Data
             foreach (string xml in rawXmlList)
             {
                 try
                 {
                     DataRow row = dt.NewRow();
-                    row["page-number"] = ExtractField(xml, "page-number");
-                    row["title"] = ExtractField(xml, "title");
-                    row["video-id"] = ExtractField(xml, "video-id");
-                    
+                    bool hasData = false;
+
+                    foreach (string field in fields)
+                    {
+                        string val = ExtractField(xml, field);
+                        row[field] = val;
+                        if (!string.IsNullOrEmpty(val)) hasData = true;
+                    }
+
                     // Only add if at least one field has data
-                    if (!string.IsNullOrEmpty(row["title"].ToString()) || !string.IsNullOrEmpty(row["video-id"].ToString()))
+                    if (hasData)
                     {
                         dt.Rows.Add(row);
                     }

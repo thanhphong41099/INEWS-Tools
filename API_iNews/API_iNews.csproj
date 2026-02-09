@@ -79,12 +79,6 @@
     <Compile Include="FormInews.Designer.cs">
       <DependentUpon>FormInews.cs</DependentUpon>
     </Compile>
-    <Compile Include="InewsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InewsForm.Designer.cs">
-      <DependentUpon>InewsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="API.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,9 +115,6 @@
     </Compile>
     <EmbeddedResource Include="FormInews.resx">
       <DependentUpon>FormInews.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InewsForm.resx">
-      <DependentUpon>InewsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="API.resx">
       <DependentUpon>API.cs</DependentUpon>
