@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TTDH;
 
 namespace API_iNews
 {
@@ -17,6 +18,7 @@ namespace API_iNews
         private readonly Services.StoryExportService _exportService;
         private string _selectedQueue;
         private readonly string ROOT_QUEUE ;
+        private ServerAPI _server;
 
         public FormInews()
         {
@@ -41,6 +43,7 @@ namespace API_iNews
             try
             {
                 _service?.Disconnect();
+                _server?.Stop();
             }
             catch { }
         }
@@ -94,6 +97,10 @@ namespace API_iNews
                 if (_service.IsConnected)
                 {
                     _service.Disconnect();
+                    
+                    // Stop Local TCP Server
+                    try { _server?.Stop(); _server = null; } catch { }
+
                     btnConnect.Text = "Connect Server";
                     lbStatus.Text = "Đã ngắt kết nối.";
                     treeView1.Nodes.Clear();
@@ -330,6 +337,32 @@ namespace API_iNews
             }
         }
 
+        private void btnStartServer_Click(object sender, EventArgs e)
+        {
+             // Start Local TCP Server (Port 3000) for External Scripts
+            try 
+            {
+                if (_server == null)
+                {
+                    string serverIP = ConfigurationManager.AppSettings["ServerIP"];
+                    if (string.IsNullOrEmpty(serverIP)) serverIP = "127.0.0.1"; // Default safety
 
+                    _server = new ServerAPI(serverIP);
+                    // Safe invoking to avoid cross-thread exceptions
+                    _server.Recieve += (msg) => { 
+                        if (!this.IsDisposed && this.InvokeRequired)
+                            this.BeginInvoke(new Action(() => lbStatus.Text = "TCP: " + msg)); 
+                    };
+                    _server.Start();
+                    MessageBox.Show($"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}\n\nBây giờ anh có thể chạy script python.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    btnStartServer.Text = "TCP Running...";
+                    btnStartServer.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể khởi động ServerAPI (Port 3000): " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

@@ -34,6 +34,7 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.btnExportXML = new System.Windows.Forms.Button();
             this.btnVideoID = new System.Windows.Forms.Button();
+            this.btnStartServer = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grpQueue = new System.Windows.Forms.GroupBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -73,6 +74,7 @@
             this.topPanel.Controls.Add(this.btnConnect);
             this.topPanel.Controls.Add(this.btnExportXML);
             this.topPanel.Controls.Add(this.btnVideoID);
+            this.topPanel.Controls.Add(this.btnStartServer);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.topPanel.Location = new System.Drawing.Point(3, 3);
             this.topPanel.Name = "topPanel";
@@ -112,6 +114,17 @@
             this.btnVideoID.Text = "Export Video List";
             this.btnVideoID.UseVisualStyleBackColor = true;
             this.btnVideoID.Click += new System.EventHandler(this.btnVideoID_Click);
+            // 
+            // btnStartServer
+            // 
+            this.btnStartServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStartServer.Location = new System.Drawing.Point(386, 8);
+            this.btnStartServer.Name = "btnStartServer";
+            this.btnStartServer.Size = new System.Drawing.Size(120, 32);
+            this.btnStartServer.TabIndex = 3;
+            this.btnStartServer.Text = "Start TCP Server";
+            this.btnStartServer.UseVisualStyleBackColor = true;
+            this.btnStartServer.Click += new System.EventHandler(this.btnStartServer_Click);
             // 
             // splitContainer1
             // 
@@ -229,6 +242,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         public System.Windows.Forms.ToolStripStatusLabel lbStatus;
         private System.Windows.Forms.Button btnVideoID;
+        private System.Windows.Forms.Button btnStartServer;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox grpStoryData;
         private System.Windows.Forms.DataGridView dataGridView1;
