@@ -1,0 +1,6 @@
+@iNews.Gateway_HostAddress = http://localhost:5109
+
+GET {{iNews.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
