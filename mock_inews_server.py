@@ -1,24 +1,31 @@
 import xml.etree.ElementTree as ET
 from flask import Flask, request, Response
+import random
+import string
 
 app = Flask(__name__)
 
-# Sample story NSML to return in GetStories
-STORY_NSML = """<nsml:nsml xmlns:nsml="http://avid.com/nsml" version="3.1">
+def generate_story_nsml(title="MOCK STORY", video_id=None, page_number=None):
+    if not video_id:
+        video_id = "TS" + "".join(random.choices(string.digits, k=6)) + "".join(random.choices(string.ascii_uppercase, k=3))
+    if not page_number:
+        page_number = str(random.randint(1, 100))
+        
+    return f"""<nsml:nsml xmlns:nsml="http://avid.com/nsml" version="3.1">
 	<head>
 		<formname>VTV-SF</formname>
 		<storyid>1b62c310:0198e185:698923ca</storyid>
 	</head>
 	<fields>
-		<string id="title">MOCK STORY 1</string>
-		<string id="video-id">TS020926BKC</string>
-        <string id="page-number">26</string>
+		<string id="title">{title}</string>
+		<string id="video-id">{video_id}</string>
+        <string id="page-number">{page_number}</string>
 	</fields>
 	<body>
 		<p><cc>##CG:</cc></p>
 		<p><cc>MOCK CONTENT</cc></p>
 	</body>
-</nsml:nsml>""".replace("<", "&lt;").replace(">", "&gt;")
+</nsml:nsml>"""
 
 def create_soap_response(inner_xml):
     return f"""<?xml version="1.0" encoding="utf-8"?>
@@ -49,10 +56,22 @@ def inewssystem():
         return Response(create_soap_response(resp), mimetype='text/xml')
 
     if "GetFolderChildren" in data:
+        import re
+        match = re.search(r'<([^:]+:)?FolderFullName[^>]*>(.*?)</([^:]+:)?FolderFullName>', data)
+        parent_folder = match.group(2) if match else "VO_BAN_TIN"
         # Mocking 2 child queues
-        resp = """<GetFolderChildrenResponse xmlns="http://avid.com/inewssystem/types">
-            <Children><Name>BAN_TIN_9H00</Name></Children>
-            <Children><Name>BAN_TIN_12H00</Name></Children>
+        resp = f"""<GetFolderChildrenResponse xmlns="http://avid.com/inewssystem/types">
+            <ParentFolderFullName>{parent_folder}</ParentFolderFullName>
+            <Children>
+                <Type>Queue</Type>
+                <Name>BAN_TIN_9H00</Name>
+                <FullName>{parent_folder}.BAN_TIN_9H00</FullName>
+            </Children>
+            <Children>
+                <Type>Queue</Type>
+                <Name>BAN_TIN_12H00</Name>
+                <FullName>{parent_folder}.BAN_TIN_12H00</FullName>
+            </Children>
         </GetFolderChildrenResponse>"""
         return Response(create_soap_response(resp), mimetype='text/xml')
 
@@ -71,12 +90,19 @@ def inewsqueue():
         
     if "GetStories" in data:
         # Mocking 2 stories
-        resp = f"""<GetStoriesResponse xmlns="http://avid.com/inewsqueue/types">
+        story1_nsml = generate_story_nsml(title="MOCK STORY 1")
+        story2_nsml = generate_story_nsml(title="MOCK STORY 2")
+        
+        resp = f"""<GetStoriesResponse xmlns="http://avid.com/inewsqueue/types" xmlns:story="http://avid.com/inewsstory/types">
             <Stories>
-                <StoryAsNSML>{STORY_NSML}</StoryAsNSML>
+                <story:FullPath>BAN_TIN_9H00</story:FullPath>
+                <story:QueueLocator>1b62c310:0198e185:698923ca</story:QueueLocator>
+                <story:StoryAsNSML><![CDATA[{story1_nsml}]]></story:StoryAsNSML>
             </Stories>
             <Stories>
-                <StoryAsNSML>{STORY_NSML}</StoryAsNSML>
+                <story:FullPath>BAN_TIN_9H00</story:FullPath>
+                <story:QueueLocator>1b62c310:0198e185:698923cb</story:QueueLocator>
+                <story:StoryAsNSML><![CDATA[{story2_nsml}]]></story:StoryAsNSML>
             </Stories>
         </GetStoriesResponse>"""
         return Response(create_soap_response(resp), mimetype='text/xml')
