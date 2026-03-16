@@ -351,10 +351,23 @@ namespace API_iNews
                     // Safe invoking to avoid cross-thread exceptions
                     _server.Recieve += (msg) => { 
                         if (!this.IsDisposed && this.InvokeRequired)
-                            this.BeginInvoke(new Action(() => lbStatus.Text = "TCP: " + msg)); 
+                        {
+                            this.BeginInvoke(new Action(async () => {
+                                lbStatus.Text = "TCP: " + msg;
+                                if (msg.StartsWith("TRIGGER_EXTRACT|") || msg.StartsWith("TRIGGER_EXTRACT#"))
+                                {
+                                    string[] parts = msg.Split(new char[] { '|', '#' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length == 2)
+                                    {
+                                        _selectedQueue = parts[1];
+                                        await ExtractVideoIds();
+                                    }
+                                }
+                            })); 
+                        }
                     };
                     _server.Start();
-                    MessageBox.Show($"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}\n\nBây giờ anh có thể chạy script python.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     btnStartServer.Text = "TCP Running...";
                     btnStartServer.Enabled = false;
                 }

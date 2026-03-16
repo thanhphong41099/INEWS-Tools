@@ -143,6 +143,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="README.md" />
+    <None Include="Review_11_3.md" />
     <None Include="Web References\INEWSQueue\CreateStoryResponseType.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>

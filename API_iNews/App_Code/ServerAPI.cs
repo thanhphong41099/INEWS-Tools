@@ -109,10 +109,21 @@ namespace TTDH
                                     data = SerializeTableToString(tbl2);
                                 break;
                             default:
-                                //DataTable tbl = TestData();
-                                DataTable tbl = GetStories(cmd);
-                                if (tbl != null)
-                                    data = SerializeTableToString(tbl);
+                                if (cmd.StartsWith("TRIGGER_EXTRACT|") || cmd.StartsWith("TRIGGER_EXTRACT#"))
+                                {
+                                    if (Recieve != null)
+                                    {
+                                        Recieve(cmd);
+                                    }
+                                    data = "OK";
+                                }
+                                else
+                                {
+                                    //DataTable tbl = TestData();
+                                    DataTable tbl = GetStories(cmd);
+                                    if (tbl != null)
+                                        data = SerializeTableToString(tbl);
+                                }
                                 break;
                         }
                         if (ErrorMessage != "")
