@@ -51,8 +51,12 @@ namespace TTDH
                 {
                     tcpListener.Stop();                   
                 }
-                listenThread.Join();
-                listenThread = null;                
+                
+                if (listenThread != null && listenThread.IsAlive)
+                {
+                    listenThread.Abort(); // Force terminate the blocking AcceptTcpClient call
+                    listenThread = null;                
+                }
             }
             catch
             {

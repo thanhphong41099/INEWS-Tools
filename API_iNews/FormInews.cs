@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 using TTDH;
 
 namespace API_iNews
@@ -19,6 +20,7 @@ namespace API_iNews
         private string _selectedQueue;
         private readonly string ROOT_QUEUE ;
         private ServerAPI _server;
+        private Process _mockProcess;
 
         public FormInews()
         {
@@ -45,6 +47,14 @@ namespace API_iNews
         {
             try
             {
+                // Tắt Mock process TRƯỚC HẾT để giải phóng các network handle (như port 3000) mà process con vô tình thừa kế
+                if (_mockProcess != null && !_mockProcess.HasExited)
+                {
+                    _mockProcess.Kill();
+                    _mockProcess.Dispose();
+                    _mockProcess = null;
+                }
+
                 _service?.Disconnect();
                 _server?.Stop();
             }
@@ -272,10 +282,10 @@ namespace API_iNews
 
         private async void btnVideoID_Click(object sender, EventArgs e)
         {
-            await ExtractVideoIds();
+            await ExtractVideoIds(true);
         }
 
-        private async Task ExtractVideoIds()
+        private async Task ExtractVideoIds(bool showErrorPopup = true)
         {
             if (!_service.IsConnected)
             {
@@ -328,7 +338,10 @@ namespace API_iNews
             catch (Exception ex)
             {
                 lbStatus.Text = $"Lỗi: {ex.Message}";
-                MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (showErrorPopup)
+                {
+                    MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             finally
             {
@@ -359,7 +372,7 @@ namespace API_iNews
                                     if (parts.Length == 2)
                                     {
                                         _selectedQueue = parts[1];
-                                        await ExtractVideoIds();
+                                        await ExtractVideoIds(false);
                                     }
                                 }
                             })); 
@@ -374,7 +387,17 @@ namespace API_iNews
                 {
                     _server.Stop();
                     _server = null;
-                    lbStatus.Text = "TCP Server đã được dừng.";
+                    
+                    // Kill Mock Process if it's running
+                    if (_mockProcess != null && !_mockProcess.HasExited)
+                    {
+                        _mockProcess.Kill();
+                        _mockProcess.Dispose();
+                        _mockProcess = null;
+                        btnMockData.Text = "Mock Data";
+                    }
+
+                    lbStatus.Text = "TCP Server (và Mock Server) đã được dừng.";
                     btnStartServer.Text = "Start Server";
                     btnStartServer.Enabled = true;
                 }
@@ -382,6 +405,46 @@ namespace API_iNews
             catch (Exception ex)
             {
                 MessageBox.Show("Không thể khởi động/dừng ServerAPI: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnMockData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_mockProcess == null || _mockProcess.HasExited)
+                {
+                    // Lên lịch Start Process Python
+                    string scriptPath = "D:\\PhungPhongDEV\\INEWS-Tools\\mock_inews_server.py";
+                    
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = "python";
+                    startInfo.Arguments = $"\"{scriptPath}\"";
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true; // Chạy ngầm
+
+                    _mockProcess = Process.Start(startInfo);
+                    
+                    ((Button)sender).Text = "Stop Mock";
+                    lbStatus.Text = "Mock Server (Python) đang chạy ngầm ở Port 8080.";
+                }
+                else
+                {
+                    // Tắt Process
+                    if (!_mockProcess.HasExited)
+                    {
+                        _mockProcess.Kill();
+                    }
+                    _mockProcess.Dispose();
+                    _mockProcess = null;
+                    
+                    ((Button)sender).Text = "Mock Data";
+                    lbStatus.Text = "Mock Server (Python) đã tắt.";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi gọi Mock Server: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

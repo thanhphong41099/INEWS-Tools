@@ -42,6 +42,7 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnMockData = new System.Windows.Forms.Button();
             this.mainLayout.SuspendLayout();
             this.topPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -75,6 +76,7 @@
             this.topPanel.Controls.Add(this.btnExportXML);
             this.topPanel.Controls.Add(this.btnVideoID);
             this.topPanel.Controls.Add(this.btnStartServer);
+            this.topPanel.Controls.Add(this.btnMockData);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.topPanel.Location = new System.Drawing.Point(3, 3);
             this.topPanel.Name = "topPanel";
@@ -184,7 +186,6 @@
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 16);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(520, 353);
             this.dataGridView1.TabIndex = 0;
             // 
@@ -203,6 +204,17 @@
             this.lbStatus.Name = "lbStatus";
             this.lbStatus.Size = new System.Drawing.Size(60, 17);
             this.lbStatus.Text = "Trạng thái";
+            // 
+            // btnMockData
+            // 
+            this.btnMockData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMockData.Location = new System.Drawing.Point(512, 8);
+            this.btnMockData.Name = "btnMockData";
+            this.btnMockData.Size = new System.Drawing.Size(120, 32);
+            this.btnMockData.TabIndex = 4;
+            this.btnMockData.Text = "Mock Data";
+            this.btnMockData.UseVisualStyleBackColor = true;
+            this.btnMockData.Click += new System.EventHandler(this.btnMockData_Click);
             // 
             // FormInews
             // 
@@ -246,5 +258,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox grpStoryData;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button btnMockData;
     }
 }
