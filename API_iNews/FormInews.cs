@@ -123,7 +123,6 @@ namespace API_iNews
                 {
                     string error = (_service as INewsService)?.LastError ?? "Lỗi không xác định";
                     lbStatus.Text = $"Kết nối thất bại: {error}";
-                    MessageBox.Show(lbStatus.Text, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
@@ -203,7 +202,6 @@ namespace API_iNews
                     await Task.Run(() => _service.ExportStoriesToXml(rawStories, exportPath));
 
                     lbStatus.Text = $"Xuất thành công {rawStories.Count} file XML!";
-                    MessageBox.Show($"Đã xuất xong {rawStories.Count} tin vào thư mục:\n{exportPath}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -278,13 +276,13 @@ namespace API_iNews
         {
             if (!_service.IsConnected)
             {
-                MessageBox.Show("Vui lòng kết nối trước!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lbStatus.Text = "Vui lòng kết nối trước!";
                 return;
             }
 
             if (string.IsNullOrEmpty(_selectedQueue))
             {
-                MessageBox.Show("Vui lòng chọn một Queue!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lbStatus.Text = "Vui lòng chọn một Queue!";
                 return;
             }
 
@@ -299,7 +297,6 @@ namespace API_iNews
                 if (rawStories == null || rawStories.Count == 0)
                 {
                     lbStatus.Text = "Không tìm thấy tin nào.";
-                    MessageBox.Show("Queue rỗng hoặc không lấy được tin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -321,10 +318,9 @@ namespace API_iNews
                 _exportService.SaveStoriesToXml(dt, fullPath);
 
                 lbStatus.Text = $"Đã xuất {dt.Rows.Count} dòng ra file: {fileName}";
-                
-                // Show in MessageBox
-                string msg = $"Đã xuất thành công {dt.Rows.Count} dòng dữ liệu.\n\nĐường dẫn:\n{fullPath}";
-                MessageBox.Show(msg, "Xuất Video ID Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Show in lbStatus
+                lbStatus.Text = $"Đã xuất thành công {dt.Rows.Count} dòng dữ liệu.\n\nĐường dẫn:\n{fullPath}";
             }
             catch (Exception ex)
             {
@@ -367,7 +363,7 @@ namespace API_iNews
                         }
                     };
                     _server.Start();
-                    MessageBox.Show($"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    lbStatus.Text = $"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}";
                     btnStartServer.Text = "TCP Running...";
                     btnStartServer.Enabled = false;
                 }

@@ -1,6 +1,13 @@
 # Kế Hoạch Triển Khai Client Kết Nối TCP Server iNews
 
-Tài liệu này mô tả chi tiết luồng logic và định dạng dữ liệu để các Client (Python, Node.js, C#, v.v.) có thể kết nối và lấy dữ liệu an toàn từ TCP Server của hệ thống iNews.
+***Lời ngỏ gửi team Client:***
+> *Tài liệu này đóng vai trò như một bản thỏa thuận giao tiếp (API Contract) giữa ứng dụng của các bạn và hệ thống iNews Server của chúng tôi. Mục đích cuối cùng của luồng tích hợp này là cho phép ứng dụng của các bạn gửi một "cú hích" (trigger) ngầm qua giao thức TCP. Cú hích này sẽ sai khiến Server C# tự động gom cấu trúc tin tức mới nhất từ hệ thống iNews và xuất ra thành một file `videoID_list.xml` tĩnh.*
+> 
+> *Sau khi nhận được phản hồi "OK" từ cú hích, nhiệm vụ của ứng dụng Client là chờ đợi vài giây, sau đó chủ động trỏ tới đường dẫn thư mục Share nội bộ (đã cấu hình từ trước) để xách file `videoID_list.xml` về xử lý, đọc ra các trường `page-number`, `video-id` v...v. Cuối cùng, phiền các bạn **xóa** file đó đi giùm để luồng Trigger tiếp theo hệ thống C# có thể đẻ ra một file mới tinh không bị trùng lặp.*
+
+---
+
+Tài liệu này mô tả chi tiết luồng logic và định dạng dữ liệu để các Client có thể kết nối và lấy dữ liệu an toàn từ TCP Server của hệ thống iNews.
 
 ## 1. Nguyên Tắc Cốt Lõi
 
@@ -119,7 +126,8 @@ FUNCTION FetchQueueFromINews(ip_address, queue_path):
 
 # Hàm vệ tinh dùng chung cho thiết kế "Lệnh TCP 1 chiều"
 FUNCTION WaitAndGetXmlFile(queue_path):
-    # Đường dẫn ví dụ (đã được map ổ cứng mạng)
+    # Đường dẫn ví dụ (đã được map ổ cứng mạng hoặc cấu hình sẵn)
+    # ⚠️ QUAN TRỌNG: Client cần thống nhất trước đường dẫn "Shared_XML" này với người quản trị hệ thống C# iNews.
     file_path = "\\\\192.168.1.100\\Shared_XML\\" + queue_path + "\\videoID_list.xml"
     
     # Canh me thư mục tối đa 30s
@@ -127,16 +135,17 @@ FUNCTION WaitAndGetXmlFile(queue_path):
     WHILE max_retries > 0:
         IF FileExists(file_path):
             TRY:
-                # Đọc file để kiểm tra xem Server C# đã nhả khóa chưa
+                # Đọc file để trích xuất các thông tin (ví dụ: video-id, page-number)
+                # Đảm bảo Server C# đã nhả khóa file (ghi xong tắt stream) mới đọc được
                 data = ReadFile(file_path)
-                DeleteFile(file_path) # Xóa ngay sau khi đọc xong
+                DeleteFile(file_path) # Bắt buộc phải Xóa ngay sau khi đọc xong để dọn chỗ cho lần gọi sau
                 RETURN data
             CATCH FileLockException:
-                # File đang ghi dở -> Bỏ qua, đợi chu kỳ sau
+                # File đang ghi dở -> Bỏ qua, đợi chu kỳ sau (1 giây sau)
                 Pass
                 
         Sleep(1000) # Đợi 1 giây
         max_retries = max_retries - 1
         
-    RETURN ERROR "Timeout: Không thấy file XML được sinh ra!"
+    RETURN ERROR "Timeout: Không thấy file videoID_list.xml được sinh ra tại thư mục kết quả!"
 ```
