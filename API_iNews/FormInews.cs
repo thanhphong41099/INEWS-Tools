@@ -36,6 +36,9 @@ namespace API_iNews
         {
             // Auto connect on load
             await ConnectToServer();
+            
+            // Auto start TCP Server on load
+            btnStartServer_Click(null, null);
         }
 
         private void FormInews_FormClosing(object sender, FormClosingEventArgs e)
@@ -335,7 +338,7 @@ namespace API_iNews
 
         private void btnStartServer_Click(object sender, EventArgs e)
         {
-             // Start Local TCP Server (Port 3000) for External Scripts
+             // Toggle Local TCP Server (Port 3000) for External Scripts
             try 
             {
                 if (_server == null)
@@ -364,13 +367,21 @@ namespace API_iNews
                     };
                     _server.Start();
                     lbStatus.Text = $"TCP Server đã khởi động tại Port 3000.\nIP: {serverIP}";
-                    btnStartServer.Text = "TCP Running...";
-                    btnStartServer.Enabled = false;
+                    btnStartServer.Text = "Stop Server";
+                    btnStartServer.Enabled = true;
+                }
+                else
+                {
+                    _server.Stop();
+                    _server = null;
+                    lbStatus.Text = "TCP Server đã được dừng.";
+                    btnStartServer.Text = "Start Server";
+                    btnStartServer.Enabled = true;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể khởi động ServerAPI (Port 3000): " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể khởi động/dừng ServerAPI: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
